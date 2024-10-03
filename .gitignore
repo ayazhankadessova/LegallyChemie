@@ -1,0 +1,52 @@
+# Node.js
+frontend/node_modules/
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+
+# Next.js
+frontend/.next/
+frontend/out/
+
+# OS and Editor specific
+frontend/.DS_Store
+frontend/.vscode/
+frontend/.idea/
+frontend/*.swp
+
+# Logs
+frontend/logs
+frontend/*.log
+frontend/pids
+frontend/*.pid
+frontend/*.seed
+frontend/*.pid.lock
+
+# Runtime data
+frontend/pids/
+frontend/*.pid
+frontend/lib-cov/
+frontend/coverage/
+frontend/cache/
+
+# Misc
+frontend/*.swp
+frontend/.lock-wscript
+frontend/.npmrc
+frontend/.eslintcache
+frontend/.env
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+
+# Ignore Mac system files
+frontend/.DS_Store
+
+# Ignore IDE specific files
+frontend/.idea/
+frontend/.vscode/
+
+# Build and output
+frontend/build/
+frontend/dist/
