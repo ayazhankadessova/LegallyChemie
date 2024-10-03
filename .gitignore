@@ -50,3 +50,6 @@ frontend/.vscode/
 # Build and output
 frontend/build/
 frontend/dist/
+
+# env file
+backend/.env
