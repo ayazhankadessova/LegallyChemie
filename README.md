@@ -23,3 +23,10 @@
 ## ER model (Hamza)
 
 ## Instruction on how to start & run DB (Sami)
+Configuration
+Create a .env file in the root of your project directory to store environment variables like your MongoDB connection URI. The .env file should look like this:
+
+```bash
+DB_STRING="mongodb://<username>:<password>@<host>:<port>/<database>"
+
+Replace <username>, <password>, <host>, <port>, and <database> with your actual MongoDB credentials.
