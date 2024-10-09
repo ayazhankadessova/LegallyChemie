@@ -42,7 +42,7 @@ The products collection is linked to the users collection since the user adds pr
 <img src="https://github.com/Hamza-Anver/LegallyChemie/blob/main/images/schema.jpg" width="500"> 
 
 ## ER model (Hamza)
-<img src="https://github.com/Hamza-Anver/LegallyChemie/blob/main/images/ER_Diagram.png" width="500"> 
+<img src="https://github.com/Hamza-Anver/LegallyChemie/blob/main/images/erdiagram.png" width="500"> 
 
 
 ## Instruction on how to start & run DB (Sami)
