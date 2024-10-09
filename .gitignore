@@ -41,7 +41,7 @@ frontend/.env.test.local
 frontend/.env.production.local
 
 # Ignore Mac system files
-frontend/.DS_Store
+.DS_Store
 
 # Ignore IDE specific files
 frontend/.idea/
