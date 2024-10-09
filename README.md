@@ -16,7 +16,7 @@
 - **Homepage**: Login screen to enter the Skincare Community.
 - **Product Screen (Fridge)**: Cool, refreshing view of all the saved products in your skincare fridge. ❄️
 
-## Description of data model (Jhon)
+## Description of data model (John)
 
 ## Schema diagram (Jhon)
 <img src="https://github.com/Hamza-Anver/LegallyChemie/blob/main/images/schema.jpg" width="500"> 
