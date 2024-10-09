@@ -16,7 +16,7 @@
 - **Homepage**: Login screen to enter the Skincare Community.
 - **Product Screen (Fridge)**: Cool, refreshing view of all the saved products in your skincare fridge. ❄️
 
-## Description of data model (John)
+## Description of data model
 ## Database: LegallyChemie
 This database tracks users, skincare products, and ingredient compatibility. It includes the following collections:
 #### 1. Users
@@ -31,21 +31,20 @@ This database tracks users, skincare products, and ingredient compatibility. It 
 - **Details**: Value that includes information such as:
 - **ingredients**: A list of ingredients in the product.
 
-#### 3. Compatibility 
-- **ingredients**: A dictionary or list of ingredients with associated properties.
-- **incompatible**: Stores ingredient incompatibilities.
-- Format: `"A": ["B", "C"]` indicates ingredient A is incompatible with ingredients B and C.
+#### 3. Ingredients 
+- Each ingredient is a key-value pair where the ingredient name is the key and the value is a list of its associated chemical property tags (e.g. AHA, Retinoid etc.)
 
-The products collection is linked to the users collection since the user adds products to their fridge. The products collection is also linked to the compatibility collections thorugh the ingredients through the ingredients in the products. 
+#### 4. Rules 
+- For the initial stage, we plan the rules DB to foundationally contain each property tag to be a key with a value that is a list with other property tags they are not compatible with (e.g. "AHA": ["BHA", "PHA"])
 
-## Schema diagram (Jhon)
-<img src="https://github.com/Hamza-Anver/LegallyChemie/blob/main/images/schema.jpg" width="500"> 
+## Schema diagram 
+<img src="https://github.com/Hamza-Anver/LegallyChemie/blob/main/images/schema.jpeg" width="500"> 
 
-## ER model (Hamza)
+## ER model 
 <img src="https://github.com/Hamza-Anver/LegallyChemie/blob/main/images/erdiagram.png" width="500"> 
 
 
-## Instruction on how to start & run DB (Sami)
+## Instruction on how to start & run DB 
 Configuration
 Create a .env file in the root of your project directory to store environment variables like your MongoDB connection URI. The .env file should look like this:
 
