@@ -45,7 +45,7 @@ frontend/.DS_Store
 
 # Ignore IDE specific files
 frontend/.idea/
-frontend/.vscode/
+.vscode
 
 # Build and output
 frontend/build/
@@ -53,3 +53,6 @@ frontend/dist/
 
 # env file
 backend/.env
+
+# python venv folder
+.venv
