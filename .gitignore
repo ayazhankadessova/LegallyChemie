@@ -52,7 +52,7 @@ frontend/build/
 frontend/dist/
 
 # env file
-backend/.env
+.env
 
 # python venv folder
 .venv
