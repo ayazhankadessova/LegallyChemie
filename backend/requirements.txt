@@ -2,3 +2,5 @@ Flask
 flask-cors
 python-dotenv
 pymongo
+bs4
+requests
