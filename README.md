@@ -19,6 +19,7 @@
 ## Description of data model (Jhon)
 
 ## Schema diagram (Jhon)
+<img src="https://github.com/Hamza-Anver/LegallyChemie/blob/main/images/schema.jpg" width="500"> 
 
 ## ER model (Hamza)
 
