@@ -38,7 +38,7 @@ This database tracks users, skincare products, and ingredient compatibility. It 
 - For the initial stage, we plan the rules DB to foundationally contain each property tag to be a key with a value that is a list with other property tags they are not compatible with (e.g. "AHA": ["BHA", "PHA"])
 
 ## Schema diagram 
-<img src="https://github.com/Hamza-Anver/LegallyChemie/blob/main/images/schema.jpeg" width="500"> 
+<img src="https://github.com/Hamza-Anver/LegallyChemie/blob/main/images/schema_draft.jpeg" width="500"> 
 
 ## ER model 
 <img src="https://github.com/Hamza-Anver/LegallyChemie/blob/main/images/erdiagram.png" width="500"> 
