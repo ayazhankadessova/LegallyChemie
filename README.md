@@ -16,8 +16,9 @@
 - **Homepage**: Login screen to enter the Skincare Community.
 - **Product Screen (Fridge)**: Cool, refreshing view of all the saved products in your skincare fridge. ❄️
 
+# Week 05
 ## Description of data model
-## Database: LegallyChemie
+## Database: LegallyChemie 
 This database tracks users, skincare products, and ingredient compatibility. It includes the following collections:
 #### 1. Users
 - **auth0Id**: A unique identifier for user authentication.
@@ -46,9 +47,48 @@ This database tracks users, skincare products, and ingredient compatibility. It 
 
 ## Instruction on how to start & run DB 
 Configuration
-Create a .env file in the root of your project directory to store environment variables like your MongoDB connection URI. The .env file should look like this:
+Create a .env file in the root of your project directory to store environment variables like your MongoDB connection string. The .env file should look like this:
 
 ```bash
 DB_STRING="mongodb://<username>:<password>@<host>:<port>/<database>"
 
 Replace <username>, <password>, <host>, <port>, and <database> with your actual MongoDB credentials.
+```
+
+# Week 06
+## How set-up testing for API endpoints
+Please refer to the previous week's **Instruction on how to start & run DB** to know how to set up the DB environment. 
+Then, `cd backend` and `pip install requirement.txt` to get all the dependencies installed. After that, inside the **backend** folder, run `python server.py`. Through **postman** (I'm assuming you have this installed since the professor mentioned we'll be using it 👀), try out the following **Postman Tests** in the following section for each endpoint, using the sample `product_id` and `user-input` provided. 😊
+
+## Postman Tests
+
+Check out the `postmen_tests` folder to see labeled test cases for each endpoint scenario. 
+In case you don't have the time to go through those, here are the test cases conducted for each, in our case the localhost address by default is set to `http://127.0.0.1:8000/`:
+
+- **Retrieve all records**: 
+  - Send a `GET` request to `/products/` to retrieve a list of all products.
+  
+- **Retrieve a specific record by ID**: 
+  - Send a `GET` request to `/products/{product_id}` (replace `{product_id}` with the actual ID) to retrieve a specific product's details.
+  - Sample product_id: `670d98eecb7f4d011c14d87e`
+  
+- **Create a new record**: 
+  - Send a `POST` request to `/products/` with a JSON body containing the product details, such as:
+    ```json
+    {
+        "user_input": "L'Oreal Collagen Moisture Filler Daily Moisturizer"
+    }
+    ```
+  
+- **Update an existing record**: 
+  - Send a `PUT` request to `/products/{product_id}` (replace `{product_id}` with the actual ID) with a JSON body containing the updated details, like:
+    ```json
+    {
+        "user_input": "L'Oreal Professionnel L'oreal Face Primer"
+    }
+    ```
+  - Sample product_id: `670d98eecb7f4d011c14d87e`
+
+- **Delete a record**: 
+  - Send a `DELETE` request to `/products/{product_id}` (replace `{product_id}` with the actual ID) to delete a specific product from the database.
+  - Sample product_id: `670d98eecb7f4d011c14d87e`

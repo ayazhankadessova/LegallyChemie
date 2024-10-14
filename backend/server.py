@@ -1,92 +1,82 @@
 from dotenv import load_dotenv
-from flask_cors import CORS
 from pymongo import MongoClient
-from flask import Flask, jsonify
-from bs4 import BeautifulSoup
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+from bson import ObjectId
+from search import final
 import os
-import requests
-
 
 # loading .env file & initializing the Flask app
 load_dotenv()
-app = Flask(__name__)
-CORS(app) # enabling CORS for all routes
+# initialize FastAPI
+app = FastAPI()
 
-# getting values from .env file
-app.db_string = os.getenv("DB_STRING")
-print("this is the db strong", app.db_string)
+# getting values from .env file & setting up db
+db_string = os.getenv("DB_STRING")
+client = MongoClient(db_string)
+db = client.LegallyChemie
+collection = db.get_collection("products")
 
-# function to initialize database
-def initialize_database():
-    try: 
-        print("inside initialize_database()")
-        client = MongoClient(app.db_string)
-        print("this is the client: ", client)
-        db = client.LegallyChemie # database name
-        # collection_1 = db.get_collection("1") # collection name will be added
-        collection_2 = db.get_collection("products") # collection name will be added
-        # collection_3 = db.get_collection("3") # collection name will be added
+# helper function to convert MongoDB ObjectId to str
+def product_serializer(product) -> dict:
+    return {
+        "id": str(product["_id"]),
+        "name": product.get("name"),  # Avoid KeyError
+        "ingredients": product.get("ingredients", [])  # Default to empty list
+    }
 
-    except Exception as e:
-        print(e)
-        return jsonify({"error": "Could not connect to the database."}), 500
-    
-    return collection_2
+# pydantic model for request & response bodies
+class ProductInput(BaseModel):
+    user_input: str
 
-def search_product(user_input):
-    search_url = f"https://incidecoder.com/search?query={user_input}"
-    print("search url", search_url)
-    
-    # product search url
-    response = requests.get(search_url)
-    if response.status_code == 200: 
-        html_product = BeautifulSoup(response.text, 'html.parser')
-        first_result = html_product.find('a', class_='klavika simpletextlistitem')  
-        print("first result", first_result)
-
-    if first_result:
-        product_link = first_result['href']
-        print("product link", product_link)
-        product_url = f"https://incidecoder.com{product_link}" 
-        print("product url", product_url)
-        return product_url
+### CRUD endpoints ###
+# create a new product -> POST /{entities}/: Create a new record. (1/5)
+@app.post("/products/")
+def create_product(product_input: ProductInput):
+    # print(f"Received input: {product_input}")
+    user_input = product_input.user_input 
+    # print(f"User input extracted: {user_input}")
+    # test_input: "L'Oreal Collagen Moisture Filler Daily Moisturizer"
+    product_data = final(user_input)
+    if product_data:
+        collection.insert_one(product_data)
+        return {"message": "Product created successfully"}
     else:
-        print("No results found.")
-        return None
+        raise HTTPException(status_code=404, detail="Product not found")
 
-def extract_ingredients(product_url):
-    response = requests.get(product_url)
-    soup = BeautifulSoup(response.text, 'html.parser')
-    
-    # extracting ingredients
-    ingredients_section = soup.find('div', class_='showmore-section ingredlist-short-like-section')
-    ingredients = ingredients_section.find_all('a', class_='ingred-link black')
-    
-    # collecting ingredient names
-    ingredient_list = [ingredient.text.strip() for ingredient in ingredients]
-    return ingredient_list
+# retrieving all products for task -> GET /{entities}/: Retrieve a list of all records. (2/5)
+@app.get("/products/")
+def get_products():
+    products = list(collection.find({}))
+    return [product_serializer(product) for product in products]
+
+# retrieving a single product -> GET /{entities}/:id Retrieve a single record. (3/5)
+@app.get("/products/{product_id}") #test case id: 670d965c94c0676f2a1b2deb
+def get_product(product_id: str):
+    product = collection.find_one({"_id": ObjectId(product_id)})
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    return product_serializer(product)
+
+# updating an existing product by ID -> PUT /{entities}/:id Update a record. (4/5)
+@app.put("/products/{product_id}")
+def update_product(product_id: str, updated_product: ProductInput):  #test case id: 670d965c94c0676f2a1b2deb
+    result = collection.update_one(
+        {"_id": ObjectId(product_id)},
+        {"$set": {"name": updated_product.user_input}}  # updating only name field
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Product not found")
+    return {"message": "Product updated successfully"}
+
+# deleting a product by ID
+@app.delete("/products/{product_id}") 
+def delete_product(product_id: str): #test case id: 670d965c94c0676f2a1b2deb
+    result = collection.delete_one({"_id": ObjectId(product_id)})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Product not found")
+    return {"message": "Product deleted successfully"}
 
 if __name__ == "__main__":
-    user_input = "L'Oreal Collagen Moisture Filler Daily Moisturizer"
-    print("User input:", user_input)
-    products_collection = initialize_database()
-    print("products collection called successfully")
-    product_url = search_product(user_input)
-    
-    if product_url:
-        ingredients = extract_ingredients(product_url)
-        print("Ingredients:")
-        for ingredient in ingredients:
-            print(ingredient)
-
-        # creating a dictionary to store product name and ingredients
-        product_data = {
-            user_input: ingredients
-        }
-
-        # inserting into the MongoDB collection
-        if products_collection is not None:
-            result = products_collection.insert_one(product_data)
-            print(f"Inserted product with id: {result.inserted_id}")
-    else:
-        print("No product found.")
+    import uvicorn
+    uvicorn.run(app, host="127.0.0.1", port=8000, log_level="info")

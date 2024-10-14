@@ -1,6 +1,6 @@
-Flask
-flask-cors
+fastapi
 python-dotenv
 pymongo
+uvicorn
 bs4
 requests
