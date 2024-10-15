@@ -69,7 +69,7 @@ def update_product(product_id: str, updated_product: ProductInput):  #test case 
         raise HTTPException(status_code=404, detail="Product not found")
     return {"message": "Product updated successfully"}
 
-# deleting a product by ID
+# deleting a product by ID -> DELETE /{entities}/:id Delete a record. (5/5)
 @app.delete("/products/{product_id}") 
 def delete_product(product_id: str): #test case id: 670d965c94c0676f2a1b2deb
     result = collection.delete_one({"_id": ObjectId(product_id)})
