@@ -4,3 +4,4 @@ pymongo
 uvicorn
 bs4
 requests
+authlib>=1.0
