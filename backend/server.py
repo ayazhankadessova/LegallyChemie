@@ -6,9 +6,9 @@ from bson import ObjectId
 from search import final
 from urllib.parse import quote_plus, urlencode
 from authlib.integrations.starlette_client import OAuth
-from fastapi.responses import RedirectResponse, HTMLResponse
+from fastapi.responses import RedirectResponse, JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
-from starlette.templating import Jinja2Templates
 import os
 import json
 
@@ -18,8 +18,20 @@ load_dotenv()
 app = FastAPI()
 # secret key for sessions
 app.add_middleware(SessionMiddleware, secret_key=os.getenv("APP_SECRET_KEY"))
-# setting up Jinja2 templates
-templates = Jinja2Templates(directory="templates")
+# getting values from .env file & setting up db
+db_string = os.getenv("DB_STRING")
+client = MongoClient(db_string)
+db = client.LegallyChemie
+collection = db.get_collection("products")
+
+# adding CORS middleware to allow requests from the React frontend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"], 
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # initializing OAuth
 oauth = OAuth()
@@ -45,7 +57,8 @@ async def login(request: Request):
 async def callback(request: Request):
     token = await oauth.auth0.authorize_access_token(request)
     request.session["user"] = token
-    return RedirectResponse("/")
+    # redirecting user back to  React app with a success status
+    return RedirectResponse("http://localhost:3000/")  # Update to your React frontend route
 
 # logout route
 @app.get("/logout")
@@ -56,24 +69,22 @@ async def logout(request: Request):
         + "/v2/logout?"
         + urlencode(
             {
-                "returnTo": request.url_for("home"),
+                "returnTo": "http://localhost:3000",  # Update to your React home route
                 "client_id": os.getenv("AUTH0_CLIENT_ID"),
             },
             quote_via=quote_plus,
         )
     )
 
-# home route
-@app.get("/", response_class=HTMLResponse)
-async def home(request: Request):
-    user = request.session.get('user')
-    return templates.TemplateResponse("home.html", {"request": request, "session": user, "pretty": json.dumps(user, indent=4)})
+# route to fetch current user session info
+@app.get("/session")
+async def session(request: Request):
+    user = request.session.get("user")
+    if user:
+        return JSONResponse(content={"user": user})
+    else:
+        return JSONResponse(content={"error": "Not authenticated"}, status_code=401)
 
-# getting values from .env file & setting up db
-db_string = os.getenv("DB_STRING")
-client = MongoClient(db_string)
-db = client.LegallyChemie
-collection = db.get_collection("products")
 
 # helper function to convert MongoDB ObjectId to str
 def product_serializer(product) -> dict:
@@ -87,9 +98,9 @@ def product_serializer(product) -> dict:
 class ProductInput(BaseModel):
     user_input: str
 
-@app.post("/users/")
-def create_user(nickname: str):
-    if nickname:
+# @app.post("/users/")
+# def create_user(nickname: str):
+#     if nickname:
         # user information is stored in the database but this should include nickname, auth0 id of user + products list
         # collection.insert_one({})
 
