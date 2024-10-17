@@ -57,18 +57,33 @@ async def login(request: Request):
 @app.get("/callback")
 async def callback(request: Request):
     token = await oauth.auth0.authorize_access_token(request)
-    request.session["user"] = token
+    # what is this token?
+    request.session["user"] = token  
+    print("Token: ", token)
 
-    # extracting user ID from the token
-    user_id = token.get("sub")  # This is typically the Auth0 user ID
+    # extracting user info from the token
+    user_info = token.get("userinfo", {})
+
+    # saving 'given_name' & 'sub' (user ID) into separate variables
+    given_name = user_info.get("given_name") 
+    user_id = user_info.get("sub") 
+    
+    print("Given Name: ", given_name)
+    print("User ID: ", user_id)
+
+    request.session["user_id"] = user_id
 
     # storing userID in MongoDB
     if user_id:
         # checking if user already exists
+        print("user_id is populated")
         existing_user = users_collection.find_one({"auth0_id": user_id})
         if not existing_user:
             # creating a new user entry
-            users_collection.insert_one({"auth0_id": user_id})  # Add other relevant user info here
+            users_collection.insert_one({"auth0_id": user_id, "given_name": given_name})
+            print("this is a new user")
+        else:
+            print("user already exists")
 
     # redirecting user back to React app with a success status
     return RedirectResponse("http://localhost:3000/landing") 
