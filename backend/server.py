@@ -71,7 +71,7 @@ async def callback(request: Request):
             users_collection.insert_one({"auth0_id": user_id})  # Add other relevant user info here
 
     # redirecting user back to React app with a success status
-    return RedirectResponse("http://localhost:3000/") 
+    return RedirectResponse("http://localhost:3000/landing") 
 
 # logout route
 @app.get("/logout")
