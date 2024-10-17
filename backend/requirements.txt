@@ -1,7 +1,11 @@
 fastapi
 python-dotenv
+pydantic
+starlette
 pymongo
 uvicorn
 bs4
 requests
+httpx
+itsdangerous
 authlib>=1.0
