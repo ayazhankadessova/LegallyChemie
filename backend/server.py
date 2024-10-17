@@ -22,7 +22,8 @@ app.add_middleware(SessionMiddleware, secret_key=os.getenv("APP_SECRET_KEY"))
 db_string = os.getenv("DB_STRING")
 client = MongoClient(db_string)
 db = client.LegallyChemie
-collection = db.get_collection("products")
+products_collection = db.get_collection("products")
+users_collection = db.get_collection("users")
 
 # adding CORS middleware to allow requests from the React frontend
 app.add_middleware(
@@ -57,8 +58,20 @@ async def login(request: Request):
 async def callback(request: Request):
     token = await oauth.auth0.authorize_access_token(request)
     request.session["user"] = token
-    # redirecting user back to  React app with a success status
-    return RedirectResponse("http://localhost:3000/")  # Update to your React frontend route
+
+    # extracting user ID from the token
+    user_id = token.get("sub")  # This is typically the Auth0 user ID
+
+    # storing userID in MongoDB
+    if user_id:
+        # checking if user already exists
+        existing_user = users_collection.find_one({"auth0_id": user_id})
+        if not existing_user:
+            # creating a new user entry
+            users_collection.insert_one({"auth0_id": user_id})  # Add other relevant user info here
+
+    # redirecting user back to React app with a success status
+    return RedirectResponse("http://localhost:3000/") 
 
 # logout route
 @app.get("/logout")
@@ -69,13 +82,12 @@ async def logout(request: Request):
         + "/v2/logout?"
         + urlencode(
             {
-                "returnTo": "http://localhost:3000",  # Update to your React home route
+                "returnTo": "http://localhost:3000",  # can change
                 "client_id": os.getenv("AUTH0_CLIENT_ID"),
             },
             quote_via=quote_plus,
         )
     )
-
 # route to fetch current user session info
 @app.get("/session")
 async def session(request: Request):
@@ -114,7 +126,7 @@ def create_product(product_input: ProductInput):
     # test_input: "L'Oreal Collagen Moisture Filler Daily Moisturizer"
     product_data = final(user_input)
     if product_data:
-        collection.insert_one(product_data)
+        products_collection.insert_one(product_data)
         return {"message": "Product created successfully"}
     else:
         raise HTTPException(status_code=404, detail="Product not found")
@@ -123,13 +135,13 @@ def create_product(product_input: ProductInput):
 # retrieving all products for task -> GET /{entities}/: Retrieve a list of all records. (2/5)
 @app.get("/products/")
 def get_products():
-    products = list(collection.find({}))
+    products = list(products_collection.find({}))
     return [product_serializer(product) for product in products]
 
 # retrieving a single product -> GET /{entities}/:id Retrieve a single record. (3/5)
 @app.get("/products/{product_id}") #test case id: 670d965c94c0676f2a1b2deb
 def get_product(product_id: str):
-    product = collection.find_one({"_id": ObjectId(product_id)})
+    product = products_collection.find_one({"_id": ObjectId(product_id)})
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
     return product_serializer(product)
@@ -137,7 +149,7 @@ def get_product(product_id: str):
 # updating an existing product by ID -> PUT /{entities}/:id Update a record. (4/5)
 @app.put("/products/{product_id}")
 def update_product(product_id: str, updated_product: ProductInput):  #test case id: 670d965c94c0676f2a1b2deb
-    result = collection.update_one(
+    result = products_collection.update_one(
         {"_id": ObjectId(product_id)},
         {"$set": {"name": updated_product.user_input}}  # updating only name field
     )
@@ -148,7 +160,7 @@ def update_product(product_id: str, updated_product: ProductInput):  #test case 
 # deleting a product by ID -> DELETE /{entities}/:id Delete a record. (5/5)
 @app.delete("/products/{product_id}") 
 def delete_product(product_id: str): #test case id: 670d965c94c0676f2a1b2deb
-    result = collection.delete_one({"_id": ObjectId(product_id)})
+    result = products_collection.delete_one({"_id": ObjectId(product_id)})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Product not found")
     return {"message": "Product deleted successfully"}
