@@ -1,15 +1,29 @@
-// app/landing/page.js
-import React from 'react';
+"use client"; 
+import React, { useEffect, useState } from 'react';
+import '../styles/landing.css';
 
 export default function Landing() {
+  const [name, setName] = useState('');
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const nameFromUrl = params.get('name');
+
+    setName(nameFromUrl || 'there');
+  }, []);
+
   return (
-    <div className="font-mono">
-      <header className="mx-auto my-6 w-100 text-center">
-        <h1 className="text-4xl pt-8">Welcome to the Landing Page!</h1>
-      </header>
-      <main>
-        <p>This is your landing page content.</p>
-      </main>
+    <div
+      className="bg-pink-50 h-screen bg-cover bg-center flex flex-col items-center justify-center"
+      style={{ backgroundImage: 'url(/landing.png)' }}
+    >
+      <h1 className="text-center">
+        Hey {name} :)
+      </h1>
+      <button className="start-button">
+        access personal skincare fridge
+      </button>
     </div>
   );
 }
+

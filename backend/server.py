@@ -86,7 +86,7 @@ async def callback(request: Request):
             print("user already exists")
 
     # redirecting user back to React app with a success status
-    return RedirectResponse("http://localhost:3000/landing") 
+    return RedirectResponse(f"http://localhost:3000/landing?name={given_name}")
 
 # logout route
 @app.get("/logout")
