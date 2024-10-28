@@ -8,9 +8,13 @@ export default function Landing() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const nameFromUrl = params.get('name');
-
     setName(nameFromUrl || 'there');
   }, []);
+
+  const gotoFridge = () => {
+    // go to the fridge page with name parameter
+    window.location.href = `http://localhost:3000/fridge?name=${name}`;
+  };
 
   return (
     <div
@@ -20,7 +24,8 @@ export default function Landing() {
       <h1 className="text-center">
         Hey {name} :)
       </h1>
-      <button className="start-button">
+      <button className="start-button" onClick={gotoFridge}>
+        <img src="/mouse.png" alt="Icon" />
         access personal skincare fridge
       </button>
     </div>

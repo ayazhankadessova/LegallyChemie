@@ -1,7 +1,7 @@
 "use client"; // Add this line to make it a client component
 
 import React from 'react';
-import './styles/landing.css';
+import './styles/index.css';
 
 export default function Landing() {
   // Function to handle button click
