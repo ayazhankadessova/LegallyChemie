@@ -1,45 +1,48 @@
 {
     "retinol": [
-        "Retinoid"
+        "vitamina"
     ],
-    "bha": [
-        "BHA"
+    "bakuchoil": [
+        "vitamina-alt"
+    ],
+    "adapalene": [
+        "vitamina"
     ],
     "salicylicacid": [
-        "BHA"
-    ],
-    "aha": [
-        "AHA"
+        "bha"
     ],
     "glycolicacid": [
-        "AHA"
+        "aha"
     ],
     "lacticacid": [
-        "AHA"
+        "aha"
     ],
     "mandelicacid": [
-        "AHA"
+        "aha"
     ],
     "citricacid": [
-        "AHA"
+        "aha"
     ],
     "gluconolactone": [
-        "PHA"
+        "pha"
     ],
     "lactobionicacid": [
-        "PHA"
+        "pha"
     ],
     "maltobionicacid": [
-        "PHA"
+        "pha"
     ],
     "galactose": [
-        "PHA"
+        "pha"
     ],
     "niacinamide": [
-        "niacinamide"
+        "vitaminb3"
     ],
-    "vitaminc": [
-        "antioxidant",
+    "sodiumascorbylphosphate": [
+        "vitaminc"
+    ],
+    "ascorbicacid":
+    [
         "vitaminc"
     ]
 }

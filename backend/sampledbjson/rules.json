@@ -1,43 +1,58 @@
 [
     {
         "name": "aha",
-        "description": "AHA is used for exfoliating the skin",
+        "description": "AHAs are used for exfoliating the skin.",
         "rules": {
-            "avoid" : ["Retinoid"],
-            "usewith" : []
+            "avoid": ["retinoid"],
+            "usewith": []
         }
     },
     {
-        "name": "aha",
-        "description": "Acne, inflammation and sensitive skin",
+        "name": "bha",
+        "description": "BHAs are effective for acne, inflammation, and sensitive skin.",
         "rules": {
-            "avoid" : ["Retinoid"],
-            "usewith" : []
+            "avoid": ["retinoid"],
+            "usewith": []
         }
     },
     {
         "name": "retinoid",
-        "description": "Retinol is used for anti-aging",
+        "description": "Retinoids, like retinol and adapalene, are used for anti-aging.",
         "rules": {
-            "avoid" : ["AHA", "BHA"],
-            "usewith" : []
-        }
-    },
-    {
-        "name": "antioxidant",
-        "description": "Antioxidants are used to protect the skin",
-        "rules": {
-            "avoid" : [""],
-            "usewith" : ["spf"]
+            "avoid": ["aha", "bha"],
+            "usewith": []
         }
     },
     {
         "name": "vitaminc",
-        "description": "Vitamin C is used for brightening the skin",
+        "description": "Vitamin C is used for brightening the skin.",
         "rules": {
-            "avoid" : ["aha", "bha"],
-            "usewith" : ["spf"]
+            "avoid": ["aha", "bha"],
+            "usewith": ["spf"]
         }
-
+    },
+    {
+        "name": "vitaminb3",
+        "description": "It helps to improve skin texture and tone.",
+        "rules": {
+            "avoid": [],
+            "usewith": ["AHA", "BHA"]
+        }
+    },
+    {
+        "name": "vitamina-alt",
+        "description": "Typically, these are retinol alternative with anti-aging benefits.",
+        "rules": {
+            "avoid": ["retinoid"],
+            "usewith": ["antioxidant"]
+        }
+    },
+    {
+        "name": "pha",
+        "description": "PHAs provide gentle exfoliation and hydration, suitable for sensitive skin.",
+        "rules": {
+            "avoid": ["retinoid"],
+            "usewith": []
+        }
     }
 ]
