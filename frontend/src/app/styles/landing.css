@@ -1,0 +1,32 @@
+h1 {
+    color: #FEF5FF;
+    -webkit-text-stroke:6px #EA00FF;
+    font-family: 'Inter', sans-serif;
+    font-size: 150px;
+    font-weight: 800;
+  }
+
+.start-button {
+  margin:0 3px 2em 0;
+  font-weight: 550;
+  font-size: 30px;
+  display: flex;                
+  align-items: center; 
+  border: 3.5px solid #AA00FF;
+  background-color: #FEF5FF; 
+  color: #AA00FF; 
+  padding: 0.5rem 2rem 0.5rem 1rem;           
+  border-radius: 1.2rem; 
+  transition: background-color 0.3s ease-in-out; 
+}
+
+.start-button:hover {
+  background-color: #cd6aff;
+}
+
+.start-button img {
+  margin-right:8px;
+  width: 40px;
+  height: auto;
+}
+  
