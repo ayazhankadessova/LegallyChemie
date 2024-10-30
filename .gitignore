@@ -54,7 +54,7 @@ frontend/dist/
 # env file
 *.env
 
-# python venv folder
+# python files
 .venv
-
+__pycache__
 

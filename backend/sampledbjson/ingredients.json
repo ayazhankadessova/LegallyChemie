@@ -1,0 +1,45 @@
+{
+    "retinol": [
+        "Retinoid"
+    ],
+    "bha": [
+        "BHA"
+    ],
+    "salicylicacid": [
+        "BHA"
+    ],
+    "aha": [
+        "AHA"
+    ],
+    "glycolicacid": [
+        "AHA"
+    ],
+    "lacticacid": [
+        "AHA"
+    ],
+    "mandelicacid": [
+        "AHA"
+    ],
+    "citricacid": [
+        "AHA"
+    ],
+    "gluconolactone": [
+        "PHA"
+    ],
+    "lactobionicacid": [
+        "PHA"
+    ],
+    "maltobionicacid": [
+        "PHA"
+    ],
+    "galactose": [
+        "PHA"
+    ],
+    "niacinamide": [
+        "niacinamide"
+    ],
+    "vitaminc": [
+        "antioxidant",
+        "vitaminc"
+    ]
+}
