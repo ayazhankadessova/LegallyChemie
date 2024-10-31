@@ -4,16 +4,19 @@ import '../styles/landing.css';
 
 export default function Landing() {
   const [name, setName] = useState('');
+  const [user_id, setID] = useState('');
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const nameFromUrl = params.get('name');
+    const user_id = params.get('user_id');
     setName(nameFromUrl || 'there');
+    setID(user_id || '0');
   }, []);
 
   const gotoFridge = () => {
     // go to the fridge page with name parameter
-    window.location.href = `http://localhost:3000/fridge?name=${name}`;
+    window.location.href = `http://localhost:3000/fridge?name=${name}&user_id=${user_id}`;
   };
 
   return (

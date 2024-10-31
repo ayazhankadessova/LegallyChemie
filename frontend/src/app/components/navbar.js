@@ -1,5 +1,3 @@
-
-
 function Nav({ name }) {
     console.log(name);
   return (

@@ -59,7 +59,7 @@ async def callback(request: Request):
     token = await oauth.auth0.authorize_access_token(request)
     # what is this token?
     request.session["user"] = token  
-    print("Token: ", token)
+    # print("Token: ", token)
 
     # extracting user info from the token
     user_info = token.get("userinfo", {})
@@ -80,13 +80,13 @@ async def callback(request: Request):
         existing_user = users_collection.find_one({"auth0_id": user_id})
         if not existing_user:
             # creating a new user entry
-            users_collection.insert_one({"auth0_id": user_id, "given_name": given_name})
+            users_collection.insert_one({"auth0_id": user_id, "given_name": given_name, "products": []})
             print("this is a new user")
         else:
             print("user already exists")
 
     # redirecting user back to React app with a success status
-    return RedirectResponse(f"http://localhost:3000/landing?name={given_name}")
+    return RedirectResponse(f"http://localhost:3000/landing?name={given_name}&user_id={user_id}")
 
 # logout route
 @app.get("/logout")
@@ -125,66 +125,114 @@ def product_serializer(product) -> dict:
 class ProductInput(BaseModel):
     user_input: str
 
-# @app.post("/users/")
-# def create_user(nickname: str):
-#     if nickname:
-        # user information is stored in the database but this should include nickname, auth0 id of user + products list
-        # collection.insert_one({})
 
-### CRUD endpoints ###
-# create a new product -> POST /{entities}/: Create a new record. (1/5)
-@app.post("/products/")
-def create_product(product_input: ProductInput):
-    # print(f"Received input: {product_input}")
+# get all products for a specific user
+@app.get("/{user_id}/products/")
+def get_user_products(user_id: str):
+    user_doc = users_collection.find_one({"auth0_id": user_id})
+    
+    if not user_doc:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    print("User Doc:", user_doc)
+    product_ids = user_doc.get("products", [])
+    print("Product IDs:", product_ids)
+    
+    # using product IDs to retrieve full product details from products_collection
+    user_products = list(products_collection.find({"_id": {"$in": product_ids}}))
+    
+    return [product_serializer(product) for product in user_products]
+
+
+# create a new product for a specific user
+@app.post("/{user_id}/products/")
+def create_user_product(user_id: str, product_input: ProductInput):
     user_input = product_input.user_input 
-    # print(f"User input extracted: {user_input}")
-    # test_input: "L'Oreal Collagen Moisture Filler Daily Moisturizer"
     product_data = final(user_input)
     if product_data:
-        products_collection.insert_one(product_data)
-        return {"message": "Product created successfully"}
+        product_name = product_data.get("name")
+        existing_product = products_collection.find_one({"name": product_name})
+        
+        if existing_product:
+            product_id = existing_product["_id"]
+            
+            # updating user's document to include this product in their products list
+            update_result = users_collection.update_one(
+                {"auth0_id": user_id},
+                {"$addToSet": {"products": product_id}}  # $addToSet to prevent duplicates
+            )
+            print("Update result:", update_result.modified_count)
+            message = "Existing product added to user's products" if update_result.modified_count > 0 else "Product already in user's products list"
+        
+        else:
+            inserted_product = products_collection.insert_one(product_data)
+            product_id = inserted_product.inserted_id
+            print("New product ID:", product_id)
+            
+            update_result = users_collection.update_one(
+                {"auth0_id": user_id},
+                {"$addToSet": {"products": product_id}}
+            )
+            print("Update result:", update_result.modified_count)
+            message = "New product created and added to user's products" if update_result.modified_count > 0 else "Failed to add product to user's products list"
+        
+        return {"message": message}
     else:
         raise HTTPException(status_code=404, detail="Product not found")
-    
 
-# retrieving all products for task -> GET /{entities}/: Retrieve a list of all records. (2/5)
-@app.get("/products/")
-def get_products():
-    products = list(products_collection.find({}))
-    return [product_serializer(product) for product in products]
-
-# retrieving a single product -> GET /{entities}/:id Retrieve a single record. (3/5)
-@app.get("/products/{product_id}") #test case id: 670d965c94c0676f2a1b2deb
-def get_product(product_id: str):
-    product = products_collection.find_one({"_id": ObjectId(product_id)})
-    if not product:
-        raise HTTPException(status_code=404, detail="Product not found")
-    return product_serializer(product)
-
-# updating an existing product by ID -> PUT /{entities}/:id Update a record. (4/5)
-@app.put("/products/{product_id}")
-def update_product(product_id: str, updated_product: ProductInput):  #test case id: 670d965c94c0676f2a1b2deb
-    result = products_collection.update_one(
-        {"_id": ObjectId(product_id)},
-        {"$set": {"name": updated_product.user_input}}  # updating only name field
-    )
-    if result.matched_count == 0:
-        raise HTTPException(status_code=404, detail="Product not found")
-    return {"message": "Product updated successfully"}
-
-# deleting a product by ID -> DELETE /{entities}/:id Delete a record. (5/5)
-@app.delete("/products/{product_id}") 
-def delete_product(product_id: str): #test case id: 670d965c94c0676f2a1b2deb
-    result = products_collection.delete_one({"_id": ObjectId(product_id)})
-    if result.deleted_count == 0:
-        raise HTTPException(status_code=404, detail="Product not found")
-    return {"message": "Product deleted successfully"}
+# @app.delete("/{user_id}/products/{product_id}")
+# def delete_user_product(user_id: str, product_id: str):
+#     result = products_collection.delete_one({"_id": ObjectId(product_id), "user_id": user_id})
+#     if result.deleted_count == 0:
+#         raise HTTPException(status_code=404, detail="Product not found")
+#     return {"message": "Product deleted successfully"}
 
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="127.0.0.1", port=8000, log_level="info")
 
+# SCRAP FUNCTIONS
 
+# # create a new product -> POST /{entities}/: Create a new record. (1/5)
+# @app.post("/products/")
+# def create_product(product_input: ProductInput):
+#     user_input = product_input.user_input 
+#     product_data = final(user_input)
+#     if product_data:
+#         products_collection.insert_one(product_data)
+#         return {"message": "Product created successfully"}
+#     else:
+#         raise HTTPException(status_code=404, detail="Product not found")
 
+# # updating an existing product by ID -> PUT /{entities}/:id Update a record. (4/5)
+# @app.put("/products/{product_id}")
+# def update_product(product_id: str, updated_product: ProductInput):  #test case id: 670d965c94c0676f2a1b2deb
+#     result = products_collection.update_one(
+#         {"_id": ObjectId(product_id)},
+#         {"$set": {"name": updated_product.user_input}}  # updating only name field
+#     )
+#     if result.matched_count == 0:
+#         raise HTTPException(status_code=404, detail="Product not found")
+#     return {"message": "Product updated successfully"}
 
-
+# # deleting a product by ID -> DELETE /{entities}/:id Delete a record. (5/5)
+# @app.delete("/products/{product_id}") 
+# def delete_product(product_id: str): #test case id: 670d965c94c0676f2a1b2deb
+#     result = products_collection.delete_one({"_id": ObjectId(product_id)})
+#     if result.deleted_count == 0:
+#         raise HTTPException(status_code=404, detail="Product not found")
+#     return {"message": "Product deleted successfully"}
+    
+# # retrieving all products for task -> GET /{entities}/: Retrieve a list of all records. (2/5)
+# @app.get("/products/")
+# def get_products():
+#     products = list(products_collection.find({}))
+#     return [product_serializer(product) for product in products]
+    
+# # retrieving a single product -> GET /{entities}/:id Retrieve a single record. (3/5)
+# @app.get("/products/{product_id}") #test case id: 670d965c94c0676f2a1b2deb
+# def get_product(product_id: str):
+#     product = products_collection.find_one({"_id": ObjectId(product_id)})
+#     if not product:
+#         raise HTTPException(status_code=404, detail="Product not found")
+#     return product_serializer(product)

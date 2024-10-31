@@ -3,20 +3,20 @@ import requests
 
 def search_product(user_input):
     search_url = f"https://incidecoder.com/search?query={user_input}"
-    print("search url", search_url)
+    # print("search url", search_url)
     
     # Product search URL
     response = requests.get(search_url)
     if response.status_code == 200: 
         html_product = BeautifulSoup(response.text, 'html.parser')
         first_result = html_product.find('a', class_='klavika simpletextlistitem')  
-        print("first result", first_result)
+        # print("first result", first_result)
 
         if first_result:
             product_link = first_result['href']
-            print("product link", product_link)
+            # print("product link", product_link)
             product_url = f"https://incidecoder.com{product_link}" 
-            print("product url", product_url)
+            # print("product url", product_url)
             return product_url
     print("No results found.")
     return None
@@ -33,19 +33,29 @@ def extract_ingredients(product_url):
     ingredient_list = [ingredient.text.strip() for ingredient in ingredients]
     return ingredient_list
 
+def extract_image(product_url):
+    response = requests.get(product_url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    picture_tag = soup.find('picture')
+    image_tag = picture_tag.find('img')
+    image_url = image_tag.get('src')
+    return image_url
+
 def get_product_data(user_input):
     product_url = search_product(user_input)
     
     if product_url:
         ingredients = extract_ingredients(product_url)
-        print("Ingredients:")
-        for ingredient in ingredients:
-            print(ingredient)
-
+        image_url = extract_image(product_url)
+        # print("Ingredients:")
+        # for ingredient in ingredients:
+        #     print(ingredient)
+        # print("Image URL:", image_url)
         # Creating a dictionary to store product name and ingredients
         product_data = {
             "name": user_input,
-            "ingredients": ingredients
+            "ingredients": ingredients,
+            "image": image_url
         }
         return product_data  # Return the product data instead of inserting it into the DB
     else:
