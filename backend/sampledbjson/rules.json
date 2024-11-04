@@ -1,6 +1,6 @@
 [
     {
-        "name": "aha",
+        "_id": "aha",
         "description": "AHAs are used for exfoliating the skin.",
         "rules": {
             "avoid": ["retinoid"],
@@ -8,7 +8,7 @@
         }
     },
     {
-        "name": "bha",
+        "_id": "bha",
         "description": "BHAs are effective for acne, inflammation, and sensitive skin.",
         "rules": {
             "avoid": ["retinoid"],
@@ -16,7 +16,7 @@
         }
     },
     {
-        "name": "retinoid",
+        "_id": "retinoid",
         "description": "Retinoids, like retinol and adapalene, are used for anti-aging.",
         "rules": {
             "avoid": ["aha", "bha"],
@@ -24,7 +24,7 @@
         }
     },
     {
-        "name": "vitaminc",
+        "_id": "vitaminc",
         "description": "Vitamin C is used for brightening the skin.",
         "rules": {
             "avoid": ["aha", "bha"],
@@ -32,7 +32,7 @@
         }
     },
     {
-        "name": "vitaminb3",
+        "_id": "vitaminb3",
         "description": "It helps to improve skin texture and tone.",
         "rules": {
             "avoid": [],
@@ -40,15 +40,15 @@
         }
     },
     {
-        "name": "vitamina-alt",
-        "description": "Typically, these are retinol alternative with anti-aging benefits.",
+        "_id": "vitamina-alt",
+        "description": "Typically, these are retinol alternatives with anti-aging benefits.",
         "rules": {
             "avoid": ["retinoid"],
             "usewith": ["antioxidant"]
         }
     },
     {
-        "name": "pha",
+        "_id": "pha",
         "description": "PHAs provide gentle exfoliation and hydration, suitable for sensitive skin.",
         "rules": {
             "avoid": ["retinoid"],
