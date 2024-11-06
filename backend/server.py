@@ -118,6 +118,7 @@ def product_serializer(product) -> dict:
     return {
         "id": str(product["_id"]),
         "name": product.get("name"), 
+        "description": product.get("description"),
         "ingredients": product.get("ingredients", [])  
     }
 
@@ -140,6 +141,7 @@ def get_user_products(user_id: str):
     
     # using product IDs to retrieve full product details from products_collection
     user_products = list(products_collection.find({"_id": {"$in": product_ids}}))
+    print("User Products:", user_products)
     
     return [product_serializer(product) for product in user_products]
 
@@ -180,12 +182,20 @@ def create_user_product(user_id: str, product_input: ProductInput):
     else:
         raise HTTPException(status_code=404, detail="Product not found")
 
-# @app.delete("/{user_id}/products/{product_id}")
-# def delete_user_product(user_id: str, product_id: str):
-#     result = products_collection.delete_one({"_id": ObjectId(product_id), "user_id": user_id})
-#     if result.deleted_count == 0:
-#         raise HTTPException(status_code=404, detail="Product not found")
-#     return {"message": "Product deleted successfully"}
+@app.delete("/{user_id}/products/{product_id}")
+def delete_user_product(user_id: str, product_id: str):
+    print("User ID:", user_id)
+    print("Product ID:", product_id)
+    result = users_collection.update_one(
+        {"auth0_id": user_id},
+        {"$pull": {"products": ObjectId(product_id)}}
+    )
+    
+    # Check if any documents were modified
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Product not found or user not found")
+    
+    return {"message": "Product deleted successfully"}
 
 if __name__ == "__main__":
     import uvicorn

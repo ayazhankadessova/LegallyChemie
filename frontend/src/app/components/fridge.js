@@ -1,7 +1,7 @@
 import React from 'react';
 import '../styles/fridge.css';
 
-const ProductList = ({ products }) => {
+const ProductList = ({ products, onViewProduct }) => {
     const totalCells = 8; 
     const emptyCells = Array.from({ length: totalCells - products.length }, (_, index) => index);
 
@@ -9,19 +9,15 @@ const ProductList = ({ products }) => {
         <>
             {products.map((product, index) => (
                 <div className="product-cell" key={index}>
-                    <img src={product.image} alt={product.name} style={{ width: '100%', borderRadius: '8px' }} />
+                    <img src={product.image} alt={product.name} style={{ fontSize: '5px', width: '100%', borderRadius: '8px' }} />
+                    <button className="view-btn" onClick={() => onViewProduct(product)}>View</button>
                 </div>
             ))}
             {emptyCells.map((_, index) => (
-                <div className="product-cell" key={`empty-${index}`}>
-                </div>
+                <div className="product-cell" key={`empty-${index}`}></div>
             ))}
-            <div className="product-cell add-product-cell">
-                <button>Add New Product</button>
-            </div>
         </>
     );
 };
-
 
 export default ProductList;

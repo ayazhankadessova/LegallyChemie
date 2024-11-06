@@ -21,15 +21,22 @@ def search_product(user_input):
     print("No results found.")
     return None
 
+def extract_name_and_description(product_url):
+    response = requests.get(product_url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    product_name_section = soup.find('span', id='product-title')
+    product_name = product_name_section.text.strip() if product_name_section else "Name not found"
+    description_section = soup.find('span', id='product-details')
+    description = description_section.text.strip() if description_section else "Description not found"
+    return product_name, description
+
 def extract_ingredients(product_url):
     response = requests.get(product_url)
     soup = BeautifulSoup(response.text, 'html.parser')
     
-    # Extracting ingredients
     ingredients_section = soup.find('div', class_='showmore-section ingredlist-short-like-section')
     ingredients = ingredients_section.find_all('a', class_='ingred-link black')
     
-    # Collecting ingredient names
     ingredient_list = [ingredient.text.strip() for ingredient in ingredients]
     return ingredient_list
 
@@ -45,6 +52,7 @@ def get_product_data(user_input):
     product_url = search_product(user_input)
     
     if product_url:
+        name, description = extract_name_and_description(product_url)
         ingredients = extract_ingredients(product_url)
         image_url = extract_image(product_url)
         # print("Ingredients:")
@@ -53,16 +61,17 @@ def get_product_data(user_input):
         # print("Image URL:", image_url)
         # Creating a dictionary to store product name and ingredients
         product_data = {
-            "name": user_input,
+            "name": name,
+            "description": description,
             "ingredients": ingredients,
             "image": image_url
         }
-        return product_data  # Return the product data instead of inserting it into the DB
+        return product_data  
     else:
         print("No product found.")
         return None
 
 def final(user_input):
-    product_data = get_product_data(user_input)  # Call the function to get product data
-    print("Product Data:", product_data)  # Print the returned product data
+    product_data = get_product_data(user_input)  
+    print("Product Data:", product_data) 
     return product_data
