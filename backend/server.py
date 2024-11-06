@@ -117,6 +117,7 @@ async def session(request: Request):
 def product_serializer(product) -> dict:
     return {
         "id": str(product["_id"]),
+        "brand": product.get("brand"),
         "name": product.get("name"), 
         "description": product.get("description"),
         "ingredients": product.get("ingredients", [])  

@@ -21,14 +21,16 @@ def search_product(user_input):
     print("No results found.")
     return None
 
-def extract_name_and_description(product_url):
+def extract_name_brand_description(product_url):
     response = requests.get(product_url)
     soup = BeautifulSoup(response.text, 'html.parser')
+    brand_name_section = soup.find('a', class_='underline')
+    brand_name = brand_name_section.text.strip() if brand_name_section else "Brand not found"
     product_name_section = soup.find('span', id='product-title')
     product_name = product_name_section.text.strip() if product_name_section else "Name not found"
     description_section = soup.find('span', id='product-details')
     description = description_section.text.strip() if description_section else "Description not found"
-    return product_name, description
+    return brand_name, product_name, description
 
 def extract_ingredients(product_url):
     response = requests.get(product_url)
@@ -52,7 +54,7 @@ def get_product_data(user_input):
     product_url = search_product(user_input)
     
     if product_url:
-        name, description = extract_name_and_description(product_url)
+        brand, name, description = extract_name_brand_description(product_url)
         ingredients = extract_ingredients(product_url)
         image_url = extract_image(product_url)
         # print("Ingredients:")
@@ -61,6 +63,7 @@ def get_product_data(user_input):
         # print("Image URL:", image_url)
         # Creating a dictionary to store product name and ingredients
         product_data = {
+            "brand": brand,
             "name": name,
             "description": description,
             "ingredients": ingredients,
