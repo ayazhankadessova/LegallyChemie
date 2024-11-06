@@ -1,48 +1,62 @@
-{
-    "retinol": [
-        "vitamina"
-    ],
-    "bakuchoil": [
-        "vitamina-alt"
-    ],
-    "adapalene": [
-        "vitamina"
-    ],
-    "salicylicacid": [
-        "bha"
-    ],
-    "glycolicacid": [
-        "aha"
-    ],
-    "lacticacid": [
-        "aha"
-    ],
-    "mandelicacid": [
-        "aha"
-    ],
-    "citricacid": [
-        "aha"
-    ],
-    "gluconolactone": [
-        "pha"
-    ],
-    "lactobionicacid": [
-        "pha"
-    ],
-    "maltobionicacid": [
-        "pha"
-    ],
-    "galactose": [
-        "pha"
-    ],
-    "niacinamide": [
-        "vitaminb3"
-    ],
-    "sodiumascorbylphosphate": [
-        "vitaminc"
-    ],
-    "ascorbicacid":
-    [
-        "vitaminc"
-    ]
-}
+[
+    {
+        "_id": "retinol",
+        "categories": ["vitamina"]
+    },
+    {
+        "_id": "bakuchoil",
+        "categories": ["vitamina-alt"]
+    },
+    {
+        "_id": "adapalene",
+        "categories": ["vitamina"]
+    },
+    {
+        "_id": "salicylicacid",
+        "categories": ["bha"]
+    },
+    {
+        "_id": "glycolicacid",
+        "categories": ["aha"]
+    },
+    {
+        "_id": "lacticacid",
+        "categories": ["aha"]
+    },
+    {
+        "_id": "mandelicacid",
+        "categories": ["aha"]
+    },
+    {
+        "_id": "citricacid",
+        "categories": ["aha"]
+    },
+    {
+        "_id": "gluconolactone",
+        "categories": ["pha"]
+    },
+    {
+        "_id": "lactobionicacid",
+        "categories": ["pha"]
+    },
+    {
+        "_id": "maltobionicacid",
+        "categories": ["pha"]
+    },
+    {
+        "_id": "galactose",
+        "categories": ["pha"]
+    },
+    {
+        "_id": "niacinamide",
+        "categories": ["vitaminb3"]
+    },
+    {
+        "_id": "sodiumascorbylphosphate",
+        "categories": ["vitaminc"]
+    },
+    {
+        "_id": "ascorbicacid",
+        "categories": ["vitaminc"]
+    }
+]
