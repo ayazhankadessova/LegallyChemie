@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-function Nav({ name }) {
+function Nav({ name , banner}) {
   const handleBack = () => {
     if (typeof window !== 'undefined') { // check if window is defined
       window.history.back(); 
@@ -17,7 +17,7 @@ function Nav({ name }) {
       <button onClick={handleBack} className="text-[#a63b7d] hover:underline">
         ← Back
       </button>
-      <h4 className="uppercase">{name}'s Skincare Fridge</h4>
+      <h4 className="uppercase">{name}'S {banner}</h4>
       <a href="http://localhost:8000/logout">Logout →</a>
     </div>
   );

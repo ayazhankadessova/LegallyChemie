@@ -23,7 +23,7 @@ export default function Landing() {
 
   return (
     <>
-    <Nav name={name} />
+    <Nav name={name} banner="HOMEPAGE"/>
     <div
       className="bg-pink-50 h-screen bg-cover bg-center flex flex-col items-center justify-center"
       style={{ backgroundImage: 'url(/loggedin.png)' }}

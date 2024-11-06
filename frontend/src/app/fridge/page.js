@@ -85,7 +85,7 @@ export default function Fridge() {
 
     return (
         <div className="page">
-            <Nav name={name} />
+            <Nav name={name} banner="SKINCARE FRIDGE" />
           
             <div className="left_column">  
                 <img src="/fridge.png" alt="Fridge" className="fridge-image"/>

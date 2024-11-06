@@ -36,7 +36,7 @@ const SearchBar = ({ user_id, onProductAdded }) => {
         })
         .catch(error => {
             console.error('Error adding product:', error);
-            setErrorMessage('Error adding product. Please try again.');
+            setErrorMessage('This product doesn\'t exist in our database. Sorry! 🙏');
         });
     };
     
