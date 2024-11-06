@@ -1,12 +1,11 @@
-"use client"; // Add this line to make it a client component
+"use client"; 
 
 import React from 'react';
 import './styles/index.css';
 
 export default function Landing() {
-  // Function to handle button click
   const handleLogin = () => {
-    window.location.href = "http://localhost:8000/login"; // Redirect to the FastAPI login endpoint
+    window.location.href = "http://localhost:8000/login"; 
   };
 
   return (

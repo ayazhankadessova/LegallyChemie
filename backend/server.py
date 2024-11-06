@@ -97,12 +97,13 @@ async def logout(request: Request):
         + "/v2/logout?"
         + urlencode(
             {
-                "returnTo": "http://localhost:3000",  # can change
+                "returnTo": "http://localhost:3000", # URL to redirect to after logout
                 "client_id": os.getenv("AUTH0_CLIENT_ID"),
             },
             quote_via=quote_plus,
         )
     )
+
 # route to fetch current user session info
 @app.get("/session")
 async def session(request: Request):
@@ -112,7 +113,6 @@ async def session(request: Request):
     else:
         return JSONResponse(content={"error": "Not authenticated"}, status_code=401)
 
-
 # helper function to convert MongoDB ObjectId to str
 def product_serializer(product) -> dict:
     return {
@@ -120,13 +120,13 @@ def product_serializer(product) -> dict:
         "brand": product.get("brand"),
         "name": product.get("name"), 
         "description": product.get("description"),
-        "ingredients": product.get("ingredients", [])  
+        "ingredients": product.get("ingredients", []),  
+        "image": product.get("image")
     }
 
 # pydantic model for request & response bodies
 class ProductInput(BaseModel):
     user_input: str
-
 
 # get all products for a specific user
 @app.get("/{user_id}/products/")
@@ -145,7 +145,6 @@ def get_user_products(user_id: str):
     print("User Products:", user_products)
     
     return [product_serializer(product) for product in user_products]
-
 
 # create a new product for a specific user
 @app.post("/{user_id}/products/")
@@ -192,7 +191,7 @@ def delete_user_product(user_id: str, product_id: str):
         {"$pull": {"products": ObjectId(product_id)}}
     )
     
-    # Check if any documents were modified
+    # checking if any documents were modified
     if result.modified_count == 0:
         raise HTTPException(status_code=404, detail="Product not found or user not found")
     

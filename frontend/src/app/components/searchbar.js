@@ -48,7 +48,7 @@ const SearchBar = ({ user_id, onProductAdded }) => {
                     type="text"
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
-                    placeholder="Enter product name..."
+                    placeholder="enter product name..."
                 />
                 <button type="submit">Add Product</button>
             </form>

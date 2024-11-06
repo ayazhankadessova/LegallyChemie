@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import '../styles/fridge.css';
 import Nav from '../components/navbar.js';
-import ProductList from '../components/fridge.js';
+import ProductList from '../components/product_list.js';
 import ProductCard from '../components/product_view.js';
 import SearchBar from '../components/searchbar.js';
 
@@ -95,7 +95,7 @@ export default function Fridge() {
                     onClick={onAddProduct} 
                     className={`add-product-button ${showSearchBar ? 'close-add-button' : ''}`}
                 >
-                    {showSearchBar ? 'Close Search Bar' : 'Add New Product'}
+                    {showSearchBar ? 'close search bar' : 'add new product'}
                 </button>                    </div>
                     <ProductList products={products} onViewProduct={handleViewProduct} />
                 </div>

@@ -9,7 +9,7 @@ const ProductList = ({ products, onViewProduct }) => {
         <>
             {products.map((product, index) => (
                 <div className="product-cell" key={index}>
-                    <img src={product.image} alt={product.name} style={{ fontSize: '5px', width: '100%', borderRadius: '8px' }} />
+                    <img src={product.image} alt={product.name}/>
                     <button className="view-btn" onClick={() => onViewProduct(product)}>View</button>
                 </div>
             ))}
