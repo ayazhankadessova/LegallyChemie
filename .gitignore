@@ -1,55 +1,55 @@
 # Node.js
-frontend/node_modules/
-frontend/npm-debug.log*
-frontend/yarn-debug.log*
-frontend/yarn-error.log*
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
 # Next.js
-frontend/.next/
-frontend/out/
+.next/
+out/
 
 # OS and Editor specific
-frontend/.DS_Store
-frontend/.vscode/
-frontend/.idea/
-frontend/*.swp
+.DS_Store
+.vscode/
+.idea/
+*.swp
 
 # Logs
-frontend/logs
-frontend/*.log
-frontend/pids
-frontend/*.pid
-frontend/*.seed
-frontend/*.pid.lock
+logs
+*.log
+pids
+*.pid
+*.seed
+*.pid.lock
 
 # Runtime data
-frontend/pids/
-frontend/*.pid
-frontend/lib-cov/
-frontend/coverage/
-frontend/cache/
+pids/
+*.pid
+lib-cov/
+coverage/
+cache/
 
 # Misc
-frontend/*.swp
-frontend/.lock-wscript
-frontend/.npmrc
-frontend/.eslintcache
-frontend/.env
-frontend/.env.local
-frontend/.env.development.local
-frontend/.env.test.local
-frontend/.env.production.local
+*.swp
+.lock-wscript
+.npmrc
+.eslintcache
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
 # Ignore Mac system files
 .DS_Store
 
 # Ignore IDE specific files
-frontend/.idea/
+.idea/
 .vscode
 
 # Build and output
-frontend/build/
-frontend/dist/
+build/
+dist/
 
 # env file
 *.env
