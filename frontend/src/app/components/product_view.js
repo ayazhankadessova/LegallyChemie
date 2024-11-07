@@ -1,7 +1,7 @@
 import React from 'react';
 import '../styles/fridge.css';
 
-const ProductCard = ({ selectedProduct, onDelete, onClose }) => {
+const ProductCard = ({ selectedProduct, onDelete, onClose, isThemeChanged }) => {
     if (!selectedProduct) {
         return null
     }
@@ -17,10 +17,13 @@ const ProductCard = ({ selectedProduct, onDelete, onClose }) => {
     // console.log("Selected Product:", selectedProduct);
 
     return (
-        <div className="product-view">
-            <button onClick={onClose} className="close-button">X</button>
+        <div className="product-view"
+        style={{ backgroundColor: isThemeChanged ? '#00CEF7' : '#FFAADF'}}>
+            <button onClick={onClose} className="close-button"
+            style={{ backgroundColor: isThemeChanged ?  '#03045E' : '#ff0090'}}>X</button>
             <div className="product-card">
-                <h3 className="product-name">{selectedProduct.name}</h3>
+                <h3 className="product-name"
+                style={{ color: isThemeChanged ? '#00028E' : '#9c0060'}}>{selectedProduct.name}</h3>
                 <div className="image-container">
                     <img src={selectedProduct.image} alt={selectedProduct.name}/>
                 </div>
@@ -29,7 +32,13 @@ const ProductCard = ({ selectedProduct, onDelete, onClose }) => {
                 <p className="product-ingredients">
                     <strong>Ingredients:</strong> {selectedProduct.ingredients.join(', ')}
                 </p>
-                <button onClick={handleDelete} className="delete-button">remove from my routine</button>
+                <button 
+                onClick={handleDelete} 
+                className={`delete-button ${isThemeChanged ? 'theme-dark' : ''}`}
+                >
+                remove from my routine
+                </button>
+
             </div>
         </div>
     );

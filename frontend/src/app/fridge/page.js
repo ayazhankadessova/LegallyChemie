@@ -12,7 +12,10 @@ export default function Fridge() {
     const [products, setProducts] = useState([]);
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [showSearchBar, setShowSearchBar] = useState(false);
+    const [isThemeChanged, setIsThemeChanged] = useState(false);
+    const [loading, setLoading] = useState(true); 
 
+    // function to fetch user's products
     function getuserProducts(user_id) {
         return fetch(`http://localhost:8000/${user_id}/products/`) 
             .then(response => {
@@ -31,6 +34,16 @@ export default function Fridge() {
     }
 
     useEffect(() => {
+        const themeFromStorage = localStorage.getItem('theme');
+        setTimeout(() => {
+          if (themeFromStorage === 'dark') {
+            setIsThemeChanged(true);
+          } else {
+            setIsThemeChanged(false);
+          }
+          setLoading(false); // setting loading to false after theme is loaded
+        }, 100);
+
         const params = new URLSearchParams(window.location.search);
         const nameFromUrl = params.get('name');
         const idFromUrl = params.get('user_id');
@@ -50,6 +63,10 @@ export default function Fridge() {
                 });
         }
     }, []); 
+
+    if (loading) {
+        return <div></div>; 
+      }
     
     const handleViewProduct = (product) => {
         setSelectedProduct(product);
@@ -84,25 +101,41 @@ export default function Fridge() {
     };
 
     return (
-        <div className="page">
-            <Nav name={name} banner="SKINCARE FRIDGE" />
+        <div 
+        className="page" 
+        style={{
+            backgroundColor: isThemeChanged ? '#D0F7FF' : '#FDEFFB',
+            color: isThemeChanged ? '#03045E' : '#000000',  
+        }}
+    >
+            <Nav name={name} banner="SKINCARE FRIDGE" isThemeChanged={isThemeChanged} />
             <div className="left_column">  
-                <img src="/fridge.png" alt="Fridge" className="fridge-image"/>
+                <img 
+                    src={isThemeChanged ? "/fridge2.png" : "/fridge.png"} 
+                    alt="Fridge" 
+                    className="fridge-image"
+                />
                 <div className="product-grid">
-                    <div className="product-cell add-product-cell">
-                    <button 
-                    onClick={onAddProduct} 
-                    className={`add-product-button ${showSearchBar ? 'close-add-button' : ''}`}
+                <div className={`product-cell add-product-cell ${isThemeChanged ? 'theme-dark' : ''}`}>
+                <button 
+                onClick={onAddProduct} 
+                className={`add-product-button ${showSearchBar ? 'close-add-button' : ''}`}
                 >
-                    {showSearchBar ? 'close search bar' : 'add new product'}
-                </button>                    </div>
-                    <ProductList products={products} onViewProduct={handleViewProduct} />
+                {showSearchBar ? 'close search bar' : 'add new product'}
+                </button>
+                </div>
+                    <ProductList products={products} onViewProduct={handleViewProduct} isThemeChanged={isThemeChanged} />
                 </div>
             </div>
-            <div className="vertical-line"></div>
+            <div 
+                style={{
+                    borderLeft: `10px double ${isThemeChanged ? '#00B4D8' : '#FFAADF'}`,
+                }}
+            />
             <div className="right_column">
                 {showSearchBar && ( 
                     <SearchBar 
+                        isThemeChanged={isThemeChanged}
                         user_id={user_id} // passing user_id to SearchBar
                         onProductAdded={(newProduct) => {
                             // updating products list when a new product is added
@@ -114,7 +147,8 @@ export default function Fridge() {
                 <ProductCard 
                     selectedProduct={selectedProduct} 
                     onDelete={handleDeleteProduct} 
-                    onClose={handleCloseProductCard} 
+                    onClose={handleCloseProductCard}
+                    isThemeChanged={isThemeChanged} 
                 />
             </div>
       </div>

@@ -10,7 +10,6 @@ body {
     height: 100vh; 
     display: flex;
     flex-direction: row;
-    background-color: #FFE8F2;
 }
 
 .fridge-image{
@@ -31,7 +30,6 @@ body {
 
 .product-cell {
     background-color: #ffffff; 
-    border: solid 2px #fd76c9;
     border-radius: 8px; 
     padding: 10px;
     width: 120px;
@@ -58,7 +56,6 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(255, 0, 144, 0.2); 
     display: flex;
     align-items: center;
     justify-content: center;
@@ -92,7 +89,6 @@ body {
     font-family: 'Montserrat', sans-serif;
     font-size: 18px;
     font-weight: bold;
-    color: #9c0060;
     margin-bottom: 1em;
     padding: 0 1em;
 }
@@ -104,8 +100,8 @@ body {
 }
 
 .add-product-cell {
-    background-color: #fd76c9; 
     color: white;
+    background-color: #FF77CB;
     cursor: pointer; 
     font-weight: bold;
     font-family: 'Roboto', sans-serif;
@@ -115,9 +111,17 @@ body {
     transition: background-color 0.5s ease;
 }
 
+.add-product-cell.theme-dark {
+    background-color: #03045E;
+}
+
 .add-product-cell:hover {
     background-color: #ff009d; 
     transition: background-color 0.5s ease-in-out;
+}
+
+.add-product-cell.theme-dark:hover {
+    background-color: #00B4D8;
 }
 
 .left_column {
@@ -140,26 +144,32 @@ body {
     justify-content: center;
 }
 
-.vertical-line {
-    border-left: 10px double #FFAADF;
-    height: 100vh;
-}
 
 .delete-button {
     font-family: 'Roboto', sans-serif;
     font-weight: bold;
-    background-color:#ff0090;
+    background-color: #ff0090; 
     color: white;
+    padding: 10px 20px;
     border: none;
-    padding: 10px 15px;
     border-radius: 5px;
     cursor: pointer;
     margin-top: 15px;
-}
+    transition: background-color 0.3s ease; 
+  }
+  
+  .delete-button:hover {
+    background-color: #c80071; 
+  }
 
-.delete-button:hover {
-    background-color: #c80071;
-}
+  .delete-button.theme-dark {
+    background-color: #03045E;
+  }
+  
+  .delete-button.theme-dark:hover {
+    background-color: #00B4D8; 
+  }
+  
 
 .view-btn {
     position: absolute;
@@ -172,6 +182,15 @@ body {
     width: 60%;
     font-family: 'roboto', sans-serif;
     font-weight: bold;
+    transition: background-color 0.3s ease; 
+}
+
+.view-btn.theme-dark {
+    background-color: #03045E;
+  }
+
+.view-btn.theme-dark:hover {
+    background-color: #00B4D8;
 }
 
 .view-btn:hover {
@@ -181,8 +200,7 @@ body {
 .close-button {
     position: absolute;
     top: 0;
-    right: 0;
-    background-color: #ff0090; 
+    right: 0; 
     border: none;
     font-size: 26px;
     font-weight: bold;
@@ -200,7 +218,6 @@ body {
 
 .product-view {
     position: relative;
-    background-color: #FFAADF;
     border-radius: 20px;
     margin-top: 4.5em;
     padding: 18px;
@@ -218,6 +235,7 @@ body {
     padding: 25px;
     padding-left: 35px;
     background-color: #fff;
+    color: black;
     border-radius: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     width: 100%; 
@@ -244,21 +262,20 @@ body {
 .search-bar input {
     flex: 1;
     padding: 10px;
-    border: 2px solid #ff0090; 
     border-radius: 6px;
     outline: none;
     font-size: 14px;
-    color: #ff0090; 
-    background-color: #FFE8F2;
 }
 
-.search-bar input::placeholder {
-    color: #FFAADF; 
+.search-bar input.light-theme::placeholder {
+    color: #FFAADF;
+}
+
+.search-bar input.dark-theme::placeholder {
+    color: #00B4D8;
 }
 
 .search-bar button {
-    background-color: #ff0090; 
-    color: #FFE8F2;
     border: none;
     border-radius: 6px;
     padding: 10px 15px;
@@ -269,13 +286,27 @@ body {
     transition: background-color 0.3s ease;
 }
 
-.search-bar button:hover {
+.search-bar button.dark-theme {
+    background-color: #03045E;
+    color: #F4FDFF;
+}
+
+.search-bar button.dark-theme:hover {
+    background-color: #00bce1;
+    color: #000142;
+}
+
+.search-bar button.light-theme {
+    background-color: #ff0090;
+    color: #FEF5FF;
+}
+
+.search-bar button.light-theme:hover {
     background-color: #FFAADF;
-    color: #ff0090; 
+    color: #ff0090;
 }
 
 .error-message {
-    color: #ff0090; 
     font-size: 12px;
     margin-top: 8px;
     text-align: center;

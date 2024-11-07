@@ -1,23 +1,23 @@
 h1 {
-    color: #FEF5FF;
-    -webkit-text-stroke:6px #EA00FF;
-    font-family: 'Inter', sans-serif;
-    font-size: 180px;
-    font-weight: 800;
-  }
+  color: #FEF5FF;
+  -webkit-text-stroke: 6px #EA00FF;
+  font-family: 'Inter', sans-serif;
+  font-size: 180px;
+  font-weight: 800;
+}
 
 .start-button {
-  margin:0 3px 2em 0;
+  margin: 0 3px 2em 0;
   font-weight: 600;
   font-size: 35px;
-  display: flex;                
-  align-items: center; 
+  display: flex;
+  align-items: center;
   border: 3.5px solid #AA00FF;
-  background-color: #FEF5FF; 
-  color: #AA00FF; 
-  padding: 0.5rem 2rem 0.5rem 1rem;           
-  border-radius: 1.2rem; 
-  transition: background-color 0.3s ease-in-out; 
+  background-color: #FEF5FF;
+  color: #AA00FF;
+  padding: 0.5rem 2rem 0.5rem 1rem;
+  border-radius: 1.2rem;
+  transition: background-color 0.3s ease-in-out;
 }
 
 .start-button:hover {
@@ -25,8 +25,23 @@ h1 {
 }
 
 .start-button img {
-  margin-right:3px;
+  margin-right: 3px;
   width: 50px;
   height: 50px;
 }
-  
+
+/* theme changed styles */
+.theme-changed h1 {
+  color: #F4FDFF;
+  -webkit-text-stroke: 6px #0077B6;
+}
+
+.theme-changed .start-button {
+  border-color: #03045E;
+  background-color: #F4FDFF;
+  color: #03045E;
+}
+
+.theme-changed .start-button:hover {
+  background-color: rgb(168, 201, 220);
+}

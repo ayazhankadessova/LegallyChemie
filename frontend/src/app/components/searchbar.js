@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const SearchBar = ({ user_id, onProductAdded }) => {
+const SearchBar = ({ user_id, onProductAdded, isThemeChanged }) => {
     const [inputValue, setInputValue] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
@@ -39,21 +39,41 @@ const SearchBar = ({ user_id, onProductAdded }) => {
             setErrorMessage('This product doesn\'t exist in our database. Sorry! 🙏');
         });
     };
+    console.log(isThemeChanged);
     
 
     return (
         <div className="search-bar">
             <form onSubmit={handleAddProduct}>
-                <input
-                    type="text"
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    placeholder="enter product name..."
-                />
-                <button type="submit">Add Product</button>
+            <input
+                type="text"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                placeholder="enter product name..."
+                className={isThemeChanged ? 'dark-theme' : 'light-theme'}
+                style={{
+                    border: isThemeChanged ? 'solid 2px #00B4D8' : 'solid 2px #fd76c9',
+                    color: isThemeChanged ? '#0077B6' : '#FF5EC1'
+                }}
+            />
+            <button
+                className={isThemeChanged ? 'dark-theme' : 'light-theme'} 
+                type="submit"
+            >
+            Add Product
+            </button>
+
             </form>
-            {errorMessage && <div className="error-message">{errorMessage}</div>}
-        </div>
+            {errorMessage && (
+            <div
+                className="error-message"
+                style={{ color: isThemeChanged ? '#03045E' : '#ff0090' }}
+            >
+                {errorMessage}
+            </div>
+            )}
+
+            </div>
     );
 };
 
