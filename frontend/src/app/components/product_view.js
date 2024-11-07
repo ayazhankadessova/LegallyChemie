@@ -29,9 +29,10 @@ const ProductCard = ({ selectedProduct, onDelete, onClose, isThemeChanged }) => 
                 </div>
                 <p className="product-brand"><strong>Brand:</strong> {selectedProduct.brand}</p>
                 <p className="product-description"><strong>Description:</strong> {selectedProduct.description}</p>
-                <p className="product-ingredients">
-                    <strong>Ingredients:</strong> {selectedProduct.ingredients.join(', ')}
-                </p>
+                <details className="product-ingredients">
+                    <summary><strong>Ingredients:</strong></summary>
+                    {selectedProduct.ingredients.join(', ')}
+                </details>
                 <button 
                 onClick={handleDelete} 
                 className={`delete-button ${isThemeChanged ? 'theme-dark' : ''}`}
