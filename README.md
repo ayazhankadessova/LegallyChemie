@@ -92,3 +92,8 @@ In case you don't have the time to go through those, here are the test cases con
 - **Delete a record**: 
   - Send a `DELETE` request to `/products/{product_id}` (replace `{product_id}` with the actual ID) to delete a specific product from the database.
   - Sample product_id: `670d98eecb7f4d011c14d87e`
+
+# Week 08 
+
+- **WireFrame Prototype** 
+  - https://www.figma.com/design/EDfRWhEi1mNnm3Vwgd8HVj/Wireframing?node-id=40-2&t=VI5CKqNwzFJzjHJA-1
