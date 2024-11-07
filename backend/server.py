@@ -24,6 +24,8 @@ client = MongoClient(db_string)
 db = client.LegallyChemie
 products_collection = db.get_collection("products")
 users_collection = db.get_collection("users")
+rules_collection = db.get_collection("rules")
+ingredients_collection = db.get_collection("ingredients")
 
 # adding CORS middleware to allow requests from the React frontend
 app.add_middleware(

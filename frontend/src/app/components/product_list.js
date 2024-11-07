@@ -9,8 +9,10 @@ const ProductList = ({ products, onViewProduct }) => {
         <>
             {products.map((product, index) => (
                 <div className="product-cell" key={index}>
-                    <img src={product.image} alt={product.name}/>
-                    <button className="view-btn" onClick={() => onViewProduct(product)}>View</button>
+                    <img src={product.image} alt={product.name} className="product-image" />
+                    <div className="overlay">
+                        <button className="view-btn" onClick={() => onViewProduct(product)}>View</button>
+                    </div>
                 </div>
             ))}
             {emptyCells.map((_, index) => (

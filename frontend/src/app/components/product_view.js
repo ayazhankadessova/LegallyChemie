@@ -21,7 +21,9 @@ const ProductCard = ({ selectedProduct, onDelete, onClose }) => {
             <button onClick={onClose} className="close-button">X</button>
             <div className="product-card">
                 <h3 className="product-name">{selectedProduct.name}</h3>
-                <img src={selectedProduct.image} alt={selectedProduct.name}/>
+                <div className="image-container">
+                    <img src={selectedProduct.image} alt={selectedProduct.name}/>
+                </div>
                 <p className="product-brand"><strong>Brand:</strong> {selectedProduct.brand}</p>
                 <p className="product-description"><strong>Description:</strong> {selectedProduct.description}</p>
                 <p className="product-ingredients">
