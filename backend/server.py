@@ -169,6 +169,7 @@ def create_user_product(user_id: str, product_input: ProductInput):
             message = "Existing product added to user's products" if update_result.modified_count > 0 else "Product already in user's products list"
         
         else:
+            # HAMZA, SAMI, JOHN -> should search ingredient collection here & edit product_data to include tags array before products_collection.insert_one
             inserted_product = products_collection.insert_one(product_data)
             product_id = inserted_product.inserted_id
             print("New product ID:", product_id)

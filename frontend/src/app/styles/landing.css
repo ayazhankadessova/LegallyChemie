@@ -1,15 +1,58 @@
+.page {
+  width: 100%;
+  height: 100vh; 
+  display: flex;
+  flex-direction: row;
+}
+
+.chemie {
+  margin-left: 8em;
+  margin-top: 2em;
+  height: 100%;
+  width: 100%;
+}
+
+.chemie-container {
+  width: 300px;
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.left_column {
+  width: 50%;
+  height: 100%;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.right_column {
+  width: 50%;
+  height: 100%;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 h1 {
-  color: #FEF5FF;
-  -webkit-text-stroke: 6px #EA00FF;
   font-family: 'Inter', sans-serif;
-  font-size: 180px;
+  font-size: 80px;
   font-weight: 800;
+  margin-right: 1.8em;
+  margin-bottom: 5px;
+  
 }
 
 .start-button {
-  margin: 0 3px 2em 0;
+  margin: 10px 5em 2em 5px;
   font-weight: 600;
-  font-size: 35px;
+  font-size: 28px;
   display: flex;
   align-items: center;
   border: 3.5px solid #AA00FF;
@@ -17,31 +60,31 @@ h1 {
   color: #AA00FF;
   padding: 0.5rem 2rem 0.5rem 1rem;
   border-radius: 1.2rem;
-  transition: background-color 0.3s ease-in-out;
+  transition: background-color 0.3s ease-in-out, transform 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  box-shadow: 6px 6px 15px rgba(0, 0, 0, 0.2); 
+  transform: translate(0, 0); 
+}
+
+.start-button.theme-dark {
+  background-color: #F4FDFF;
+  border: 3.5px solid #03045E;
+  color: #03045E;
 }
 
 .start-button:hover {
-  background-color: #cd6aff;
+  background-color: #dc9efb;
+  transform: translate(2px, 2px); 
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4); 
+}
+
+.start-button.theme-dark:hover {
+  background-color: #a7a8ff;
+  transform: translate(2px, 2px);
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4); 
 }
 
 .start-button img {
   margin-right: 3px;
-  width: 50px;
-  height: 50px;
-}
-
-/* theme changed styles */
-.theme-changed h1 {
-  color: #F4FDFF;
-  -webkit-text-stroke: 6px #0077B6;
-}
-
-.theme-changed .start-button {
-  border-color: #03045E;
-  background-color: #F4FDFF;
-  color: #03045E;
-}
-
-.theme-changed .start-button:hover {
-  background-color: rgb(168, 201, 220);
+  width: 35px;
+  height: 35px;
 }

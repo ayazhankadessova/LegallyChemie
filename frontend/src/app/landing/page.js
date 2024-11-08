@@ -42,27 +42,41 @@ export default function Homepage() {
   };
 
   return (
-    <>
-      <Nav name={name} banner="HOMEPAGE" isThemeChanged={isThemeChanged}/>
-      <div
-      className={`h-screen bg-cover bg-center flex flex-col items-center justify-center ${
-        isThemeChanged ? 'theme-changed' : ''
-      }`}
-      style={{
-        backgroundImage: isThemeChanged ? 'url(/landing2.png)' : 'url(/landing.png)',
-        backgroundColor: isThemeChanged ? '#CAF0F8' : '#FDEFFB',
-      }}
-    >
-        <div className="mt-14 flex flex-col items-center">
-          <h1 className="text-center">
-            Hey {name} :)
-          </h1>
-          <button className="start-button" onClick={gotoFridge}>
-            <img src={isThemeChanged ? "/mouse2.png" : "/mouse.png"} alt="Icon" />
-            access personal skincare fridge
-          </button>
+    <div 
+    className="page"
+    style={{
+      backgroundColor: isThemeChanged ? '#D0F7FF' : '#FDEFFB',
+      color: isThemeChanged ? '#03045E' : '#000000',  
+      backgroundImage: isThemeChanged ? 'url(/landing2.png)' : 'url(/landing.png)'
+    }}>
+      <Nav name={name} banner="HOMEPAGE" isThemeChanged={isThemeChanged} />
+      
+      <div className="left_column">
+        <div className="chemie-container">
+        <img 
+          src={isThemeChanged ? "/chemie-blue.png" : "/chemie-pink.png"} 
+          alt="Icon" 
+          className="chemie"
+        />
         </div>
       </div>
+
+        <div className="right_column">
+            <h1 
+              style={{ 
+                color: isThemeChanged ? '#F4FDFF' : '#FEF5FF', 
+                WebkitTextStroke: isThemeChanged ? '3px navy' : '3px hotpink' 
+              }}
+            >
+              Hey {name} :)
+            </h1>
+            <button 
+            className={`start-button ${isThemeChanged ? 'theme-dark' : ''}`}
+            onClick={gotoFridge}>
+              <img src={isThemeChanged ? "/mouse2.png" : "/mouse.png"} alt="Icon" />
+              access personal skincare fridge
+            </button>
+          </div>
       <button
         onClick={handleChangeTheme}
         style={{
@@ -79,6 +93,6 @@ export default function Homepage() {
         >
         change theme
     </button>
-    </>
+    </div>
   );
 }

@@ -23,7 +23,7 @@ const ProductList = ({ products, onViewProduct, isThemeChanged  }) => {
             ))}
             {emptyCells.map((_, index) => (
                 <div className="product-cell" key={`empty-${index}`}
-                style={{  border: isThemeChanged ? 'dashed 2px #00B4D8' : 'dashed 2px #fd76c9' }}></div>
+                style={{  border: isThemeChanged ? 'double 2px #00B4D8' : 'double 2px #fd76c9' }}></div>
             ))}
         </>
     );
