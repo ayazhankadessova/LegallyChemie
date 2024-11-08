@@ -170,6 +170,15 @@ def create_user_product(user_id: str, product_input: ProductInput):
         
         else:
             # HAMZA, SAMI, JOHN -> should search ingredient collection here & edit product_data to include tags array before products_collection.insert_one
+            ingredients = product_data.get("ingredients", [])
+            tags = []
+            for i in ingredients: 
+                ingredient = i.lower().replace(" ", "")
+                ingredient_id = ingredients_collection.find_one({"_id": ingredient})
+                if ingredient_id and "categories" in ingredient_id: 
+                    tags.extend(ingredient_id["categories"])
+            product_data["tags"] = tags
+
             inserted_product = products_collection.insert_one(product_data)
             product_id = inserted_product.inserted_id
             print("New product ID:", product_id)
