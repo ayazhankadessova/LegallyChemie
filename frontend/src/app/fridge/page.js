@@ -7,6 +7,7 @@ import ProductCard from '../components/product_view.js';
 import SearchBar from '../components/searchbar.js';
 
 export default function Fridge() {
+    const [day, setDay] = useState('AM');
     const [name, setName] = useState('');
     const [user_id, setID] = useState('');
     const [products, setProducts] = useState([]);
@@ -15,9 +16,18 @@ export default function Fridge() {
     const [isThemeChanged, setIsThemeChanged] = useState(false);
     const [loading, setLoading] = useState(true); 
 
+    const toggleDay = () => {
+        const newDay = day === 'AM' ? 'PM' : 'AM';
+        setDay(newDay);
+        localStorage.setItem('day', newDay);
+        getuserProducts(user_id, newDay).then(userProducts => {
+            if (userProducts) setProducts(userProducts);
+        });
+    };
+
     // function to fetch user's products
-    function getuserProducts(user_id) {
-        return fetch(`http://localhost:8000/${user_id}/products/`) 
+    function getuserProducts(user_id, day) {
+        return fetch(`http://localhost:8000/${user_id}/${day}/products/`) 
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -32,6 +42,7 @@ export default function Fridge() {
                 console.error('Error fetching products:', error);
             });
     }
+
 
     useEffect(() => {
         const themeFromStorage = localStorage.getItem('theme');
@@ -50,9 +61,12 @@ export default function Fridge() {
     
         setName(nameFromUrl || 'there');
         setID(idFromUrl || '0');
-    
+        
+        const storedDay = localStorage.getItem('day') || 'AM';
+        setDay(storedDay);
+
         if (idFromUrl) {
-            getuserProducts(idFromUrl)
+            getuserProducts(idFromUrl, storedDay)
                 .then(userProducts => {
                     if (userProducts) {
                         setProducts(userProducts); 
@@ -79,8 +93,8 @@ export default function Fridge() {
       }
   };
     
-    const handleDeleteProduct = (productId) => {
-        fetch(`http://localhost:8000/${user_id}/products/${productId}/`, {
+    const handleDeleteProduct = (productId, day) => {
+        fetch(`http://localhost:8000/${user_id}/${day}/products/${productId}/`, {
             method: 'DELETE',
         })
         .then(response => {
@@ -109,6 +123,23 @@ export default function Fridge() {
         }}>
             <Nav name={name} banner="SKINCARE FRIDGE" isThemeChanged={isThemeChanged} />
             <div className="left_column">  
+                <label className={`switch ${isThemeChanged ? 'theme-dark' : ''}`}>
+                    <input type="checkbox" checked={day === 'PM'} onChange={toggleDay} />
+                    <span 
+                        className="slider round"
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: day === 'AM' ? 'flex-end' : 'flex-start',
+                            padding: '0 12px',
+                            color: day === 'AM' ? 'white' : '#FFF',
+                            fontWeight: 'bold',
+                            transition: 'all 0.4s ease',
+                        }}
+                    >
+                        {day}
+                    </span>
+                </label>
                 <img 
                     src={isThemeChanged ? "/fridge2.png" : "/fridge.png"} 
                     alt="Fridge" 
@@ -123,7 +154,9 @@ export default function Fridge() {
                 {showSearchBar ? 'close search bar' : 'add new product'}
                 </button>
                 </div>
-                    <ProductList products={products} onViewProduct={handleViewProduct} isThemeChanged={isThemeChanged} />
+                    <ProductList products={products} 
+                    onViewProduct={handleViewProduct} 
+                    isThemeChanged={isThemeChanged}/>
                 </div>
             </div>
             <div 
@@ -141,6 +174,7 @@ export default function Fridge() {
                             setProducts(prevProducts => [...prevProducts, { name: newProduct }]);
                             setShowSearchBar(false); // hiding search bar after adding
                         }} 
+                        day = {day}
                     />
                 )}
                 <ProductCard 
@@ -148,6 +182,7 @@ export default function Fridge() {
                     onDelete={handleDeleteProduct} 
                     onClose={handleCloseProductCard}
                     isThemeChanged={isThemeChanged} 
+                    day={day}
                 />
             </div>
       </div>

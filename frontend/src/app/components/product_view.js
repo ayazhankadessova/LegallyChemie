@@ -1,7 +1,7 @@
 import React from 'react';
 import '../styles/fridge.css';
 
-const ProductCard = ({ selectedProduct, onDelete, onClose, isThemeChanged }) => {
+const ProductCard = ({ selectedProduct, onDelete, onClose, isThemeChanged, day }) => {
     if (!selectedProduct) {
         return null
     }
@@ -9,7 +9,7 @@ const ProductCard = ({ selectedProduct, onDelete, onClose, isThemeChanged }) => 
     const handleDelete = () => {
         const confirmed = window.confirm("Are you sure you want to delete this product?");
         if (confirmed) {
-            onDelete(selectedProduct.id);
+            onDelete(selectedProduct.id, day);
         }
     };
 

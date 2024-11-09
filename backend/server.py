@@ -82,7 +82,7 @@ async def callback(request: Request):
         existing_user = users_collection.find_one({"auth0_id": user_id})
         if not existing_user:
             # creating a new user entry
-            users_collection.insert_one({"auth0_id": user_id, "given_name": given_name, "products": []})
+            users_collection.insert_one({"auth0_id": user_id, "given_name": given_name, "products": {"AM": [], "PM": []}})
             print("this is a new user")
         else:
             print("user already exists")
@@ -131,8 +131,8 @@ class ProductInput(BaseModel):
     user_input: str
 
 # get all products for a specific user
-@app.get("/{user_id}/products/")
-def get_user_products(user_id: str):
+@app.get("/{user_id}/{day}/products/")
+def get_user_products(user_id: str, day: str):
     user_doc = users_collection.find_one({"auth0_id": user_id})
     
     if not user_doc:
@@ -142,17 +142,19 @@ def get_user_products(user_id: str):
     product_ids = user_doc.get("products", [])
     print("Product IDs:", product_ids)
     
-    # using product IDs to retrieve full product details from products_collection
+    # fetching product details based on AM or PM
+    product_ids = user_doc['products'].get(day, [])
     user_products = list(products_collection.find({"_id": {"$in": product_ids}}))
-    print("User Products:", user_products)
+    print(f"User Products for {day}:", user_products)
     
     return [product_serializer(product) for product in user_products]
 
 # create a new product for a specific user
-@app.post("/{user_id}/products/")
-def create_user_product(user_id: str, product_input: ProductInput):
+@app.post("/{user_id}/{day}/products/")
+def create_user_product(user_id: str, day: str, product_input: ProductInput):
     user_input = product_input.user_input 
     product_data = final(user_input)
+    print("this is the day ", day)
     if product_data:
         product_name = product_data.get("name")
         existing_product = products_collection.find_one({"name": product_name})
@@ -163,7 +165,7 @@ def create_user_product(user_id: str, product_input: ProductInput):
             # updating user's document to include this product in their products list
             update_result = users_collection.update_one(
                 {"auth0_id": user_id},
-                {"$addToSet": {"products": product_id}}  # $addToSet to prevent duplicates
+                {"$addToSet": {f"products.{day}": product_id}}  # using addtoSet to avoid duplicates
             )
             print("Update result:", update_result.modified_count)
             message = "Existing product added to user's products" if update_result.modified_count > 0 else "Product already in user's products list"
@@ -186,7 +188,7 @@ def create_user_product(user_id: str, product_input: ProductInput):
             
             update_result = users_collection.update_one(
                 {"auth0_id": user_id},
-                {"$addToSet": {"products": product_id}}
+                {"$addToSet": {f"products.{day}": product_id}}
             )
             print("Update result:", update_result.modified_count)
             message = "New product created and added to user's products" if update_result.modified_count > 0 else "Failed to add product to user's products list"
@@ -195,13 +197,13 @@ def create_user_product(user_id: str, product_input: ProductInput):
     else:
         raise HTTPException(status_code=404, detail="Product not found")
 
-@app.delete("/{user_id}/products/{product_id}")
-def delete_user_product(user_id: str, product_id: str):
+@app.delete("/{user_id}/{day}/products/{product_id}")
+def delete_user_product(user_id: str, day: str, product_id: str):
     print("User ID:", user_id)
     print("Product ID:", product_id)
     result = users_collection.update_one(
         {"auth0_id": user_id},
-        {"$pull": {"products": ObjectId(product_id)}}
+        {"$pull": {f"products.{day}": ObjectId(product_id)}} 
     )
     
     # checking if any documents were modified
