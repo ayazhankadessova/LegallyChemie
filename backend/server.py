@@ -138,6 +138,7 @@ def product_serializer(product) -> dict:
         "description": product.get("description"),
         "ingredients": product.get("ingredients", []),
         "image": product.get("image"),
+        "tags": product.get("tags", []),
     }
 
 
@@ -151,7 +152,7 @@ class ProductInput(BaseModel):
 @app.get("/{user_id}/rules/")
 def get_user_rules(user_id: str):
     products = get_user_products(user_id, "AM")
-    products.extend(get_user_products(user_id, "PM"))
+    #products.extend(get_user_products(user_id, "PM"))
 
     product_rules = {}
 
@@ -160,7 +161,8 @@ def get_user_rules(user_id: str):
         tags = product.get("tags", [])
         avoid = []
         for tag in tags:
-            rule = rules_collection.find_one({"_id": {"$in": tag}})
+            rule = rules_collection.find_one({"_id": {"$in": [tag]}})
+            print("Rule: ", rule)
             if rule:
                 avoid_rule = rule.get("rules", {}).get("avoid", [])
                 avoid.extend(avoid_rule)
@@ -178,8 +180,6 @@ def get_user_rules(user_id: str):
                     product_rules[product["id"]].append(
                         {"_id": product_comp["id"], "type": "avoid", "tag": tag}
                     )
-
-    print("Product Rules Applied: ", product_rules)
 
     return product_rules
 
