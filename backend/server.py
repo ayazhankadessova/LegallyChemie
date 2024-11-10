@@ -151,6 +151,8 @@ class ProductInput(BaseModel):
 # Returns a dict with product_id as key and list of product_ids that should not be used with it
 @app.get("/{user_id}/rules/")
 def get_user_rules(user_id: str):
+
+    # TODO: add separate AM and PM rule checking
     products = get_user_products(user_id, "AM")
     #products.extend(get_user_products(user_id, "PM"))
 
