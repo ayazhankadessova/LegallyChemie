@@ -1,6 +1,24 @@
 from bs4 import BeautifulSoup
 import requests
 
+"""
+@file search.py
+@briefmodule providing the functionalities to search for and scrape product information from the Incidecoder website.
+
+@details
+enables searching for a product by name, extracting details such as brand name, product name, description, ingredients, and image.
+uses BeautifulSoup and requests to scrape data from the  Incidecoder website based on user input. 
+primary purpose is to support product data retrieval for applications requiring skincare product information.
+"""
+
+
+"""
+@fn search_product(user_input)
+@brief searches for a product on Incidecoder based on user input and retrieves the first result's URL.
+
+@param user_input name of the product to search for.
+@return URL of the first product result on Incidecoder, or None if no results are found.
+"""
 def search_product(user_input):
     search_url = f"https://incidecoder.com/search?query={user_input}"
     # print("search url", search_url)
@@ -21,6 +39,13 @@ def search_product(user_input):
     print("No results found.")
     return None
 
+"""
+@fn extract_name_brand_description(product_url)
+@brief extracts the brand name, product name, and description from a product page on Incidecoder.
+
+@param product_url URL of the product page.
+@return tuple containing the brand name, product name, and description.
+"""
 def extract_name_brand_description(product_url):
     response = requests.get(product_url)
     soup = BeautifulSoup(response.text, 'html.parser')
@@ -32,6 +57,13 @@ def extract_name_brand_description(product_url):
     description = description_section.text.strip() if description_section else "Description not found"
     return brand_name, product_name, description
 
+"""
+@fn extract_ingredients(product_url)
+@brief extracts the list of ingredients from a product page on Incidecoder.
+
+@param product_url URL of the product page.
+@return list of ingredients for the product.
+"""
 def extract_ingredients(product_url):
     response = requests.get(product_url)
     soup = BeautifulSoup(response.text, 'html.parser')
@@ -42,6 +74,13 @@ def extract_ingredients(product_url):
     ingredient_list = [ingredient.text.strip() for ingredient in ingredients]
     return ingredient_list
 
+"""
+@fn extract_image(product_url)
+@brief extracts the image URL of a product from its page on Incidecoder.
+
+@param product_url URL of the product page.
+@return URL of the product image.
+"""
 def extract_image(product_url):
     response = requests.get(product_url)
     soup = BeautifulSoup(response.text, 'html.parser')
@@ -50,6 +89,13 @@ def extract_image(product_url):
     image_url = image_tag.get('src')
     return image_url
 
+"""
+@fn get_product_data(user_input)
+@brief combines product details including brand, name, description, ingredients, and image into a dictionary.
+
+@param user_input name of the product to search for.
+@return dictionary containing the product's brand, name, description, ingredients, and image URL, or None if no product is found.
+"""
 def get_product_data(user_input):
     product_url = search_product(user_input)
     
@@ -74,6 +120,13 @@ def get_product_data(user_input):
         print("No product found.")
         return None
 
+"""
+@fn final(user_input)
+@brief retrieves and prints complete product data for the specified user input.
+
+@param user_input name or keywords of the product to search for.
+@return dictionary containing product data, or None if no product is found.
+"""
 def final(user_input):
     product_data = get_product_data(user_input)  
     print("Product Data:", product_data) 
