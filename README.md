@@ -118,10 +118,9 @@ Since our backend is already connected to our frontend, you won't need to set up
    ```
    
 2. **Navigate to the project directory**:
-Open 2 terminals, then navigate to `LegallyChemie/frontend` in one of them and `LegallyChemie/backend` on the other one.
+Open terminal, ensure the present working directory is  `LegallyChemie` 
    ```bash
-   cd LegallyChemie/backend
-   cd LegallyChemie/frontend
+   cd LegallyChemie/
    ```
 3. **Create your .env file in the backend directory**:
    Inside the `.env` file, put:
@@ -133,27 +132,12 @@ Open 2 terminals, then navigate to `LegallyChemie/frontend` in one of them and `
    AUTH0_DOMAIN='YOUR-DOMAIN'
    APP_SECRET_KEY='legallchemie'
    ```
-4. **Install dependencies**:
-   for the frontend do:
+4. **Set up and start the program**:
+   Run the `start.py` script, which creates a virtual environment, installs both front and backend dependencies, as well as starting back and frontend servers:
    ```bash
-   npm install
+   python start.py
    ```
-   and for the backend do:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-5. **Run the application**:
-   for the backend do:
-    ```bash
-   python server.py
-   ```
-   and for the frontend do:
-   ```bash
-   npm run build
-   npm start
-   ```
-
+  
 
 Now open your browser and go to `http://localhost:3000` & then start clicking. 😄
 
