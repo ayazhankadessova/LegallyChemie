@@ -9,16 +9,46 @@ from authlib.integrations.starlette_client import OAuth
 from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
+import uvicorn
 import os
 import json
+
+
+"""
+@file server.py
+@brief FastAPI server for managing user authentication, product information, and rules.
+
+@details
+server application provides RESTful API endpoints to manage user authentication 
+(using Auth0 for OAuth), handle user sessions, and interact with a MongoDB database. 
+server supports operations for managing products and rules associated with each user 
+and allows the frontend (React) application to communicate with it.
+
+key functionalities:
+- OAuth-based user login and session management.
+- CRUD operations for user-specific products.
+- rule-based recommendation checks to guide product usage.
+- CORS and session middleware configuration to enable secure cross-origin requests and 
+  session handling between the frontend and backend.
+"""
 
 # loading .env file & initializing the Flask app
 load_dotenv()
 # initialize FastAPI
 app = FastAPI()
-# secret key for sessions
+
+
+"""
+@brief adds session middleware to the app for secure session management.
+@details uses a secret key from the environment variables.
+"""
 app.add_middleware(SessionMiddleware, secret_key=os.getenv("APP_SECRET_KEY"))
-# getting values from .env file & setting up db
+
+
+"""
+@brief initializes the MongoDB client and connects to the 'LegallyChemie' database.
+@details collections for 'products', 'users', 'rules', and 'ingredients' are initialized.
+"""
 db_string = os.getenv("DB_STRING")
 client = MongoClient(db_string)
 db = client.LegallyChemie
@@ -27,7 +57,10 @@ users_collection = db.get_collection("users")
 rules_collection = db.get_collection("rules")
 ingredients_collection = db.get_collection("ingredients")
 
-# adding CORS middleware to allow requests from the React frontend
+"""
+@brief configures CORS to allow requests from the React frontend.
+@details allows all HTTP methods and headers from localhost:3000.
+"""
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000"],
@@ -36,7 +69,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# initializing OAuth
+"""
+@brief initializes OAuth for user authentication with Auth0.
+"""
 oauth = OAuth()
 
 oauth.register(
@@ -50,14 +85,25 @@ oauth.register(
 )
 
 
-# login route
+"""
+@fn login
+@brief login route
+@brief initiates the login process by redirecting to Auth0 for user authentication.
+@param request the http request object.
+@return redirects to the Auth0 authorization url.
+"""
 @app.get("/login")
 async def login(request: Request):
     redirect_uri = request.url_for("callback")
     return await oauth.auth0.authorize_redirect(request, redirect_uri)
 
 
-# callback route
+"""
+@fn callback
+@brief handles the callback from Auth0 after authentication.
+@param request the http request object.
+@return redirects to the react frontend with the user's information.
+"""
 @app.get("/callback")
 async def callback(request: Request):
     token = await oauth.auth0.authorize_access_token(request)
@@ -101,7 +147,14 @@ async def callback(request: Request):
     )
 
 
-# logout route
+
+"""
+@fn logout
+@brief logout route
+@brief logs out the user by clearing the session and redirecting to Auth0's logout.
+@param request the http request object.
+@return redirects to the logout url with a return path to the react app.
+"""
 @app.get("/logout")
 async def logout(request: Request):
     request.session.clear()
@@ -119,7 +172,13 @@ async def logout(request: Request):
     )
 
 
-# route to fetch current user session info
+
+"""
+@fn session
+@brief retrieves the current user session information.
+@param request the http request object.
+@return JSONResponse with user data or an error if the user is not authenticated.
+"""
 @app.get("/session")
 async def session(request: Request):
     user = request.session.get("user")
@@ -129,7 +188,12 @@ async def session(request: Request):
         return JSONResponse(content={"error": "Not authenticated"}, status_code=401)
 
 
-# helper function to convert MongoDB ObjectId to str
+"""
+@fn product_serializer
+@brief helper function to convert a MongoDB product document into a serializable dictionary.
+@param product MongoDB document representing the product.
+@return a dictionary containing product fields in serializable format.
+"""
 def product_serializer(product) -> dict:
     return {
         "id": str(product["_id"]),
@@ -146,9 +210,12 @@ def product_serializer(product) -> dict:
 class ProductInput(BaseModel):
     user_input: str
 
-
-# Check rule application to products given a user_id
-# Returns a dict with product_id as key and list of product_ids that should not be used with it
+"""
+@fn get_user_rules
+@brief fetches rules applicable to products for a specific user.
+@param user_id the id of the user in the database.
+@return dictionary with product_id as key and list of incompatible product_ids.
+"""
 @app.get("/{user_id}/rules/")
 def get_user_rules(user_id: str):
 
@@ -186,7 +253,13 @@ def get_user_rules(user_id: str):
     return product_rules
 
 
-# get all products for a specific user
+"""
+@fn get_user_products
+@brief retrieves all products for a specified user for a given time (AM/PM).
+@param user_id the id of the user.
+@param day time of day ("AM" or "PM").
+@return a list of serialized product dictionaries.
+"""
 @app.get("/{user_id}/{day}/products/")
 def get_user_products(user_id: str, day: str):
     user_doc = users_collection.find_one({"auth0_id": user_id})
@@ -206,7 +279,14 @@ def get_user_products(user_id: str, day: str):
     return [product_serializer(product) for product in user_products]
 
 
-# create a new product for a specific user
+"""
+@fn create_user_product
+@brief adds a new product to a user's product list for a specified time (AM/PM).
+@param user_id the id of the user.
+@param day time of day ("AM" or "PM").
+@param product_input the product input data provided by the user.
+@return a message indicating whether a new or existing product was added.
+"""
 @app.post("/{user_id}/{day}/products/")
 def create_user_product(user_id: str, day: str, product_input: ProductInput):
     user_input = product_input.user_input
@@ -264,6 +344,14 @@ def create_user_product(user_id: str, day: str, product_input: ProductInput):
         raise HTTPException(status_code=404, detail="Product not found")
 
 
+"""
+@fn delete_user_product
+@brief deletes a product from a user's product list for a specified time (AM/PM).
+@param user_id the id of the user.
+@param day time of day ("AM" or "PM").
+@param product_id the id of the product to be deleted.
+@return a message indicating successful deletion or an error if the product was not found.
+"""
 @app.delete("/{user_id}/{day}/products/{product_id}")
 def delete_user_product(user_id: str, day: str, product_id: str):
     print("User ID:", user_id)
@@ -282,8 +370,6 @@ def delete_user_product(user_id: str, day: str, product_id: str):
 
 
 if __name__ == "__main__":
-    import uvicorn
-
     uvicorn.run(app, host="127.0.0.1", port=8000, log_level="info")
 
 # SCRAP FUNCTIONS
