@@ -25,14 +25,19 @@ const SearchBar = ({ user_id, onProductAdded, isThemeChanged, day }) => {
             return response.json();
         })
         .then(data => {
-            onProductAdded(inputValue); // notifying the parent component that a product was added
-            setInputValue(''); // clearing input field
-            setErrorMessage(''); // clearing any previous error message
-    
-            alert('Product added successfully!');
-    
-            // refreshing the page after the alert is acknowledged by the user
-            window.location.reload(); 
+            if (data.message === "Product already in user's products list") {
+                setErrorMessage('You already have this product in your routine 😭');
+            }
+            else{
+                onProductAdded(inputValue); // notifying the parent component that a product was added
+                setInputValue(''); // clearing input field
+                setErrorMessage(''); // clearing any previous error message
+        
+                alert('Product added successfully!');
+        
+                // refreshing the page after the alert is acknowledged by the user
+                window.location.reload(); 
+            }
         })
         .catch(error => {
             console.error('Error adding product:', error);

@@ -171,8 +171,6 @@ async def logout(request: Request):
         )
     )
 
-
-
 """
 @fn session
 @brief retrieves the current user session information.
@@ -216,11 +214,10 @@ class ProductInput(BaseModel):
 @param user_id the id of the user in the database.
 @return dictionary with product_id as key and list of incompatible product_ids.
 """
-@app.get("/{user_id}/rules/")
-def get_user_rules(user_id: str):
+@app.get("/{user_id}/{day}/rules/")
+def get_user_rules(user_id: str, day: str):
 
-    # TODO: add separate AM and PM rule checking
-    products = get_user_products(user_id, "AM")
+    products = get_user_products(user_id, day)
     #products.extend(get_user_products(user_id, "PM"))
 
     product_rules = {}
@@ -237,11 +234,11 @@ def get_user_rules(user_id: str):
                 avoid.extend(avoid_rule)
 
         for product_comp in products:
-            # Skip self
+            # skip self
             if product_comp["id"] == product["id"]:
                 continue
 
-            # Check if product_comp tags are in the avoid list
+            # check if product_comp tags are in the avoid list
             for tag in product_comp.get("tags", []):
                 if tag in avoid:
                     if product["id"] not in product_rules:
@@ -294,25 +291,38 @@ def create_user_product(user_id: str, day: str, product_input: ProductInput):
     print("this is the day ", day)
     if product_data:
         product_name = product_data.get("name")
-        existing_product = products_collection.find_one({"name": product_name})
+        product_brand = product_data.get("brand")   
+        existing_product = products_collection.find_one({
+            "name": product_name,
+            "brand": product_brand
+        })
 
         if existing_product:
+            print("this product already exists")
             product_id = existing_product["_id"]
 
-            # updating user's document to include this product in their products list
-            update_result = users_collection.update_one(
-                {"auth0_id": user_id},
-                {
-                    "$addToSet": {f"products.{day}": product_id}
-                },  # using addtoSet to avoid duplicates
-            )
-            print("Update result:", update_result.modified_count)
-            message = (
-                "Existing product added to user's products"
-                if update_result.modified_count > 0
-                else "Product already in user's products list"
-            )
+            # checking if the product is already in the user's AM/PM routine
+            user = users_collection.find_one({
+                "auth0_id": user_id,
+                f"products.{day}": product_id 
+            })
 
+            if user:
+                return {"message": "Product already in user's products list"}
+            else: 
+                # updating user's document to include this product in their products list
+                update_result = users_collection.update_one(
+                    {"auth0_id": user_id},
+                    {
+                        "$addToSet": {f"products.{day}": product_id}
+                    },  # using addtoSet to avoid duplicates
+                )
+                print("Update result:", update_result.modified_count)
+                message = (
+                    "Existing product added to user's products"
+                    if update_result.modified_count > 0
+                    else "Product already in user's products list"
+                )
         else:
             # add tags for products collections according to ingredients
             ingredients = product_data.get("ingredients", [])
