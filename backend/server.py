@@ -332,6 +332,7 @@ def create_user_product(user_id: str, day: str, product_input: ProductInput):
                 ingredient_id = ingredients_collection.find_one({"_id": ingredient})
                 if ingredient_id and "categories" in ingredient_id:
                     tags.extend(ingredient_id["categories"])
+            tags = list(set(tags))
             product_data["tags"] = tags
 
             # insert products
