@@ -13,7 +13,6 @@ from pprint import pprint
 import uvicorn
 import os
 
-
 """
 @file server.py
 @brief FastAPI server for managing user authentication, product information, and rules.
@@ -186,7 +185,6 @@ async def logout(request: Request):
 @return JSONResponse with user data or an error if the user is not authenticated.
 """
 
-
 @app.get("/session")
 async def session(request: Request):
     user = request.session.get("user")
@@ -194,7 +192,6 @@ async def session(request: Request):
         return JSONResponse(content={"user": user})
     else:
         return JSONResponse(content={"error": "Not authenticated"}, status_code=401)
-
 
 """
 @fn product_serializer
@@ -232,11 +229,8 @@ class ProductInput(BaseModel):
 @app.get("/{day}/rules/")
 async def get_user_rules(day: str, request: Request):
     user = request.session.get("user")
-
-    if not user:
-        raise HTTPException(status_code=401, detail="Not authenticated")
-    
-    user_id = user.get("sub")
+    user_info = user.get("userinfo", {})
+    user_id = user_info.get("sub")
 
     if not user_id:
         raise HTTPException(status_code=401, detail="User ID not found in session")
@@ -295,17 +289,13 @@ async def get_user_rules(day: str, request: Request):
 
 
 @app.get("/{day}/products/")
-def get_user_products(day: str, request: Request):
+async def get_user_products(day: str, request: Request):
     user = request.session.get("user")
-    print("Session contents:", request.session)
-
-    print("299User:", user)
-
-    pprint(user)
-    if not user:
-        raise HTTPException(status_code=401, detail="Not authenticated")
-    
-    user_id = user.get("sub")
+    user_info = user.get("userinfo", {})
+    user_id = user_info.get("sub")
+    # print("298this is the user: ")
+    # pprint(user)
+    # print("302this is the user's id: ", user_id)
 
     if not user_id:
         raise HTTPException(status_code=401, detail="User ID not found in session")
@@ -338,14 +328,13 @@ def get_user_products(day: str, request: Request):
 
 
 @app.post("/{day}/products/")
-def create_user_product(day: str, product_input: ProductInput, request: Request):
+async def create_user_product(day: str, product_input: ProductInput, request: Request):
     user_input = product_input.user_input
     product_data = final(user_input)
     user = request.session.get("user")
-    if not user:
-        raise HTTPException(status_code=401, detail="Not authenticated")
-    
-    user_id = user.get("sub")
+    user_info = user.get("userinfo", {})
+    user_id = user_info.get("sub")
+
     if not user_id:
         raise HTTPException(status_code=401, detail="User ID not found in session")
     
@@ -424,12 +413,10 @@ def create_user_product(day: str, product_input: ProductInput, request: Request)
 
 
 @app.delete("/{day}/products/{product_id}")
-def delete_user_product(day: str, product_id: str, request: Request):
+async def delete_user_product(day: str, product_id: str, request: Request):
     user = request.session.get("user")
-    if not user:
-        raise HTTPException(status_code=401, detail="Not authenticated")
-    
-    user_id = user.get("sub")
+    user_info = user.get("userinfo", {})
+    user_id = user_info.get("sub")
     if not user_id:
         raise HTTPException(status_code=401, detail="User ID not found in session")
     print("User ID:", user_id)

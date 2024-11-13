@@ -26,21 +26,25 @@ export default function Fridge() {
 
     // function to fetch user's products
     function getuserProducts(day) {
-        return fetch(`http://localhost:8000/${day}/products/`) 
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log(data);
-                return data;
-            })
-            .catch(error => {
-                console.error('Error fetching products:', error);
-            });
+        return fetch(`http://localhost:8000/${day}/products/`, {
+            method: 'GET',
+            credentials: 'include' 
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log(data);
+            return data;
+        })
+        .catch(error => {
+            console.error('Error fetching products:', error);
+        });
     }
+
 
     useEffect(() => {
         const themeFromStorage = localStorage.getItem('theme');
@@ -89,6 +93,7 @@ export default function Fridge() {
     const handleDeleteProduct = (productId, day) => {
         fetch(`http://localhost:8000/${day}/products/${productId}/`, {
             method: 'DELETE',
+            credentials: 'include'
         })
         .then(response => {
             if (!response.ok) {
