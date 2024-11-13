@@ -180,6 +180,7 @@ async def logout(request: Request):
 @app.get("/session")
 async def session(request: Request):
     user = request.session.get("user")
+    print("this is the user", user)
     if user:
         return JSONResponse(content={"user": user})
     else:
