@@ -1,58 +1,115 @@
 [
-    {
-        "_id": "aha",
-        "description": "AHAs are used for exfoliating the skin.",
-        "rules": {
-            "avoid": ["retinoid"],
-            "usewith": []
+  {
+    "_id": "aha",
+    "description": "AHAs are used for exfoliating the skin.",
+    "rules": {
+      "avoid": [
+        {
+          "tag": "retinoid",
+          "message": "Avoid using AHA with retinoid."
         }
-    },
-    {
-        "_id": "bha",
-        "description": "BHAs are effective for acne, inflammation, and sensitive skin.",
-        "rules": {
-            "avoid": ["retinoid"],
-            "usewith": []
-        }
-    },
-    {
-        "_id": "retinoid",
-        "description": "Retinoids, like retinol and adapalene, are used for anti-aging.",
-        "rules": {
-            "avoid": ["aha", "bha"],
-            "usewith": []
-        }
-    },
-    {
-        "_id": "vitaminc",
-        "description": "Vitamin C is used for brightening the skin.",
-        "rules": {
-            "avoid": ["aha", "bha"],
-            "usewith": ["spf"]
-        }
-    },
-    {
-        "_id": "vitaminb3",
-        "description": "It helps to improve skin texture and tone.",
-        "rules": {
-            "avoid": [],
-            "usewith": ["AHA", "BHA"]
-        }
-    },
-    {
-        "_id": "vitamina-alt",
-        "description": "Typically, these are retinol alternatives with anti-aging benefits.",
-        "rules": {
-            "avoid": ["retinoid"],
-            "usewith": ["antioxidant"]
-        }
-    },
-    {
-        "_id": "pha",
-        "description": "PHAs provide gentle exfoliation and hydration, suitable for sensitive skin.",
-        "rules": {
-            "avoid": ["retinoid"],
-            "usewith": []
-        }
+      ],
+      "usewith": []
     }
+  },
+  {
+    "_id": "bha",
+    "description": "BHAs are effective for acne, inflammation, and sensitive skin.",
+    "rules": {
+      "avoid": [
+        {
+          "tag": "retinoid",
+          "message": "Avoid using BHA with retinoid."
+        }
+      ],
+      "usewith": []
+    }
+  },
+  {
+    "_id": "retinoid",
+    "description": "Retinoids, like retinol and adapalene, are used for anti-aging.",
+    "rules": {
+      "avoid": [
+        {
+          "tag": "aha",
+          "message": "Avoid using retinoid with AHA."
+        },
+        {
+          "tag": "bha",
+          "message": "Avoid using retinoid with BHA."
+        }
+      ],
+      "usewith": []
+    }
+  },
+  {
+    "_id": "vitaminc",
+    "description": "Vitamin C is used for brightening the skin.",
+    "rules": {
+      "avoid": [
+        {
+          "tag": "niacinamide",
+          "message": "Avoid using Vitamin C with Niacinamide."
+        },
+        {
+          "tag": "bha",
+          "message": "Avoid using Vitamin C with BHA."
+        }
+      ],
+      "usewith": [
+        {
+          "tag": "spf",
+          "message": "SPF and Vitamin C are a great combination."
+        }
+      ]
+    }
+  },
+  {
+    "_id": "vitaminb3",
+    "description": "It helps to improve skin texture and tone.",
+    "rules": {
+      "avoid": [],
+      "usewith": [
+        {
+          "tag": "aha",
+          "message": "Niacinamide and AHA are incompatible."
+        },
+        {
+          "tag": "bha",
+          "message": "Niacinamide and BHA are incompatible."
+        }
+      ]
+    }
+  },
+  {
+    "_id": "vitamina-alt",
+    "description": "Typically, these are retinol alternatives with anti-aging benefits.",
+    "rules": {
+      "avoid": [
+        {
+          "tag": "retinoid",
+          "message": "Avoid using Vitamin A alternatives with retinoid."
+        }
+      ],
+      "usewith": [
+        {
+          "tag": "antioxidant",
+          "message": "Vitamin A alternatives and antioxidants are a great combination."
+        }
+      ]
+    }
+  },
+  {
+    "_id": "pha",
+    "description": "PHAs provide gentle exfoliation and hydration, suitable for sensitive skin.",
+    "rules": {
+      "avoid": [
+        {
+          "tag": "retinoid",
+          "message": "Avoid using PHA with retinoid."
+        }
+      ],
+      "usewith": []
+    }
+  }
 ]

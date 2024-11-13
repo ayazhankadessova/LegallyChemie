@@ -92,6 +92,8 @@ oauth.register(
 @param request the http request object.
 @return redirects to the Auth0 authorization url.
 """
+
+
 @app.get("/login")
 async def login(request: Request):
     redirect_uri = request.url_for("callback")
@@ -104,6 +106,8 @@ async def login(request: Request):
 @param request the http request object.
 @return redirects to the react frontend with the user's information.
 """
+
+
 @app.get("/callback")
 async def callback(request: Request):
     token = await oauth.auth0.authorize_access_token(request)
@@ -147,7 +151,6 @@ async def callback(request: Request):
     )
 
 
-
 """
 @fn logout
 @brief logout route
@@ -155,6 +158,8 @@ async def callback(request: Request):
 @param request the http request object.
 @return redirects to the logout url with a return path to the react app.
 """
+
+
 @app.get("/logout")
 async def logout(request: Request):
     request.session.clear()
@@ -171,12 +176,15 @@ async def logout(request: Request):
         )
     )
 
+
 """
 @fn session
 @brief retrieves the current user session information.
 @param request the http request object.
 @return JSONResponse with user data or an error if the user is not authenticated.
 """
+
+
 @app.get("/session")
 async def session(request: Request):
     user = request.session.get("user")
@@ -192,6 +200,8 @@ async def session(request: Request):
 @param product MongoDB document representing the product.
 @return a dictionary containing product fields in serializable format.
 """
+
+
 def product_serializer(product) -> dict:
     return {
         "id": str(product["_id"]),
@@ -208,44 +218,57 @@ def product_serializer(product) -> dict:
 class ProductInput(BaseModel):
     user_input: str
 
+
 """
 @fn get_user_rules
 @brief fetches rules applicable to products for a specific user.
 @param user_id the id of the user in the database.
 @return dictionary with product_id as key and list of incompatible product_ids.
 """
+
+
 @app.get("/{user_id}/{day}/rules/")
 def get_user_rules(user_id: str, day: str):
 
     products = get_user_products(user_id, day)
-    #products.extend(get_user_products(user_id, "PM"))
 
-    product_rules = {}
+    product_rules = {"avoid": [], "usewith": []}
 
     # fetch all the rules given the tags from the products
     for product in products:
         tags = product.get("tags", [])
         avoid = []
+        usewith = []
         for tag in tags:
             rule = rules_collection.find_one({"_id": {"$in": [tag]}})
             print("Rule: ", rule)
             if rule:
-                avoid_rule = rule.get("rules", {}).get("avoid", [])
-                avoid.extend(avoid_rule)
+                avoid.extend(rule.get("rules", {}).get("avoid", []))
+                usewith.extend(rule.get("rules", {}).get("usewith", []))
+
+        # Remove duplicates
+        avoid = list(set(avoid))
+        usewith = list(set(usewith))
 
         for product_comp in products:
             # skip self
             if product_comp["id"] == product["id"]:
                 continue
 
-            # check if product_comp tags are in the avoid list
             for tag in product_comp.get("tags", []):
-                if tag in avoid:
-                    if product["id"] not in product_rules:
-                        product_rules[product["id"]] = []
-                    product_rules[product["id"]].append(
-                        {"_id": product_comp["id"], "type": "avoid", "tag": tag}
-                    )
+                # Check with avoid list
+                for avoid_rule in avoid:
+                    if tag == avoid_rule["tag"]:
+                        product_rules["avoid"].append(
+                            {"id": product["id"], "rule": avoid_rule}
+                        )
+
+                # Check with usewith list
+                for usewith_index in range(len(usewith) - 1, -1, -1):
+                    if tag == usewith[usewith_index]["tag"]:
+                        del usewith[usewith_index]
+
+    product_rules["usewith"].extend(usewith)
 
     return product_rules
 
@@ -257,6 +280,8 @@ def get_user_rules(user_id: str, day: str):
 @param day time of day ("AM" or "PM").
 @return a list of serialized product dictionaries.
 """
+
+
 @app.get("/{user_id}/{day}/products/")
 def get_user_products(user_id: str, day: str):
     user_doc = users_collection.find_one({"auth0_id": user_id})
@@ -284,6 +309,8 @@ def get_user_products(user_id: str, day: str):
 @param product_input the product input data provided by the user.
 @return a message indicating whether a new or existing product was added.
 """
+
+
 @app.post("/{user_id}/{day}/products/")
 def create_user_product(user_id: str, day: str, product_input: ProductInput):
     user_input = product_input.user_input
@@ -291,25 +318,23 @@ def create_user_product(user_id: str, day: str, product_input: ProductInput):
     print("this is the day ", day)
     if product_data:
         product_name = product_data.get("name")
-        product_brand = product_data.get("brand")   
-        existing_product = products_collection.find_one({
-            "name": product_name,
-            "brand": product_brand
-        })
+        product_brand = product_data.get("brand")
+        existing_product = products_collection.find_one(
+            {"name": product_name, "brand": product_brand}
+        )
 
         if existing_product:
             print("this product already exists")
             product_id = existing_product["_id"]
 
             # checking if the product is already in the user's AM/PM routine
-            user = users_collection.find_one({
-                "auth0_id": user_id,
-                f"products.{day}": product_id 
-            })
+            user = users_collection.find_one(
+                {"auth0_id": user_id, f"products.{day}": product_id}
+            )
 
             if user:
                 return {"message": "Product already in user's products list"}
-            else: 
+            else:
                 # updating user's document to include this product in their products list
                 update_result = users_collection.update_one(
                     {"auth0_id": user_id},
@@ -363,6 +388,8 @@ def create_user_product(user_id: str, day: str, product_input: ProductInput):
 @param product_id the id of the product to be deleted.
 @return a message indicating successful deletion or an error if the product was not found.
 """
+
+
 @app.delete("/{user_id}/{day}/products/{product_id}")
 def delete_user_product(user_id: str, day: str, product_id: str):
     print("User ID:", user_id)
