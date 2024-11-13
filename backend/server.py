@@ -246,9 +246,6 @@ def get_user_rules(user_id: str, day: str):
                 avoid.extend(rule.get("rules", {}).get("avoid", []))
                 usewith.extend(rule.get("rules", {}).get("usewith", []))
 
-        # Remove duplicates
-        avoid = list(set(avoid))
-        usewith = list(set(usewith))
 
         for product_comp in products:
             # skip self
@@ -260,7 +257,10 @@ def get_user_rules(user_id: str, day: str):
                 for avoid_rule in avoid:
                     if tag == avoid_rule["tag"]:
                         product_rules["avoid"].append(
-                            {"id": product["id"], "rule": avoid_rule}
+                            {
+                                "source": product["id"], 
+                                "comp": product_comp["id"],
+                                "rule": avoid_rule}
                         )
 
                 # Check with usewith list

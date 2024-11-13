@@ -68,8 +68,7 @@
     "_id": "vitaminb3",
     "description": "It helps to improve skin texture and tone.",
     "rules": {
-      "avoid": [],
-      "usewith": [
+      "avoid": [
         {
           "tag": "aha",
           "message": "Niacinamide and AHA are incompatible."
@@ -78,7 +77,8 @@
           "tag": "bha",
           "message": "Niacinamide and BHA are incompatible."
         }
-      ]
+      ],
+      "usewith": []
     }
   },
   {

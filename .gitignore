@@ -56,5 +56,6 @@ dist/
 
 # python files
 .venv
+venv
 __pycache__
 
