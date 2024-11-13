@@ -13,6 +13,7 @@ const SearchBar = ({ onProductAdded, isThemeChanged, day }) => {
         
         fetch(`http://localhost:8000/${day}/products/`, {
             method: 'POST',
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
             },
