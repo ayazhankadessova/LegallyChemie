@@ -9,9 +9,9 @@ from authlib.integrations.starlette_client import OAuth
 from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
+from pprint import pprint
 import uvicorn
 import os
-import json
 
 
 """
@@ -42,7 +42,8 @@ app = FastAPI()
 @brief adds session middleware to the app for secure session management.
 @details uses a secret key from the environment variables.
 """
-app.add_middleware(SessionMiddleware, secret_key=os.getenv("APP_SECRET_KEY"))
+secret_key = os.getenv("APP_SECRET_KEY")
+app.add_middleware(SessionMiddleware, secret_key=secret_key)
 
 
 """
@@ -111,7 +112,7 @@ async def login(request: Request):
 @app.get("/callback")
 async def callback(request: Request):
     token = await oauth.auth0.authorize_access_token(request)
-    # what is this token?
+
     request.session["user"] = token
     # print("Token: ", token)
 
@@ -126,6 +127,7 @@ async def callback(request: Request):
     print("User ID: ", user_id)
 
     request.session["user_id"] = user_id
+    print("Session after saving token:", request.session)
 
     # storing userID in MongoDB
     if user_id:
@@ -147,7 +149,7 @@ async def callback(request: Request):
 
     # redirecting user back to React app with a success status
     return RedirectResponse(
-        f"http://localhost:3000/landing?name={given_name}&user_id={user_id}"
+        f"http://localhost:3000/landing?name={given_name}"
     )
 
 
@@ -188,7 +190,6 @@ async def logout(request: Request):
 @app.get("/session")
 async def session(request: Request):
     user = request.session.get("user")
-    print("this is the user", user)
     if user:
         return JSONResponse(content={"user": user})
     else:
@@ -228,14 +229,24 @@ class ProductInput(BaseModel):
 """
 
 
-@app.get("/{user_id}/{day}/rules/")
-def get_user_rules(user_id: str, day: str):
+@app.get("/{day}/rules/")
+async def get_user_rules(day: str, request: Request):
+    user = request.session.get("user")
 
-    products = get_user_products(user_id, day)
+    if not user:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    user_id = user.get("sub")
+
+    if not user_id:
+        raise HTTPException(status_code=401, detail="User ID not found in session")
+
+    # fetching products for the user and day using session-based user_id
+    products = await get_user_products(user_id, day)  
 
     product_rules = {"avoid": [], "usewith": []}
 
-    # fetch all the rules given the tags from the products
+    # fetching all the rules given the tags from the products
     for product in products:
         tags = product.get("tags", [])
         avoid = []
@@ -247,26 +258,25 @@ def get_user_rules(user_id: str, day: str):
                 avoid.extend(rule.get("rules", {}).get("avoid", []))
                 usewith.extend(rule.get("rules", {}).get("usewith", []))
 
-
         # TODO: remove duplicates from avoid and usewith lists???
-
         for product_comp in products:
             # skip self
             if product_comp["id"] == product["id"]:
                 continue
 
             for tag in product_comp.get("tags", []):
-                # Check with avoid list
+                # check with avoid list
                 for avoid_rule in avoid:
                     if tag == avoid_rule["tag"]:
                         product_rules["avoid"].append(
                             {
                                 "source": product["id"], 
                                 "comp": product_comp["id"],
-                                "rule": avoid_rule}
+                                "rule": avoid_rule
+                            }
                         )
 
-                # Check with usewith list
+                # Cceck with usewith list
                 for usewith_index in range(len(usewith) - 1, -1, -1):
                     if tag == usewith[usewith_index]["tag"]:
                         del usewith[usewith_index]
@@ -274,7 +284,6 @@ def get_user_rules(user_id: str, day: str):
     product_rules["usewith"].extend(usewith)
 
     return product_rules
-
 
 """
 @fn get_user_products
@@ -285,8 +294,22 @@ def get_user_rules(user_id: str, day: str):
 """
 
 
-@app.get("/{user_id}/{day}/products/")
-def get_user_products(user_id: str, day: str):
+@app.get("/{day}/products/")
+def get_user_products(day: str, request: Request):
+    user = request.session.get("user")
+    print("Session contents:", request.session)
+
+    print("299User:", user)
+
+    pprint(user)
+    if not user:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    user_id = user.get("sub")
+
+    if not user_id:
+        raise HTTPException(status_code=401, detail="User ID not found in session")
+    
     user_doc = users_collection.find_one({"auth0_id": user_id})
 
     if not user_doc:
@@ -314,11 +337,18 @@ def get_user_products(user_id: str, day: str):
 """
 
 
-@app.post("/{user_id}/{day}/products/")
-def create_user_product(user_id: str, day: str, product_input: ProductInput):
+@app.post("/{day}/products/")
+def create_user_product(day: str, product_input: ProductInput, request: Request):
     user_input = product_input.user_input
     product_data = final(user_input)
-    print("this is the day ", day)
+    user = request.session.get("user")
+    if not user:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    user_id = user.get("sub")
+    if not user_id:
+        raise HTTPException(status_code=401, detail="User ID not found in session")
+    
     if product_data:
         product_name = product_data.get("name")
         product_brand = product_data.get("brand")
@@ -393,8 +423,15 @@ def create_user_product(user_id: str, day: str, product_input: ProductInput):
 """
 
 
-@app.delete("/{user_id}/{day}/products/{product_id}")
-def delete_user_product(user_id: str, day: str, product_id: str):
+@app.delete("/{day}/products/{product_id}")
+def delete_user_product(day: str, product_id: str, request: Request):
+    user = request.session.get("user")
+    if not user:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    user_id = user.get("sub")
+    if not user_id:
+        raise HTTPException(status_code=401, detail="User ID not found in session")
     print("User ID:", user_id)
     print("Product ID:", product_id)
     result = users_collection.update_one(

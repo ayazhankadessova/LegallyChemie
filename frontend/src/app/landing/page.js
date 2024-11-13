@@ -5,7 +5,6 @@ import Nav from '../components/navbar.js';
 
 export default function Homepage() {
   const [name, setName] = useState('');
-  const [user_id, setID] = useState('');
   const [isThemeChanged, setIsThemeChanged] = useState(false);
   const [loading, setLoading] = useState(true); 
   const eyesRef = useRef([]);
@@ -19,7 +18,6 @@ export default function Homepage() {
     }, 100); // 0.1 second delay
     const params = new URLSearchParams(window.location.search);
     setName(params.get('name') || 'there');
-    setID(params.get('user_id') || '0');
   }, []); 
 
   const calculateAngle = (cx, cy, ex, ey) => {
@@ -63,7 +61,7 @@ export default function Homepage() {
   }
 
   const gotoFridge = () => {
-    window.location.href = `http://localhost:3000/fridge?name=${name}&user_id=${user_id}`;
+    window.location.href = `http://localhost:3000/fridge?name=${name}`;
   };
 
   const handleChangeTheme = () => {
@@ -92,14 +90,14 @@ export default function Homepage() {
           />
           <div ref={anchorRef} id="anchor" style={{ width: '10px', height: '10px', position: 'absolute', top: '50%', left: '50%' }} />
           <img 
-            src="/eye.png" 
+            src="/eye2.png" 
             alt="Icon" 
             className="eyes" 
             ref={(el) => (eyesRef.current[0] = el)}
             style={{ position: 'absolute', width: '8px', height: '8px', top: '325.5px', left: '322px' }}
           />
           <img 
-            src="/eye.png" 
+            src="/eye2.png" 
             alt="Icon" 
             className="eyes" 
             ref={(el) => (eyesRef.current[1] = el)}

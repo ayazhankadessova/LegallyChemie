@@ -9,7 +9,6 @@ import SearchBar from '../components/searchbar.js';
 export default function Fridge() {
     const [day, setDay] = useState('AM');
     const [name, setName] = useState('');
-    const [user_id, setID] = useState('');
     const [products, setProducts] = useState([]);
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [showSearchBar, setShowSearchBar] = useState(false);
@@ -20,14 +19,14 @@ export default function Fridge() {
         const newDay = day === 'AM' ? 'PM' : 'AM';
         setDay(newDay);
         localStorage.setItem('day', newDay);
-        getuserProducts(user_id, newDay).then(userProducts => {
+        getuserProducts(newDay).then(userProducts => {
             if (userProducts) setProducts(userProducts);
         });
     };
 
     // function to fetch user's products
-    function getuserProducts(user_id, day) {
-        return fetch(`http://localhost:8000/${user_id}/${day}/products/`) 
+    function getuserProducts(day) {
+        return fetch(`http://localhost:8000/${day}/products/`) 
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -43,7 +42,6 @@ export default function Fridge() {
             });
     }
 
-
     useEffect(() => {
         const themeFromStorage = localStorage.getItem('theme');
         setTimeout(() => {
@@ -57,30 +55,25 @@ export default function Fridge() {
 
         const params = new URLSearchParams(window.location.search);
         const nameFromUrl = params.get('name');
-        const idFromUrl = params.get('user_id');
-    
         setName(nameFromUrl || 'there');
-        setID(idFromUrl || '0');
         
         const storedDay = localStorage.getItem('day') || 'AM';
         setDay(storedDay);
 
-        if (idFromUrl) {
-            getuserProducts(idFromUrl, storedDay)
-                .then(userProducts => {
-                    if (userProducts) {
-                        setProducts(userProducts); 
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching products:', error);
-                });
-        }
+        getuserProducts(storedDay)
+            .then(userProducts => {
+                if (userProducts) {
+                    setProducts(userProducts);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching products:', error);
+            });
     }, []); 
 
     if (loading) {
         return <div></div>; 
-      }
+    }
     
     const handleViewProduct = (product) => {
         setSelectedProduct(product);
@@ -94,7 +87,7 @@ export default function Fridge() {
   };
     
     const handleDeleteProduct = (productId, day) => {
-        fetch(`http://localhost:8000/${user_id}/${day}/products/${productId}/`, {
+        fetch(`http://localhost:8000/${day}/products/${productId}/`, {
             method: 'DELETE',
         })
         .then(response => {
@@ -146,17 +139,19 @@ export default function Fridge() {
                     className="fridge-image"
                 />
                 <div className="product-grid">
-                <div className={`product-cell add-product-cell ${isThemeChanged ? 'theme-dark' : ''}`}>
-                <button 
-                onClick={onAddProduct} 
-                className={`add-product-button ${showSearchBar ? 'close-add-button' : ''}`}
-                >
-                {showSearchBar ? 'close search bar' : 'add new product'}
-                </button>
-                </div>
-                    <ProductList products={products} 
-                    onViewProduct={handleViewProduct} 
-                    isThemeChanged={isThemeChanged}/>
+                    <div className={`product-cell add-product-cell ${isThemeChanged ? 'theme-dark' : ''}`}>
+                        <button 
+                            onClick={onAddProduct} 
+                            className={`add-product-button ${showSearchBar ? 'close-add-button' : ''}`}
+                        >
+                            {showSearchBar ? 'close search bar' : 'add new product'}
+                        </button>
+                    </div>
+                    <ProductList 
+                        products={products} 
+                        onViewProduct={handleViewProduct} 
+                        isThemeChanged={isThemeChanged}
+                    />
                 </div>
             </div>
             <div 
@@ -168,13 +163,12 @@ export default function Fridge() {
                 {showSearchBar && ( 
                     <SearchBar 
                         isThemeChanged={isThemeChanged}
-                        user_id={user_id} // passing user_id to SearchBar
                         onProductAdded={(newProduct) => {
                             // updating products list when a new product is added
                             setProducts(prevProducts => [...prevProducts, { name: newProduct }]);
                             setShowSearchBar(false); // hiding search bar after adding
                         }} 
-                        day = {day}
+                        day={day}
                     />
                 )}
                 <ProductCard 
@@ -185,6 +179,6 @@ export default function Fridge() {
                     day={day}
                 />
             </div>
-      </div>
+        </div>
     );
 }

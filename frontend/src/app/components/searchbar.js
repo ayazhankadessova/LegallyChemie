@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const SearchBar = ({ user_id, onProductAdded, isThemeChanged, day }) => {
+const SearchBar = ({ onProductAdded, isThemeChanged, day }) => {
     const [inputValue, setInputValue] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
@@ -11,7 +11,7 @@ const SearchBar = ({ user_id, onProductAdded, isThemeChanged, day }) => {
             return;
         }
         
-        fetch(`http://localhost:8000/${user_id}/${day}/products/`, {
+        fetch(`http://localhost:8000/${day}/products/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
