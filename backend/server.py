@@ -247,6 +247,8 @@ def get_user_rules(user_id: str, day: str):
                 usewith.extend(rule.get("rules", {}).get("usewith", []))
 
 
+        # TODO: remove duplicates from avoid and usewith lists???
+
         for product_comp in products:
             # skip self
             if product_comp["id"] == product["id"]:
