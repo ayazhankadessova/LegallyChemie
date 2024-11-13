@@ -5,6 +5,7 @@ import Nav from '../components/navbar.js';
 import ProductList from '../components/product_list.js';
 import ProductCard from '../components/product_view.js';
 import SearchBar from '../components/searchbar.js';
+import IssuesList from '../components/issues_view';
 
 export default function Fridge() {
     const [day, setDay] = useState('AM');
@@ -14,6 +15,10 @@ export default function Fridge() {
     const [showSearchBar, setShowSearchBar] = useState(false);
     const [isThemeChanged, setIsThemeChanged] = useState(false);
     const [loading, setLoading] = useState(true); 
+    const [rules, setRules] = useState({ avoid: [], usewith: [] });
+    const [issues, setIssues] = useState([]); 
+    const [showIssues, setShowIssues] = useState(false); 
+
 
     const toggleDay = () => {
         const newDay = day === 'AM' ? 'PM' : 'AM';
@@ -21,6 +26,9 @@ export default function Fridge() {
         localStorage.setItem('day', newDay);
         getuserProducts(newDay).then(userProducts => {
             if (userProducts) setProducts(userProducts);
+        });
+        getUserRules(newDay).then(userRules => {
+            if (userRules) setRules(userRules);
         });
     };
 
@@ -43,6 +51,24 @@ export default function Fridge() {
         .catch(error => {
             console.error('Error fetching products:', error);
         });
+    }
+
+    // Function to fetch user's rules
+    function getUserRules(day) {
+        return fetch(`http://localhost:8000/${day}/rules/`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data);
+                return data;
+            })
+            .catch(error => {
+                console.error('Error fetching rules:', error);
+            });
     }
 
 
@@ -73,11 +99,29 @@ export default function Fridge() {
             .catch(error => {
                 console.error('Error fetching products:', error);
             });
+            getUserRules(storedDay)
+            .then(userRules => {
+                if (userRules) {
+                    setRules(userRules);
+                    const combinedIssues = userRules.avoid.map(issue => {
+                        return `Product ${issue.source} should not be used with Product ${issue.comp} because ${issue.rule.reason}`;
+                    });
+                    setIssues(combinedIssues);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching rules:', error);
+            });
+        
     }, []); 
 
     if (loading) {
         return <div></div>; 
     }
+
+    const handleCloseIssues = () => {
+        setShowIssues(false);
+    };
     
     const handleViewProduct = (product) => {
         setSelectedProduct(product);
@@ -183,6 +227,20 @@ export default function Fridge() {
                     isThemeChanged={isThemeChanged} 
                     day={day}
                 />
+
+                <button className={`button-issues ${isThemeChanged ? 'dark-theme' : 'light-theme'}`}
+                 onClick={() => setShowIssues(true)} 
+                 >
+                    Issues Found!
+                    <img src="/chemie-sad.png" alt="Issue Icon"/>
+                </button>
+                {showIssues && (
+                <IssuesList 
+                    issues={issues} 
+                    onClose={handleCloseIssues} 
+                    isThemeChanged={isThemeChanged} 
+                />
+            )}
             </div>
         </div>
     );
