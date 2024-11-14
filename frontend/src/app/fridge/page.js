@@ -19,6 +19,7 @@ export default function Fridge() {
     const [issues, setIssues] = useState([]); 
     const [showIssues, setShowIssues] = useState(false); 
     const [IssuesCount, setIssuesCount] = useState(0);
+    const [rules, setRules] = useState({ avoid: [], usewith: [] });
 
     const toggleDay = () => {
         const newDay = day === 'AM' ? 'PM' : 'AM';
@@ -28,7 +29,11 @@ export default function Fridge() {
             if (userProducts) setProducts(userProducts);
         });
         getUserRules(newDay).then(userRules => {
-            if (userRules) setRules(userRules);
+            if (userRules) {
+                setRules(userRules);
+            } else {
+                setRules({ avoid: [], usewith: [] });
+            } 
         });
     };
 
@@ -81,12 +86,14 @@ export default function Fridge() {
           items.forEach(item => {
             const key1 = `${item.source}-${item.comp}`;
             const key2 = `${item.comp}-${item.source}`;
+   
             if (map.has(key1) || map.has(key2)) {
                 const key = map.has(key1) ? key1 : key2;
                 const existingItem = map.get(key);
+                const validTags = item.rule.tag.split(' ').filter(tag => tag.length >= 3);
 
-                existingItem.rule.tag = [...new Set([...existingItem.rule.tag, item.rule.tag].flat())]; // merge tags
-                // console.log('existingItem:', existingItem);
+                existingItem.rule.tag = [...new Set([...existingItem.rule.tag, validTags].flat())]; // merge tags
+
             } else {
                 map.set(key1, item); 
             }
@@ -101,6 +108,20 @@ export default function Fridge() {
           usewith: combineTags(userRules.usewith)
         };
       }
+
+      function removeBadTags(issues) {
+        return {
+            avoid: issues.avoid.map(issue => {
+                if (issue.rule && Array.isArray(issue.rule.tag)) {
+                    const cleanedTags = issue.rule.tag.filter(tag => tag.length >= 3);
+                    issue.rule.tag = `[${cleanedTags.join(', ')}]`;
+                }
+    
+                return issue;
+            })
+        };
+    }
+    
 
     useEffect(() => {
         const themeFromStorage = localStorage.getItem('theme');
@@ -135,6 +156,7 @@ export default function Fridge() {
                     console.log('userRules:', userRules);
                     const uniqueIssues = removeDuplicates(userRules);
                     console.log('uniqueIssues:', uniqueIssues);
+                    const cleaned_issues = removeBadTags(uniqueIssues);
                     setIssues(uniqueIssues);
                     const issuesCount = (uniqueIssues.avoid?.length || 0) + (uniqueIssues.usewith?.length || 0);
                     setIssuesCount(issuesCount);
