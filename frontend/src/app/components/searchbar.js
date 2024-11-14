@@ -1,8 +1,39 @@
+
+/**
+ * @file searchbar.js
+ * @brief search bar component that allows users to input a product name and add it to their routine.
+ * 
+ * @param {Function} onProductAdded - callback function to notify the parent component when a product is added.
+ * @param {boolean} isThemeChanged - boolean indicating if the theme is changed.
+ * @param {string} day - the day (AM/PM) associated with the product.
+ * 
+ * @returns {JSX.Element} the rendered search bar component.
+ */
+
 import React, { useState } from 'react';
+
+/**
+ * @function SearchBar
+ * @brief tenders a search bar that allows users to enter a product name and add it to their routine.
+ * 
+ * @param {Object} props - the component props.
+ * @param {Function} props.onProductAdded - callback function to notify the parent component when a product is added.
+ * @param {boolean} props.isThemeChanged - boolean indicating if the theme is changed.
+ * @param {string} props.day - the day (AM/PM) associated with the product.
+ * 
+ * @returns {JSX.Element} the rendered search bar component.
+ */
 
 const SearchBar = ({ onProductAdded, isThemeChanged, day }) => {
     const [inputValue, setInputValue] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+
+    /**
+     * @function handleAddProduct
+     * @brief handles the addition of a product to the user's routine by sending a POST request.
+     * 
+     * @param {Object} e - the event object from the form submission.
+     */
 
     const handleAddProduct = (e) => {
         e.preventDefault();

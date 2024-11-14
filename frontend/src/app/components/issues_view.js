@@ -1,11 +1,42 @@
+
+/**
+ * @file issue_view.js
+ * @brief A component that displays a list of issues related to product compatibility, 
+ *        such as "avoid" and "use with" recommendations.
+ * 
+ * @param {Array} issues - An object containing "avoid" and "use with" issues.
+ * @param {Function} onClose - Callback function to close the issues view.
+ * @param {boolean} isThemeChanged - Boolean indicating if the theme is changed.
+ * 
+ * @returns {JSX.Element} The rendered issues list view component.
+ */
+
 import React from 'react';
 import '../styles/fridge.css';
+
+/**
+ * @function IssuesList
+ * @brief Renders a list of product compatibility issues, formatted based on "avoid" and "use with" categories.
+ * 
+ * @param {Object} props - The component props.
+ * @param {Array} props.issues - An object containing arrays of "avoid" and "use with" issues.
+ * @param {Function} props.onClose - Callback function to close the issues view.
+ * @param {boolean} props.isThemeChanged - Boolean indicating if the theme is changed.
+ * 
+ * @returns {JSX.Element} The rendered issues list view component.
+ */
 
 const IssuesList = ({ issues, onClose, isThemeChanged }) => { 
     const avoidIssues = issues.avoid || [];
     const usewithIssues = issues.usewith || [];
     
-    // formatting avoid issues: (comp product name) contains (tag), so please (message) like (source product name)
+    /**
+     * @const avoidMessages
+     * @brief Formats "avoid" issues into messages with highlighted product and source names.
+     * 
+     * @returns {Array} An array of formatted avoid messages as JSX elements.
+     */
+    
     const avoidMessages = avoidIssues.map(item => {
         const comp = <b>{item.comp}</b>;
         const source = <b>{item.source}</b>;
@@ -19,7 +50,14 @@ const IssuesList = ({ issues, onClose, isThemeChanged }) => {
         );
     });
 
-    // formatting usewith issues: For (source): (message)
+
+    /**
+     * @const usewithMessages
+     * @brief Formats "use with" issues into messages with highlighted source names.
+     * 
+     * @returns {Array} An array of formatted "use with" messages as JSX elements.
+     */
+
     const usewithMessages = usewithIssues.map(item => {
         const source = <b>{item.source}</b>; 
         const message = item.message; 
@@ -31,7 +69,12 @@ const IssuesList = ({ issues, onClose, isThemeChanged }) => {
         );
     });
 
-    // combining all messages into a single array
+    /**
+     * @const allMessages
+     * @brief Combines all formatted messages (avoid and use with) into a single array.
+     * 
+     * @type {Array}
+     */
     const allMessages = [...avoidMessages, ...usewithMessages];
 
     return (
