@@ -44,8 +44,11 @@ const IssuesList = ({ issues, onClose, isThemeChanged }) => {
         console.log("this is the 13: ",item.rule.tag);
 
         return (
-            <span>
-                {comp} contains {item.rule.tag}, so please {message} like {source}.
+            // <span>
+            //     {comp} contains {item.rule.tag}, so please {message} like {source}.
+            // </span>
+             <span>
+             {comp}: please {message} like {source}.
             </span>
         );
     });
