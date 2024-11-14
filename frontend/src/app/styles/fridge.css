@@ -362,7 +362,7 @@ body {
     margin-top: 8px;
     text-align: center;
 }
-
+/* CSS RELATED TO ISSUES BUTTON */
 .button-issues.light-theme{
     display: flex;
     align-items: center;

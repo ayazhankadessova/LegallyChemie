@@ -276,7 +276,7 @@ async def get_user_rules(day: str, request: Request):
                         del usewith[usewith_index]
 
     product_rules["usewith"].extend(usewith)
-
+    # TODO: Output needs to return product names instead of ids
     return product_rules
 
 """
@@ -315,7 +315,6 @@ async def get_user_products(day: str, request: Request):
     print(f"User Products for {day}:", user_products)
 
     return [product_serializer(product) for product in user_products]
-
 
 """
 @fn create_user_product
@@ -371,7 +370,7 @@ async def create_user_product(day: str, product_input: ProductInput, request: Re
                     else "Product already in user's products list"
                 )
         else:
-            # add tags for products collections according to ingredients
+            # add tags for products collections according to ingredients collection
             ingredients = product_data.get("ingredients", [])
             tags = []
             for i in ingredients:

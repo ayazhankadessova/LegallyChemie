@@ -8,6 +8,7 @@ import SearchBar from '../components/searchbar.js';
 import IssuesList from '../components/issues_view';
 
 export default function Fridge() {
+    //set usestates
     const [day, setDay] = useState('AM');
     const [name, setName] = useState('');
     const [products, setProducts] = useState([]);
@@ -15,7 +16,6 @@ export default function Fridge() {
     const [showSearchBar, setShowSearchBar] = useState(false);
     const [isThemeChanged, setIsThemeChanged] = useState(false);
     const [loading, setLoading] = useState(true); 
-    // const [rules, setRules] = useState({ avoid: [], usewith: [] });
     const [issues, setIssues] = useState([]); 
     const [showIssues, setShowIssues] = useState(false); 
 
@@ -104,8 +104,7 @@ export default function Fridge() {
         getUserRules(storedDay)
             .then(userRules => {
                 if (userRules && userRules.avoid) {
-                    // const stringSet = userRules;
-                    // const combinedIssues = Array.from(stringSet.replace(/[{}]/g, '').split(',').map(Number));
+                    //get userules and set it to combinedissues
                     const combinedIssues = userRules;
                     setIssues(combinedIssues);
                     console.log('Combined Issues:', combinedIssues); // Confirm issues are set
@@ -229,7 +228,7 @@ export default function Fridge() {
                     isThemeChanged={isThemeChanged} 
                     day={day}
                 />
-
+                {/* button that shows the issues with your fridge */}
                 <button className={`button-issues ${isThemeChanged ? 'dark-theme' : 'light-theme'}`}
                  onClick={() => setShowIssues(true)} 
                  >
