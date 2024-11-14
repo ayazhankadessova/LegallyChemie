@@ -147,9 +147,7 @@ async def callback(request: Request):
             print("user already exists")
 
     # redirecting user back to React app with a success status
-    return RedirectResponse(
-        f"http://localhost:3000/landing?name={given_name}"
-    )
+    return RedirectResponse(f"http://localhost:3000/landing?name={given_name}")
 
 
 """
@@ -185,6 +183,7 @@ async def logout(request: Request):
 @return JSONResponse with user data or an error if the user is not authenticated.
 """
 
+
 @app.get("/session")
 async def session(request: Request):
     user = request.session.get("user")
@@ -192,6 +191,7 @@ async def session(request: Request):
         return JSONResponse(content={"user": user})
     else:
         return JSONResponse(content={"error": "Not authenticated"}, status_code=401)
+
 
 """
 @fn product_serializer
@@ -225,6 +225,7 @@ class ProductInput(BaseModel):
 @return dictionary with product_id as key and list of incompatible product_ids.
 """
 
+
 @app.get("/{day}/rules/")
 async def get_user_rules(day: str, request: Request):
     user = request.session.get("user")
@@ -235,34 +236,52 @@ async def get_user_rules(day: str, request: Request):
         raise HTTPException(status_code=401, detail="User ID not found in session")
 
     # fetching products for the user and day using session-based user_id
-    products = await get_user_products(day, request)  
-
+    products = await get_user_products(day, request)
 
     product_rules = {"avoid": [], "usewith": []}
     product_count = 0
 
     # fetching all the rules given the tags from the products
     for product in products:
-        print("Product",product_count,": ", product.get("name"))
+        print("Product", product_count, ": ", product.get("name"))
         product_count += 1
         tags = product.get("tags", [])
         print("tags:", tags)
         avoid = []
         usewith = []
+        usewhen = []
         count = 0
         message_tags = []
 
+    
+
         for tag in tags:
             rule = rules_collection.find_one({"_id": {"$in": [tag]}})
-            print("Rule",count,": ", rule)
+            print("Rule", count, ": ", rule)
             count += 1
             if rule:
                 avoid.extend(rule.get("rules", {}).get("avoid", []))
                 print("260", avoid)
                 usewith.extend(
-                    [{"tag": rule_data.get("tag"), "message": rule_data.get("message"), "source": product["id"]}
-                     for rule_data in rule.get("rules", {}).get("usewith", [])]
+                    [
+                        {
+                            "rule": rule_data,
+                            "source": product["id"],
+                        }
+                        for rule_data in rule.get("rules", {}).get("usewith", [])
+                    ]
                 )
+
+                if rule.get("rules", {}).get("usewhen", []):
+                    for rule_data in rule.get("rules", {}).get("usewhen", []):
+                        if(rule_data.get("tag") != day):
+                            usewhen.append(
+                                {
+                                    "rule": rule_data,
+                                    "source": product["id"],
+                                }
+                            )
+
         print("265 Avoid:", avoid)
         for product_comp in products:
             # skip self
@@ -277,30 +296,37 @@ async def get_user_rules(day: str, request: Request):
                     if tag == avoid_rule["tag"]:
                         product_rules["avoid"].append(
                             {
-                                
-                                "source": product["id"], 
+                                "source": product["id"],
                                 "comp": product_comp["id"],
                                 "rule": avoid_rule,
-                                "tag": tag
+                                # "og_tag": extracted_other_tag
                             }
                         )
-                    for usewith_index in range(len(usewith) -1, -1, -1):
+                    for usewith_index in range(len(usewith) - 1, -1, -1):
                         if tag == usewith[usewith_index]["tag"]:
                             del usewith[usewith_index]
+
         product_rules["usewith"].extend(usewith)
+        product_rules["usewhen"] = usewhen
 
     print("Product Rules for avoid:", product_rules["avoid"])
     print("Product Rules for usewith:", product_rules["usewith"])
+    print("Product rules for usewhen: ", product_rules["usewhen"])
 
     # convert product IDs to names for output
     product_names = {product["id"]: product["name"] for product in products}
 
     product_rules["avoid"] = [
-        {**rule, "source": product_names.get(rule["source"]), "comp": product_names.get(rule["comp"])}
+        {
+            **rule,
+            "source": product_names.get(rule["source"]),
+            "comp": product_names.get(rule["comp"]),
+        }
         for rule in product_rules["avoid"]
     ]
     product_rules["usewith"] = [
-        {**rule, "source": product_names.get(rule["source"])} for rule in product_rules["usewith"]
+        {**rule, "source": product_names.get(rule["source"])}
+        for rule in product_rules["usewith"]
     ]
 
     print("Product Rules:", product_rules)
@@ -327,7 +353,7 @@ async def get_user_products(day: str, request: Request):
 
     if not user_id:
         raise HTTPException(status_code=401, detail="User ID not found in session")
-    
+
     user_doc = users_collection.find_one({"auth0_id": user_id})
 
     if not user_doc:
@@ -343,6 +369,7 @@ async def get_user_products(day: str, request: Request):
     print(f"User Products for {day}:", user_products)
 
     return [product_serializer(product) for product in user_products]
+
 
 """
 @fn create_user_product
@@ -364,7 +391,7 @@ async def create_user_product(day: str, product_input: ProductInput, request: Re
 
     if not user_id:
         raise HTTPException(status_code=401, detail="User ID not found in session")
-    
+
     if product_data:
         product_name = product_data.get("name")
         product_brand = product_data.get("brand")
