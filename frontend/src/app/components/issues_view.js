@@ -1,8 +1,12 @@
 import React from 'react';
 import '../styles/fridge.css';
 
-const IssuesList = ({ issues, onClose, isThemeChanged }) => {
-    //  
+const IssuesList = ({ issues, onClose, isThemeChanged }) => { 
+    const avoid = issues.avoid;
+    const issuemessages = [];
+    avoid.forEach(item => {
+        issuemessages.push(item.rule.message);
+      });
 
     return (
         <div className="issues-view" style={{ backgroundImage: isThemeChanged ? `url('/clipboard-blue.png')` : `url('/clipboard-pink.png')` }}>            
@@ -14,10 +18,8 @@ const IssuesList = ({ issues, onClose, isThemeChanged }) => {
         <h3 className="issues-title" style={{ color: isThemeChanged ? '#00028E' : '#9c0060' }}>Issues Found</h3>
         <div className="issues-card"
         style={{ backgroundColor: isThemeChanged ? '#D0F7FF' : '#FFDDFACC' }}>
-            {/* <img src="/chemie-sad.png" alt="Issue Icon" 
-                style={{marginRight: '5px'}}/> */}
             <ul className="issues-list">
-                {issues.map((issue, index) => (
+                {issuemessages.map((issue, index) => (
                     <li key={index} className="issue-item" style={{ color: isThemeChanged ? '#00028E' : '#9c0060' }}>
                         {issue}
                     </li>

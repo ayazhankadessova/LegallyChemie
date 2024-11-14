@@ -236,7 +236,7 @@ async def get_user_rules(day: str, request: Request):
         raise HTTPException(status_code=401, detail="User ID not found in session")
 
     # fetching products for the user and day using session-based user_id
-    products = await get_user_products(user_id, day)  
+    products = await get_user_products(day, request)  
 
     product_rules = {"avoid": [], "usewith": []}
 
@@ -270,7 +270,7 @@ async def get_user_rules(day: str, request: Request):
                             }
                         )
 
-                # Cceck with usewith list
+                # Check with usewith list
                 for usewith_index in range(len(usewith) - 1, -1, -1):
                     if tag == usewith[usewith_index]["tag"]:
                         del usewith[usewith_index]

@@ -15,7 +15,7 @@ export default function Fridge() {
     const [showSearchBar, setShowSearchBar] = useState(false);
     const [isThemeChanged, setIsThemeChanged] = useState(false);
     const [loading, setLoading] = useState(true); 
-    const [rules, setRules] = useState({ avoid: [], usewith: [] });
+    // const [rules, setRules] = useState({ avoid: [], usewith: [] });
     const [issues, setIssues] = useState([]); 
     const [showIssues, setShowIssues] = useState(false); 
 
@@ -53,23 +53,25 @@ export default function Fridge() {
         });
     }
 
-    // Function to fetch user's rules
     function getUserRules(day) {
-        return fetch(`http://localhost:8000/${day}/rules/`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log(data);
-                return data;
-            })
-            .catch(error => {
-                console.error('Error fetching rules:', error);
-            });
-    }
+        return fetch(`http://localhost:8000/${day}/rules/`, {
+          method: 'GET',
+          credentials: 'include'
+        })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            return response.json();
+          })
+          .then(data => {
+            console.log( data); 
+            return data;
+          })
+          .catch(error => {
+            console.error('Error fetching rules:', error);
+          });
+      }
 
 
     useEffect(() => {
@@ -99,21 +101,21 @@ export default function Fridge() {
             .catch(error => {
                 console.error('Error fetching products:', error);
             });
-            getUserRules(storedDay)
+        getUserRules(storedDay)
             .then(userRules => {
-                if (userRules) {
-                    setRules(userRules);
-                    const combinedIssues = userRules.avoid.map(issue => {
-                        return `Product ${issue.source} should not be used with Product ${issue.comp} because ${issue.rule.reason}`;
-                    });
+                if (userRules && userRules.avoid) {
+                    // const stringSet = userRules;
+                    // const combinedIssues = Array.from(stringSet.replace(/[{}]/g, '').split(',').map(Number));
+                    const combinedIssues = userRules;
                     setIssues(combinedIssues);
+                    console.log('Combined Issues:', combinedIssues); // Confirm issues are set
                 }
             })
             .catch(error => {
                 console.error('Error fetching rules:', error);
             });
         
-    }, []); 
+    }, [day]); 
 
     if (loading) {
         return <div></div>; 
@@ -231,11 +233,11 @@ export default function Fridge() {
                 <button className={`button-issues ${isThemeChanged ? 'dark-theme' : 'light-theme'}`}
                  onClick={() => setShowIssues(true)} 
                  >
-                    ⚠️ Issues
+                    ⚠️  Issues
                 </button>
                 {showIssues && (
                 <IssuesList 
-                    issues={issues} 
+                    issues={issues}
                     onClose={handleCloseIssues} 
                     isThemeChanged={isThemeChanged} 
                 />
