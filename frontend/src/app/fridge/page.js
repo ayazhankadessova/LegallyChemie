@@ -231,8 +231,7 @@ export default function Fridge() {
                 <button className={`button-issues ${isThemeChanged ? 'dark-theme' : 'light-theme'}`}
                  onClick={() => setShowIssues(true)} 
                  >
-                    Issues Found!
-                    <img src="/chemie-sad.png" alt="Issue Icon"/>
+                    ⚠️ Issues
                 </button>
                 {showIssues && (
                 <IssuesList 

@@ -366,41 +366,41 @@ body {
 .button-issues.light-theme{
     display: flex;
     align-items: center;
-    color: #FEF5FF; /* Adjust as needed */
-    background-color: #FFAADF;
+    color: #FEF5FF; 
+    background-color: #FF77CB;
     border: none;
-    padding: 10px;
+    padding: 10px 20px;
     cursor: pointer;
     position: absolute;
     border-radius: 20px;
-    left: 89%;
-    top: 92%;
+    left: 90%;
+    top: 90%;
     transition: ease-in-out 0.2s;
 }
 
 .button-issues.light-theme:hover{
     background-color: #ff0090;
-    transform: scale(1.1);
+    transform: scale(1.05);
 }
 
 .button-issues.dark-theme{
     display: flex;
     align-items: center;
-    color: #FEF5FF; /* Adjust as needed */
+    color: #FEF5FF; 
     background-color: #00bce1;
     border: none;
-    padding: 10px;
+    padding: 10px 20px;
     cursor: pointer;
     position: absolute;
     border-radius: 20px;
-    left: 89%;
-    top: 92%;
+    left: 90%;
+    top: 90%;
     transition: ease-in-out 0.2s;
 }
 
 .button-issues.dark-theme:hover{
     background-color: #03045E;
-    transform: scale(1.1);
+    transform: scale(1.05);
 }
 
 .button-issues img{
@@ -412,17 +412,18 @@ body {
 .issues-view {
     position: relative;
     border-radius: 20px;
-    margin-top: 4.6em;
+    margin-top: 3em;
     padding: 18px;
-    width: 430px;
+    padding-top: 115px;
+    width: 377px;
     height: 480px;
     text-align: center;
-    background-size: cover;
+    background-size: contain;
     background-position: center;
 }
 
 .issues-card {
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(255, 221, 250, 0.8);
     padding: 20px;
     border-radius: 8px;
 }
@@ -437,7 +438,10 @@ body {
 }
 
 .issues-title {
-    margin-bottom: 20px;
+    margin: 12px 0 7px 0;
+    font-size: 18px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
 }
 
 .issues-list {
