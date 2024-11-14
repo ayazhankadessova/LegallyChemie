@@ -1,3 +1,4 @@
+
 # Node.js
 node_modules/
 npm-debug.log*
@@ -53,6 +54,9 @@ dist/
 
 # env file
 *.env
+
+# testing 
+.env.test
 
 # python files
 .venv
