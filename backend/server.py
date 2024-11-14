@@ -251,10 +251,7 @@ async def get_user_rules(day: str, request: Request):
         usewith = []
         usewhen = []
         count = 0
-        message_tags = []
-
-    
-
+        
         for tag in tags:
             rule = rules_collection.find_one({"_id": {"$in": [tag]}})
             print("Rule", count, ": ", rule)
