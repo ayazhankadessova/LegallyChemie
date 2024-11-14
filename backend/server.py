@@ -284,6 +284,7 @@ async def get_user_rules(day: str, request: Request):
                                 "source": product["id"], 
                                 "comp": product_comp["id"],
                                 "rule": avoid_rule,
+                                "specific_tag": tag,
                                 # "og_tag": extracted_other_tag
                             }
                         )
