@@ -90,16 +90,9 @@ export default function Homepage() {
 
       <div className="left_column">
         <div className="chemie-container">
-<<<<<<< HEAD
-          <img 
-            src={isThemeChanged ? "/chemie-blue.png" : "/chemie-pink.png"}
-            style={{width: 'auto'}} 
-            alt="Icon" 
-=======
           <img
             src={isThemeChanged ? "/chemie-blue.png" : "/chemie-pink.png"}
             alt="Icon"
->>>>>>> 2201b7cf02568485d8cc25fa8d309a0096561b85
             className="chemie"
             style={{ width: "auto" }}
           />
