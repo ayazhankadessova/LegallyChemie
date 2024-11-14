@@ -276,15 +276,14 @@ async def get_user_rules(day: str, request: Request):
                     # problem is that only bha message get's passed on and not the others 
                     # we need to make sure that not only the bha but the other tags are also passed along
                     print("Avoid Rule Message:", avoid_rule["message"])
-                    extracted_other_tag = avoid_rule["message"].split(" ")[-1]
-                    print("Extracted Counter:", extracted_other_tag)
                     if tag == avoid_rule["tag"]:
                         product_rules["avoid"].append(
                             {
+                                
                                 "source": product["id"], 
                                 "comp": product_comp["id"],
                                 "rule": avoid_rule,
-                                "specific_tag": tag,
+                                "tag": tag,
                                 # "og_tag": extracted_other_tag
                             }
                         )
