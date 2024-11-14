@@ -287,6 +287,9 @@ async def get_user_rules(day: str, request: Request):
                                 # "og_tag": extracted_other_tag
                             }
                         )
+                    for usewith_index in range(len(usewith) -1, -1, -1):
+                        if tag == usewith[usewith_index]["tag"]:
+                            del usewith[usewith_index]
         product_rules["usewith"].extend(usewith)
 
     print("Product Rules for avoid:", product_rules["avoid"])
