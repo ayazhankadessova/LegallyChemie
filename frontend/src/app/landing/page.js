@@ -90,14 +90,14 @@ export default function Homepage() {
           />
           <div ref={anchorRef} id="anchor" style={{ width: '10px', height: '10px', position: 'absolute', top: '50%', left: '50%' }} />
           <img 
-            src="/eye2.png" 
+            src="/eye.png" 
             alt="Icon" 
             className="eyes" 
             ref={(el) => (eyesRef.current[0] = el)}
             style={{ position: 'absolute', width: '8px', height: '8px', top: '325.5px', left: '322px' }}
           />
           <img 
-            src="/eye2.png" 
+            src="/eye.png" 
             alt="Icon" 
             className="eyes" 
             ref={(el) => (eyesRef.current[1] = el)}

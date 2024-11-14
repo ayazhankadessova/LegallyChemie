@@ -144,3 +144,7 @@ Now open your browser and go to `http://localhost:3000` & then start clicking. ð
 - **WireFrame Prototype** 
   - https://www.figma.com/design/EDfRWhEi1mNnm3Vwgd8HVj/Wireframing?node-id=40-2&t=VI5CKqNwzFJzjHJA-1
 - **AI Usage**: Credits to copilot, W3Schools, and [React](https://react.dev/learn/managing-state) for helping us write and design. 
+
+# Week 09
+
+Please follow our previous week's README documentation in this markdown (Week 08) to start our application. You can start by adding to your `AM` and `PM` routines while removing the products as you see fit or based on the `Issues` suggested by Chemie on the bottom right corner of the interface. You search the products that you have in your routine or that you plan to have in your routine by using the add products button and the search bar, make sure the search the brand name with the product name ðŸ˜Š
