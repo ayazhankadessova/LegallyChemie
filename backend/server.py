@@ -305,7 +305,7 @@ async def get_user_rules(day: str, request: Request):
                             }
                         )
                     for usewith_index in range(len(usewith) - 1, -1, -1):
-                        if tag == usewith[usewith_index]["tag"]:
+                        if tag == usewith[usewith_index]["rule"]["tag"]:
                             del usewith[usewith_index]
 
         product_rules["usewith"].extend(usewith)
