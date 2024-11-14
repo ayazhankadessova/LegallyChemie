@@ -79,14 +79,18 @@ export default function Fridge() {
           const map = new Map();
       
           items.forEach(item => {
-            const key = `${item.source}-${item.comp}`;
-            if (map.has(key)) {
-              const existingItem = map.get(key);
-              existingItem.rule.tag = [...new Set([...existingItem.rule.tag, item.rule.tag])];
+            const key1 = `${item.source}-${item.comp}`;
+            const key2 = `${item.comp}-${item.source}`;
+            if (map.has(key1) || map.has(key2)) {
+                const key = map.has(key1) ? key1 : key2;
+                const existingItem = map.get(key);
+
+                existingItem.rule.tag = [...new Set([...existingItem.rule.tag, item.rule.tag].flat())]; // merge tags
+                // console.log('existingItem:', existingItem);
             } else {
-              map.set(key, item);
+                map.set(key1, item); 
             }
-          });
+            });
       
           map.forEach(value => result.push(value)); // converting back to array
           return result;
@@ -128,10 +132,8 @@ export default function Fridge() {
         getUserRules(storedDay)
             .then(userRules => {
                 if (userRules && userRules.avoid) {
-                    //get userules and set it to combinedissues
-                    const combinedIssues = userRules;
-                    console.log('combinedIssues:', combinedIssues);
-                    const uniqueIssues = removeDuplicates(combinedIssues);
+                    console.log('userRules:', userRules);
+                    const uniqueIssues = removeDuplicates(userRules);
                     console.log('uniqueIssues:', uniqueIssues);
                     setIssues(uniqueIssues);
                     const issuesCount = (uniqueIssues.avoid?.length || 0) + (uniqueIssues.usewith?.length || 0);
@@ -156,12 +158,13 @@ export default function Fridge() {
     const handleViewProduct = (product) => {
         setSelectedProduct(product);
         setShowSearchBar(false);
+        setShowIssues(false);
     };
 
     const onAddProduct = () => {
-      if (!selectedProduct) {
-          setShowSearchBar(prev => !prev); 
-      }
+        setSelectedProduct(null);
+        setShowIssues(false);
+        setShowSearchBar(true); 
   };
     
     const handleDeleteProduct = (productId, day) => {
@@ -187,6 +190,12 @@ export default function Fridge() {
     const handleCloseProductCard = () => {
       setSelectedProduct(null); 
     };
+
+    const openIssues = () => {
+        setShowIssues(true);
+        setSelectedProduct(null); 
+        setShowSearchBar(false);
+    }
 
     return (
         <div 
@@ -260,7 +269,7 @@ export default function Fridge() {
                     day={day}
                 />
                 <button className={`button-issues ${isThemeChanged ? 'dark-theme' : 'light-theme'}`}
-                 onClick={() => setShowIssues(true)} 
+                 onClick={openIssues} 
                  >
                     ⚠️  Issues
                     {IssuesCount > 0 && (

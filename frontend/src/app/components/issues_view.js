@@ -10,6 +10,7 @@ const IssuesList = ({ issues, onClose, isThemeChanged }) => {
         const comp = <b>{item.comp}</b>;
         const source = <b>{item.source}</b>;
         const message = item.rule.message; 
+        console.log("this is the 13: ",item.rule.tag);
 
         return (
             <span>
