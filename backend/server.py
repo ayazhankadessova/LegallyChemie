@@ -253,14 +253,7 @@ async def get_user_rules(day: str, request: Request):
         count = 0
         message_tags = []
 
-        if rule.get("rules", {}).get("usewhen", []):
-            for rule_data in rule.get("rules", {}).get("usewhen", []):
-                usewhen.append(
-                    {
-                        "rule": rule_data,
-                        "source": product["id"],
-                    }
-                )
+    
 
         for tag in tags:
             rule = rules_collection.find_one({"_id": {"$in": [tag]}})
@@ -278,6 +271,16 @@ async def get_user_rules(day: str, request: Request):
                         for rule_data in rule.get("rules", {}).get("usewith", [])
                     ]
                 )
+
+                if rule.get("rules", {}).get("usewhen", []):
+                    for rule_data in rule.get("rules", {}).get("usewhen", []):
+                        if(rule_data.get("tag") != day):
+                            usewhen.append(
+                                {
+                                    "rule": rule_data,
+                                    "source": product["id"],
+                                }
+                            )
 
         print("265 Avoid:", avoid)
         for product_comp in products:
@@ -304,10 +307,13 @@ async def get_user_rules(day: str, request: Request):
                     for usewith_index in range(len(usewith) - 1, -1, -1):
                         if tag == usewith[usewith_index]["tag"]:
                             del usewith[usewith_index]
+
         product_rules["usewith"].extend(usewith)
-        product_rules["usewhen"].extend(usewhen)
+        product_rules["usewhen"] = usewhen
+
     print("Product Rules for avoid:", product_rules["avoid"])
     print("Product Rules for usewith:", product_rules["usewith"])
+    print("Product rules for usewhen: ", product_rules["usewhen"])
 
     # convert product IDs to names for output
     product_names = {product["id"]: product["name"] for product in products}
