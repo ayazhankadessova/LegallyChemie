@@ -9,7 +9,7 @@ const IssuesList = ({ issues, onClose, isThemeChanged }) => {
     const avoidMessages = avoidIssues.map(item => {
         const comp = <b>{item.comp}</b>;
         const source = <b>{item.source}</b>;
-        const message = item.rule.message.toLowerCase(); // Convert message to lowercase
+        const message = item.rule.message; 
 
         return (
             <span>
@@ -21,11 +21,11 @@ const IssuesList = ({ issues, onClose, isThemeChanged }) => {
     // formatting usewith issues: For (source): (message)
     const usewithMessages = usewithIssues.map(item => {
         const source = <b>{item.source}</b>; 
-        const message = item.message.toLowerCase(); 
+        const message = item.message; 
 
         return (
             <span>
-                For {source}: {message}
+                {source}: {message}
             </span>
         );
     });

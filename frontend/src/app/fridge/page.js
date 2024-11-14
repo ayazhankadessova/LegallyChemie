@@ -18,7 +18,7 @@ export default function Fridge() {
     const [loading, setLoading] = useState(true); 
     const [issues, setIssues] = useState([]); 
     const [showIssues, setShowIssues] = useState(false); 
-
+    const [IssuesCount, setIssuesCount] = useState(0);
 
     const toggleDay = () => {
         const newDay = day === 'AM' ? 'PM' : 'AM';
@@ -73,6 +73,30 @@ export default function Fridge() {
           });
       }
 
+      function removeDuplicates(userRules) {
+        const combineTags = (items) => {
+          const result = [];
+          const map = new Map();
+      
+          items.forEach(item => {
+            const key = `${item.source}-${item.comp}`;
+            if (map.has(key)) {
+              const existingItem = map.get(key);
+              existingItem.rule.tag = [...new Set([...existingItem.rule.tag, item.rule.tag])];
+            } else {
+              map.set(key, item);
+            }
+          });
+      
+          map.forEach(value => result.push(value)); // converting back to array
+          return result;
+        };
+      
+        return {
+          avoid: combineTags(userRules.avoid),
+          usewith: combineTags(userRules.usewith)
+        };
+      }
 
     useEffect(() => {
         const themeFromStorage = localStorage.getItem('theme');
@@ -106,8 +130,13 @@ export default function Fridge() {
                 if (userRules && userRules.avoid) {
                     //get userules and set it to combinedissues
                     const combinedIssues = userRules;
-                    setIssues(combinedIssues);
-                    console.log('Combined Issues:', combinedIssues); 
+                    console.log('combinedIssues:', combinedIssues);
+                    const uniqueIssues = removeDuplicates(combinedIssues);
+                    console.log('uniqueIssues:', uniqueIssues);
+                    setIssues(uniqueIssues);
+                    const issuesCount = (uniqueIssues.avoid?.length || 0) + (uniqueIssues.usewith?.length || 0);
+                    setIssuesCount(issuesCount);
+                    console.log('Issues Count:', issuesCount);
                 }
             })
             .catch(error => {
@@ -147,6 +176,8 @@ export default function Fridge() {
             // filtering out the deleted product from the products list
             setProducts(prevProducts => prevProducts.filter(product => product.id !== productId));
             setSelectedProduct(null); // clearing selected product view
+            // reload page
+            window.location.reload();
         })
         .catch(error => {
             console.error('Error deleting product:', error);
@@ -232,6 +263,9 @@ export default function Fridge() {
                  onClick={() => setShowIssues(true)} 
                  >
                     ⚠️  Issues
+                    {IssuesCount > 0 && (
+                        <span className="issue-count-badge">{IssuesCount}</span>
+                    )}
                 </button>
                 {showIssues && (
                 <IssuesList 

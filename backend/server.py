@@ -247,7 +247,7 @@ async def get_user_rules(day: str, request: Request):
 
         for tag in tags:
             rule = rules_collection.find_one({"_id": {"$in": [tag]}})
-            # print("Rule: ", rule)
+            print("Rule: ", rule)
             if rule:
                 avoid.extend(rule.get("rules", {}).get("avoid", []))
                 usewith.extend(
@@ -453,49 +453,3 @@ async def delete_user_product(day: str, product_id: str, request: Request):
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000, log_level="info")
-
-# SCRAP FUNCTIONS
-
-# # create a new product -> POST /{entities}/: Create a new record. (1/5)
-# @app.post("/products/")
-# def create_product(product_input: ProductInput):
-#     user_input = product_input.user_input
-#     product_data = final(user_input)
-#     if product_data:
-#         products_collection.insert_one(product_data)
-#         return {"message": "Product created successfully"}
-#     else:
-#         raise HTTPException(status_code=404, detail="Product not found")
-
-# # updating an existing product by ID -> PUT /{entities}/:id Update a record. (4/5)
-# @app.put("/products/{product_id}")
-# def update_product(product_id: str, updated_product: ProductInput):  #test case id: 670d965c94c0676f2a1b2deb
-#     result = products_collection.update_one(
-#         {"_id": ObjectId(product_id)},
-#         {"$set": {"name": updated_product.user_input}}  # updating only name field
-#     )
-#     if result.matched_count == 0:
-#         raise HTTPException(status_code=404, detail="Product not found")
-#     return {"message": "Product updated successfully"}
-
-# # deleting a product by ID -> DELETE /{entities}/:id Delete a record. (5/5)
-# @app.delete("/products/{product_id}")
-# def delete_product(product_id: str): #test case id: 670d965c94c0676f2a1b2deb
-#     result = products_collection.delete_one({"_id": ObjectId(product_id)})
-#     if result.deleted_count == 0:
-#         raise HTTPException(status_code=404, detail="Product not found")
-#     return {"message": "Product deleted successfully"}
-
-# # retrieving all products for task -> GET /{entities}/: Retrieve a list of all records. (2/5)
-# @app.get("/products/")
-# def get_products():
-#     products = list(products_collection.find({}))
-#     return [product_serializer(product) for product in products]
-
-# # retrieving a single product -> GET /{entities}/:id Retrieve a single record. (3/5)
-# @app.get("/products/{product_id}") #test case id: 670d965c94c0676f2a1b2deb
-# def get_product(product_id: str):
-#     product = products_collection.find_one({"_id": ObjectId(product_id)})
-#     if not product:
-#         raise HTTPException(status_code=404, detail="Product not found")
-#     return product_serializer(product)
