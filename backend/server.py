@@ -250,6 +250,7 @@ async def get_user_rules(day: str, request: Request):
         avoid = []
         usewith = []
         count = 0
+        message_tags = []
 
         for tag in tags:
             rule = rules_collection.find_one({"_id": {"$in": [tag]}})
@@ -282,7 +283,8 @@ async def get_user_rules(day: str, request: Request):
                             {
                                 "source": product["id"], 
                                 "comp": product_comp["id"],
-                                "rule": avoid_rule
+                                "rule": avoid_rule,
+                                # "og_tag": extracted_other_tag
                             }
                         )
         product_rules["usewith"].extend(usewith)
