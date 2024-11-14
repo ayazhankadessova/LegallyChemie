@@ -107,7 +107,7 @@ export default function Fridge() {
                     //get userules and set it to combinedissues
                     const combinedIssues = userRules;
                     setIssues(combinedIssues);
-                    console.log('Combined Issues:', combinedIssues); // Confirm issues are set
+                    console.log('Combined Issues:', combinedIssues); 
                 }
             })
             .catch(error => {
@@ -228,7 +228,6 @@ export default function Fridge() {
                     isThemeChanged={isThemeChanged} 
                     day={day}
                 />
-                {/* button that shows the issues with your fridge */}
                 <button className={`button-issues ${isThemeChanged ? 'dark-theme' : 'light-theme'}`}
                  onClick={() => setShowIssues(true)} 
                  >

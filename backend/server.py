@@ -225,7 +225,6 @@ class ProductInput(BaseModel):
 @return dictionary with product_id as key and list of incompatible product_ids.
 """
 
-
 @app.get("/{day}/rules/")
 async def get_user_rules(day: str, request: Request):
     user = request.session.get("user")
@@ -245,14 +244,21 @@ async def get_user_rules(day: str, request: Request):
         tags = product.get("tags", [])
         avoid = []
         usewith = []
+
         for tag in tags:
             rule = rules_collection.find_one({"_id": {"$in": [tag]}})
-            print("Rule: ", rule)
+            # print("Rule: ", rule)
             if rule:
                 avoid.extend(rule.get("rules", {}).get("avoid", []))
-                usewith.extend(rule.get("rules", {}).get("usewith", []))
+                usewith.extend(
+                    [{"tag": rule_data.get("tag"), "message": rule_data.get("message"), "source": product["id"]}
+                     for rule_data in rule.get("rules", {}).get("usewith", [])]
+                )
 
-        # TODO: remove duplicates from avoid and usewith lists???
+        # removing duplicates from avoid & usewith lists
+        avoid = [dict(t) for t in {tuple(d.items()) for d in avoid}]
+        usewith = [dict(t) for t in {tuple(d.items()) for d in usewith}]
+
         for product_comp in products:
             # skip self
             if product_comp["id"] == product["id"]:
@@ -270,13 +276,25 @@ async def get_user_rules(day: str, request: Request):
                             }
                         )
 
-                # Check with usewith list
+                # check with usewith list
                 for usewith_index in range(len(usewith) - 1, -1, -1):
                     if tag == usewith[usewith_index]["tag"]:
                         del usewith[usewith_index]
-
+                        
     product_rules["usewith"].extend(usewith)
-    # TODO: Output needs to return product names instead of ids
+
+    # convert product IDs to names for output
+    product_names = {product["id"]: product["name"] for product in products}
+
+    product_rules["avoid"] = [
+        {**rule, "source": product_names.get(rule["source"]), "comp": product_names.get(rule["comp"])}
+        for rule in product_rules["avoid"]
+    ]
+    product_rules["usewith"] = [
+        {**rule, "source": product_names.get(rule["source"])} for rule in product_rules["usewith"]
+    ]
+
+    print("Product Rules:", product_rules)
     return product_rules
 
 """
