@@ -16,7 +16,7 @@ export default function Fridge() {
     const [showSearchBar, setShowSearchBar] = useState(false);
     const [isThemeChanged, setIsThemeChanged] = useState(false);
     const [loading, setLoading] = useState(true); 
-    const [issues, setIssues] = useState({ avoid: [], usewith: [] });
+    const [issues, setIssues] = useState({ avoid: [], usewith: [], usewhen: [] });
     const [showIssues, setShowIssues] = useState(false); 
     const [IssuesCount, setIssuesCount] = useState(0);
 
@@ -80,6 +80,31 @@ export default function Fridge() {
           });
       }
     
+      function removeDuplicates(userRules) {
+        const processAvoidRules = (items) => {
+            const result = [];
+            const map = new Map();
+    
+            items.forEach(item => {
+                const key1 = `${item.source}-${item.comp}`;
+                const key2 = `${item.comp}-${item.source}`;
+    
+                if (!map.has(key1) && !map.has(key2)) {
+                    map.set(key1, item);
+                }
+            });
+    
+            map.forEach(value => result.push(value)); // converting back to array
+            return result;
+        };
+    
+        return {
+            avoid: processAvoidRules(userRules.avoid),
+            usewith: userRules.usewith,
+            usewhen: userRules.usewhen
+        };
+    }
+    
 
     useEffect(() => {
         const themeFromStorage = localStorage.getItem('theme');
@@ -112,9 +137,9 @@ export default function Fridge() {
             .then(userRules => {
                 if (userRules) {
                     console.log('userRules:', userRules);
-                    setIssues(userRules);
-                    console.log("this is the usewhen:", userRules.usewhen);
-                    const issuesCount = (userRules.avoid?.length || 0) + (userRules.usewith?.length || 0) + (userRules.usewhen?.length || 0);
+                    const uniqueIssues = removeDuplicates(userRules);
+                    setIssues(uniqueIssues);
+                    const issuesCount = (uniqueIssues.avoid?.length || 0) + (uniqueIssues.usewith?.length || 0) + (uniqueIssues.usewhen?.length || 0);
                     setIssuesCount(issuesCount);
                     console.log('Issues Count:', issuesCount);
                 }

@@ -238,7 +238,7 @@ async def get_user_rules(day: str, request: Request):
     # fetching products for the user and day using session-based user_id
     products = await get_user_products(day, request)
 
-    product_rules = {"avoid": [], "usewith": []}
+    product_rules = {"avoid": [], "usewith": [], "usewhen": []}
     product_count = 0
 
     # fetching all the rules given the tags from the products
@@ -304,7 +304,7 @@ async def get_user_rules(day: str, request: Request):
                             del usewith[usewith_index]
 
         product_rules["usewith"].extend(usewith)
-        product_rules["usewhen"] = usewhen
+        product_rules["usewhen"].extend(usewhen)
 
     # print("Product Rules for avoid:", product_rules["avoid"])
     # print("Product Rules for usewith:", product_rules["usewith"])
