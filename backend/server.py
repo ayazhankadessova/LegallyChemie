@@ -218,6 +218,7 @@ class ProductInput(BaseModel):
     user_input: str
 
 
+
 """
 @fn get_user_rules
 @brief fetches rules applicable to products for a specific user.
@@ -343,7 +344,6 @@ async def get_user_rules(day: str, request: Request):
 
     print("Product Rules:", product_rules)
     return product_rules
-
 
 """
 @fn get_user_products

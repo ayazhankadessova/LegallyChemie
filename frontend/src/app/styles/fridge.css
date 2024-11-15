@@ -481,5 +481,49 @@ body {
     border-radius: 15px;
 }
 
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.popup-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    text-align: center;
+}
+
+.popup-content h4 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.popup-content p {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+}
+.highlighted-tag.light-theme {
+    text-decoration: underline;
+    cursor: pointer;
+    background-color:#FF77CB;
+}
+
+.highlighted-tag.dark-theme {
+    text-decoration: underline;
+    cursor: pointer;
+    background-color:#00CEF7;
+}
+
 
 

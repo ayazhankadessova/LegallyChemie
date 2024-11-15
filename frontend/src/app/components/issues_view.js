@@ -11,7 +11,7 @@
  * @returns {JSX.Element} The rendered issues list view component.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import '../styles/fridge.css';
 
 /**
@@ -27,10 +27,32 @@ import '../styles/fridge.css';
  */
 
 const IssuesList = ({ issues, onClose, isThemeChanged }) => { 
+    const [popupContent, setPopupContent] = useState(null);
     const avoidIssues = issues.avoid || [];
     const usewithIssues = issues.usewith || [];
     const usewhenIssues = issues.usewhen || [];
+
+    const handleTagClick = async (tag) => {
+        try {
+            console.log("this is the tag",tag)
+            const response = await fetch('/data/tags.json');
+            const data = await response.json();
+            console.log("this is data: ", data);
     
+            const tagDescription = data[tag];
+    
+            if (tagDescription) {
+                setPopupContent(tagDescription);
+                console.log("this is description", tagDescription);
+            } else {
+                console.log('Tag not found in the data');
+            }
+        } catch (error) {
+            console.error("Error fetching the tag data:", error);
+        }
+    };
+    
+
     /**
      * @const avoidMessages
      * @brief Formats "avoid" issues into messages with highlighted product and source names.
@@ -42,11 +64,24 @@ const IssuesList = ({ issues, onClose, isThemeChanged }) => {
         const comp = <b>{item.comp}</b>;
         const source = <b>{item.source}</b>;
         const message = item.rule.message; 
+        const tag = item.rule.tag;
         console.log("this is the 13: ",item.rule.tag);
+
+        const messageWithoutLastWord = message.slice(0, message.lastIndexOf(' '))+ ' ';
+        const messageWords = message.split(' ');
+        const lastWord = messageWords[messageWords.length - 1];
 
         return (
             <span>
-                {comp} contains {item.rule.tag}, so please {message} like {source}.
+                {comp} contains <span onClick={() => handleTagClick(tag)} 
+                className={`highlighted-tag ${isThemeChanged ? 'dark-theme' : 'light-theme'}`}>
+                {tag}</span>, so please {messageWithoutLastWord}              
+                <span 
+                onClick={() => handleTagClick(lastWord)} 
+                className={`highlighted-tag ${isThemeChanged ? 'dark-theme' : 'light-theme'}`}>
+                 {lastWord}
+            </span> like {source}.
+
             </span>
         );
     });
@@ -110,6 +145,18 @@ const IssuesList = ({ issues, onClose, isThemeChanged }) => {
                 ))}
             </ul>
         </div>
+        {popupContent && (
+                <div className="popup">
+                    <div className="popup-content">
+                        <h4>Tag Description</h4>
+                        <p>{popupContent}</p>
+                        <button 
+                        className={`delete-button ${isThemeChanged ? 'theme-dark' : ''}`}
+                        onClick={() => setPopupContent(null)}
+                        style={{ padding: '5px 10px'}}>Close</button>
+                    </div>
+                </div>
+            )}
     </div>
     );
 };
