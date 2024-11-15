@@ -61,26 +61,38 @@ const IssuesList = ({ issues, onClose, isThemeChanged }) => {
      */
     
     const avoidMessages = avoidIssues.map(item => {
+        console.log("this is the 1: ",item);
         const comp = <b>{item.comp}</b>;
         const source = <b>{item.source}</b>;
         const message = item.rule.message; 
         const tag = item.rule.tag;
         console.log("this is the 13: ",item.rule.tag);
+        const additionalTags = item.rule.additionalTags || [];
+        console.log("this is the 15: ",item.rule.additionalTags);
+        
+        // from addtionalTags remove tag that has tag in it
+        const additionalTagsFiltered = additionalTags.filter((additionalTag) => !additionalTag.includes(tag));
 
         const messageWithoutLastWord = message.slice(0, message.lastIndexOf(' '))+ ' ';
-        const messageWords = message.split(' ');
-        const lastWord = messageWords[messageWords.length - 1];
 
         return (
             <span>
                 {comp} contains <span onClick={() => handleTagClick(tag)} 
                 className={`highlighted-tag ${isThemeChanged ? 'dark-theme' : 'light-theme'}`}>
-                {tag}</span>, so please {messageWithoutLastWord}              
-                <span 
-                onClick={() => handleTagClick(lastWord)} 
-                className={`highlighted-tag ${isThemeChanged ? 'dark-theme' : 'light-theme'}`}>
-                 {lastWord}
-            </span> like {source}.
+                {tag}</span>, so please {messageWithoutLastWord} {'[ '}              
+                <span>
+                {additionalTagsFiltered.map((additionalTag, index) => (
+                    <span key={index}>
+                        <span 
+                        onClick={() => handleTagClick(additionalTag)} 
+                        className={`highlighted-tag ${isThemeChanged ? 'dark-theme' : 'light-theme'}`}>
+                            {additionalTag}
+                        </span>
+                        {index < additionalTagsFiltered.length - 1 && ', '}
+                    </span>
+                ))}
+                </span> 
+                {' ]'} like {source}.
 
             </span>
         );
@@ -139,7 +151,7 @@ const IssuesList = ({ issues, onClose, isThemeChanged }) => {
                     <li 
                     key={index} 
                     className="issue-item" 
-                    style={{ backgroundColor: isThemeChanged ? '#D0F7FF' : '#FFDDFACC' }}>
+                    style={{ backgroundColor: isThemeChanged ? '#D0F7FF' : '#FFDDFACC', color: 'black' }}>
                         {message}
                     </li>
                 ))}

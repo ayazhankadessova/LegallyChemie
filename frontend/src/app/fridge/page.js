@@ -88,13 +88,48 @@ export default function Fridge() {
             items.forEach(item => {
                 const key1 = `${item.source}-${item.comp}`;
                 const key2 = `${item.comp}-${item.source}`;
-    
+
+                const message = item.rule.message;
+                const words = message.trim().split(" ");
+                const lastWord = words[words.length - 1];
+                
+                console.log("this is source: ", item.source);
+                console.log("this is comp: ", item.comp); 
+                console.log("this is lastword: ", lastWord);
+
+                let currentItem;
+                // not in map
                 if (!map.has(key1) && !map.has(key2)) {
-                    map.set(key1, item);
+                    const currentItem = map.get(key1) || {
+                        ...item,
+                        rule: {
+                            ...item.rule,
+                            additionalTags: [] 
+                        }
+                    };
+
+                // adding last word to additional tags
+                console.log("this is the current item's additional tags", currentItem.rule.additionalTags);
+                if (!currentItem.rule.additionalTags.includes(lastWord)) {
+                    currentItem.rule.additionalTags.push(lastWord);
+                    console.log(`Added tag "${lastWord}" to item:`, currentItem);
                 }
+                map.set(key1, currentItem);
+                console.log(`Added or updated item in map for key ${key1}:`, currentItem);
+            } else {
+                currentItem = map.get(key1) || map.get(key2);
+                if (!currentItem.rule.additionalTags.includes(lastWord)) { // if alr in map but last word not in additional tags
+                    currentItem.rule.additionalTags.push(lastWord);
+                    console.log(`Added tag "${lastWord}" to item:`, currentItem);
+                }
+                console.log(`Skipping ${key1} because reverse pair ${key2} exists in the map.`);
+            }
+        });
+            
+            map.forEach((value) => {
+                result.push(value);
             });
     
-            map.forEach(value => result.push(value)); // converting back to array
             return result;
         };
     
@@ -138,6 +173,7 @@ export default function Fridge() {
                 if (userRules) {
                     console.log('userRules:', userRules);
                     const uniqueIssues = removeDuplicates(userRules);
+                    console.log('uniqueIssues:', uniqueIssues);
                     setIssues(uniqueIssues);
                     const issuesCount = (uniqueIssues.avoid?.length || 0) + (uniqueIssues.usewith?.length || 0) + (uniqueIssues.usewhen?.length || 0);
                     setIssuesCount(issuesCount);
