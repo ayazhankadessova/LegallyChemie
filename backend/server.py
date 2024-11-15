@@ -251,7 +251,7 @@ async def get_user_rules(day: str, request: Request):
         usewith = []
         usewhen = []
         count = 0
-        
+
         for tag in tags:
             rule = rules_collection.find_one({"_id": {"$in": [tag]}})
             print("Rule", count, ": ", rule)
@@ -306,9 +306,9 @@ async def get_user_rules(day: str, request: Request):
         product_rules["usewith"].extend(usewith)
         product_rules["usewhen"] = usewhen
 
-    print("Product Rules for avoid:", product_rules["avoid"])
-    print("Product Rules for usewith:", product_rules["usewith"])
-    print("Product rules for usewhen: ", product_rules["usewhen"])
+    # print("Product Rules for avoid:", product_rules["avoid"])
+    # print("Product Rules for usewith:", product_rules["usewith"])
+    # print("Product rules for usewhen: ", product_rules["usewhen"])
 
     # convert product IDs to names for output
     product_names = {product["id"]: product["name"] for product in products}
@@ -317,13 +317,28 @@ async def get_user_rules(day: str, request: Request):
         {
             **rule,
             "source": product_names.get(rule["source"]),
+            "source_id:": rule["source"],
             "comp": product_names.get(rule["comp"]),
+            "comp_id": rule["comp"],
         }
         for rule in product_rules["avoid"]
     ]
     product_rules["usewith"] = [
-        {**rule, "source": product_names.get(rule["source"])}
+        {
+            **rule,
+            "source": product_names.get(rule["source"]),
+            "source_id:": rule["source"],
+        }
         for rule in product_rules["usewith"]
+    ]
+
+    product_rules["usewhen"] = [
+        {
+            **rule,
+            "source": product_names.get(rule["source"]),
+            "source_id:": rule["source"],
+        }
+        for rule in product_rules["usewhen"]
     ]
 
     print("Product Rules:", product_rules)

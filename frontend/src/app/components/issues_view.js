@@ -29,6 +29,7 @@ import '../styles/fridge.css';
 const IssuesList = ({ issues, onClose, isThemeChanged }) => { 
     const avoidIssues = issues.avoid || [];
     const usewithIssues = issues.usewith || [];
+    const usewhenIssues = issues.usewhen || [];
     
     /**
      * @const avoidMessages
@@ -69,13 +70,24 @@ const IssuesList = ({ issues, onClose, isThemeChanged }) => {
         );
     });
 
+    const usewhenMessages = usewhenIssues.map(item => {
+        const source = <b>{item.source}</b>; 
+        const message = item.rule.message; 
+
+        return (
+            <span>
+                {source}: {message}
+            </span>
+        );
+    });
+
     /**
      * @const allMessages
      * @brief Combines all formatted messages (avoid and use with) into a single array.
      * 
      * @type {Array}
      */
-    const allMessages = [...avoidMessages, ...usewithMessages];
+    const allMessages = [...avoidMessages, ...usewithMessages, ...usewhenMessages];
 
     return (
         <div className="issues-view" style={{ backgroundImage: isThemeChanged ? `url('/clipboard-blue.png')` : `url('/clipboard-pink.png')` }}>            

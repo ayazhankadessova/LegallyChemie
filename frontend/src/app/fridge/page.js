@@ -16,10 +16,9 @@ export default function Fridge() {
     const [showSearchBar, setShowSearchBar] = useState(false);
     const [isThemeChanged, setIsThemeChanged] = useState(false);
     const [loading, setLoading] = useState(true); 
-    const [issues, setIssues] = useState([]); 
+    const [issues, setIssues] = useState({ avoid: [], usewith: [] });
     const [showIssues, setShowIssues] = useState(false); 
     const [IssuesCount, setIssuesCount] = useState(0);
-    const [rules, setRules] = useState({ avoid: [], usewith: [] });
 
     const toggleDay = () => {
         const newDay = day === 'AM' ? 'PM' : 'AM';
@@ -30,9 +29,12 @@ export default function Fridge() {
         });
         getUserRules(newDay).then(userRules => {
             if (userRules) {
-                setRules(userRules);
+                setIssues(userRules);
+                const issuesCount = (userRules.avoid?.length || 0) + (userRules.usewith?.length || 0) + (userRules.usewhen?.length || 0);
+                setIssuesCount(issuesCount);
             } else {
-                setRules({ avoid: [], usewith: [] });
+                setIssues({ avoid: [], usewith: [] });
+                setIssuesCount(0);
             } 
         });
     };
@@ -77,50 +79,6 @@ export default function Fridge() {
             console.error('Error fetching rules:', error);
           });
       }
-
-      function removeDuplicates(userRules) {
-        const combineTags = (items) => {
-          const result = [];
-          const map = new Map();
-      
-          items.forEach(item => {
-            const key1 = `${item.source}-${item.comp}`;
-            const key2 = `${item.comp}-${item.source}`;
-   
-            if (map.has(key1) || map.has(key2)) {
-                const key = map.has(key1) ? key1 : key2;
-                const existingItem = map.get(key);
-                const validTags = item.rule.tag.split(' ').filter(tag => tag.length >= 3);
-
-                existingItem.rule.tag = [...new Set([...existingItem.rule.tag, validTags].flat())]; // merge tags
-
-            } else {
-                map.set(key1, item); 
-            }
-            });
-      
-          map.forEach(value => result.push(value)); // converting back to array
-          return result;
-        };
-      
-        return {
-          avoid: combineTags(userRules.avoid),
-          usewith: combineTags(userRules.usewith)
-        };
-      }
-
-      function removeBadTags(issues) {
-        return {
-            avoid: issues.avoid.map(issue => {
-                if (issue.rule && Array.isArray(issue.rule.tag)) {
-                    const cleanedTags = issue.rule.tag.filter(tag => tag.length >= 3);
-                    issue.rule.tag = `[${cleanedTags.join(', ')}]`;
-                }
-    
-                return issue;
-            })
-        };
-    }
     
 
     useEffect(() => {
@@ -152,13 +110,11 @@ export default function Fridge() {
             });
         getUserRules(storedDay)
             .then(userRules => {
-                if (userRules && userRules.avoid) {
+                if (userRules) {
                     console.log('userRules:', userRules);
-                    const uniqueIssues = removeDuplicates(userRules);
-                    console.log('uniqueIssues:', uniqueIssues);
-                    const cleaned_issues = removeBadTags(uniqueIssues);
-                    setIssues(uniqueIssues);
-                    const issuesCount = (uniqueIssues.avoid?.length || 0) + (uniqueIssues.usewith?.length || 0);
+                    setIssues(userRules);
+                    console.log("this is the usewhen:", userRules.usewhen);
+                    const issuesCount = (userRules.avoid?.length || 0) + (userRules.usewith?.length || 0) + (userRules.usewhen?.length || 0);
                     setIssuesCount(issuesCount);
                     console.log('Issues Count:', issuesCount);
                 }
