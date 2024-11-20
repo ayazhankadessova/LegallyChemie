@@ -40,8 +40,43 @@ h1 {
   border-color: #03045E;
   background-color: #F4FDFF;
   color: #03045E;
+
 }
 
 .theme-changed .start-button:hover {
   background-color: rgb(168, 201, 220);
 }
+
+.theme-button {
+  color: white;
+  padding: 8px 20px;
+  border-radius: 15px;
+  font-size: 18px;
+  font-weight: bold;
+  position: absolute;
+  bottom: 35px;
+  right: 35px;
+  background-repeat: repeat-x;
+  background-position: 0 -400%;
+  transition: background-position 1.5s, background-color 0.3s, border-color 0.3s;
+  cursor: pointer;
+}
+
+.theme-button:hover {
+  background-position: 1000% 100%;
+}
+
+.dark-theme {
+  background-color: #03045E;
+  border: 3px solid #03045E;
+  background-image: url('/wave2.png');
+  cursor: url('/select2.png'), pointer;
+}
+
+.light-theme {
+  background-color: #AA00FF;
+  border: 3px solid #AA00FF;
+  background-image: url('/wave1.png');
+  cursor: url('/select1.png'), pointer;
+}
+

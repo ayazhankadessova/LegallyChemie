@@ -40,6 +40,9 @@ const ProductList = ({ products, onViewProduct, isThemeChanged  }) => {
                     style ={{backgroundColor: isThemeChanged ? 'rgba(173, 216, 230, 0.6)' : 'rgba(255, 0, 144, 0.2)' }}>
                     <button className={`view-btn ${isThemeChanged ? 'theme-dark' : ''}`}
                         onClick={() => onViewProduct(product)}
+                    style={{                            
+                        cursor: isThemeChanged ? `url('/select2.png') 2 2, pointer` 
+                        : `url('/select1.png') 2 2, pointer`,}}
                     >View
                     </button>
                     </div>

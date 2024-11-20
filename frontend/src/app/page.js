@@ -42,28 +42,24 @@ export default function Landing() {
       style={{
         backgroundImage: isThemeChanged ? 'url(/landing2.png)' : 'url(/landing.png)',
         backgroundColor: isThemeChanged ? '#CAF0F8' : '#FDEFFB',
+        cursor: isThemeChanged 
+        ? `url('/cursor2.png'), auto` 
+        : `url('/cursor1.png'), auto`,
       }}
     >
       <h1 className="text-center">
         Welcome!
       </h1>
-      <button className="start-button" onClick={handleLogin}>
+      <button className="start-button" onClick={handleLogin}
+      style={{cursor: isThemeChanged 
+        ? `url('/select2.png'), pointer` 
+        : `url('/select1.png'), pointer`,}}>
         <img src={isThemeChanged ? "/mouse2.png" : "/mouse.png"} alt="Icon" />
         click to start
       </button>
       <button
         onClick={handleChangeTheme}
-        style={{
-          backgroundColor: isThemeChanged ? '#03045E' : '#AA00FF',
-          color: 'white',
-          padding: '10px 20px',
-          borderRadius: '15px',
-          fontSize: '20px',
-          fontWeight: 'bold',
-          position: 'absolute',
-          bottom: '50px',
-          right: '50px'
-        }}
+        className={`theme-button ${isThemeChanged ? 'dark-theme' : 'light-theme'}`}
       >
         change theme
       </button>

@@ -85,8 +85,8 @@ export default function Homepage() {
           ? "url(/loggedin2.png)"
           : "url(/loggedin.png)",
           cursor: isThemeChanged 
-          ? `url('/cursor2.png') 10 10, auto` 
-          : `url('/cursor.png') 10 10, auto`,
+          ? `url('/cursor2.png'), auto` 
+          : `url('/cursor1.png'), auto`,
       }}
     >
       <Nav name={name} banner="HOMEPAGE" isThemeChanged={isThemeChanged} />
@@ -156,20 +156,7 @@ export default function Homepage() {
 
       <button
         onClick={handleChangeTheme}
-        style={{
-          backgroundColor: isThemeChanged ? "#03045E" : "#AA00FF",
-          color: "white",
-          padding: "10px 20px",
-          borderRadius: "15px",
-          fontSize: "20px",
-          fontWeight: "bold",
-          position: "absolute",
-          bottom: "50px",
-          right: "50px",
-          cursor: isThemeChanged 
-          ? `url('/select3.png') 10 10, pointer` 
-          : `url('/select2.png') 10 10, pointer`,
-      }}
+        className={`theme-button ${isThemeChanged ? 'dark-theme' : 'light-theme'}`}
       >
         change theme
       </button>

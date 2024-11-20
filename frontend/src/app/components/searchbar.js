@@ -94,7 +94,11 @@ const SearchBar = ({ onProductAdded, isThemeChanged, day }) => {
                 }}
             />
             <button
-                className={isThemeChanged ? 'dark-theme' : 'light-theme'} 
+                className={isThemeChanged ? 'dark-theme' : 'light-theme'}
+                style={{                            
+                    cursor: isThemeChanged 
+                    ? `url('/select2.png') 2 2, pointer` 
+                    : `url('/select1.png') 2 2, pointer`,}} 
                 type="submit"
             >
             Add Product

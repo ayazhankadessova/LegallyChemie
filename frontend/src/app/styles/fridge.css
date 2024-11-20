@@ -10,7 +10,7 @@ body {
     height: 100vh; 
     display: flex;
     flex-direction: row;
-    cursor: url('/cursor.png'), auto;
+    cursor: url('/cursor1.png'), auto;
 }
 
 .switch {
@@ -19,7 +19,6 @@ body {
     width: 90px;
     height: 38px;
     margin-bottom: 27em;
-    cursor: url('/select2.png'), pointer;
   }
 
   .switch.theme-dark .slider {
@@ -43,7 +42,6 @@ body {
     transition: 0.4s;
     border-radius: 34px;
     font-family:  'Montserrat', sans-serif;
-    cursor: url('/select2.png'), pointer;
   }
 
 
@@ -397,6 +395,7 @@ body {
     left: 90%;
     top: 90%;
     transition: ease-in-out 0.2s;
+    cursor: url('/select1.png'), pointer;
 }
 
 .button-issues.light-theme:hover{
@@ -419,6 +418,7 @@ body {
     left: 90%;
     top: 90%;
     transition: ease-in-out 0.2s;
+    cursor: url('/select2.png'), pointer;
 }
 
 .button-issues.dark-theme:hover{
@@ -458,7 +458,6 @@ body {
     right: 10px;
     border: none;
     padding: 10px;
-    cursor: pointer;
 }
 
 .issues-title {

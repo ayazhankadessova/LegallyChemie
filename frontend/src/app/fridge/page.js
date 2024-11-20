@@ -201,9 +201,9 @@ export default function Fridge() {
     };
 
     const onAddProduct = () => {
+        setShowSearchBar(prev => !prev); 
         setSelectedProduct(null);
         setShowIssues(false);
-        setShowSearchBar(true); 
   };
     
     const handleDeleteProduct = (productId, day) => {
@@ -243,8 +243,8 @@ export default function Fridge() {
             backgroundColor: isThemeChanged ? '#D0F7FF' : '#FDEFFB',
             color: isThemeChanged ? '#03045E' : '#000000',  
             cursor: isThemeChanged 
-            ? `url('/cursor2.png') 10 10, auto` 
-            : `url('/cursor.png') 10 10, auto`,
+            ? `url('/cursor2.png'), auto` 
+            : `url('/cursor1.png'), auto`,
         }}>
             <Nav name={name} banner="SKINCARE FRIDGE" isThemeChanged={isThemeChanged} />
             <div className="left_column">  
@@ -260,6 +260,9 @@ export default function Fridge() {
                             color: day === 'AM' ? 'white' : '#FFF',
                             fontWeight: 'bold',
                             transition: 'all 0.4s ease',
+                            cursor: isThemeChanged 
+                            ? `url('/select2.png'), pointer` 
+                            : `url('/select1.png'), pointer`,
                         }}
                     >
                         {day}
@@ -275,6 +278,9 @@ export default function Fridge() {
                         <button 
                             onClick={onAddProduct} 
                             className={`add-product-button ${showSearchBar ? 'close-add-button' : ''}`}
+                            style={{                            cursor: isThemeChanged 
+                                ? `url('/select2.png'), pointer` 
+                                : `url('/select1.png'), pointer`,}}
                         >
                             {showSearchBar ? 'close search bar' : 'add new product'}
                         </button>

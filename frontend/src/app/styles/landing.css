@@ -5,7 +5,7 @@
   flex-direction: row;
   background-size: cover;
   background-position: center;
-  cursor: url('/cursor.png'), auto;
+  cursor: url('/cursor1.png'), auto;
 }
 
 .chemie {
@@ -69,14 +69,14 @@ h1 {
   transition: background-color 0.3s ease-in-out, transform 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   box-shadow: 6px 6px 15px rgba(0, 0, 0, 0.2); 
   transform: translate(0, 0); 
-  cursor: url('/select2.png'), pointer; 
+  cursor: url('/select1.png'), pointer; 
 }
 
 .start-button.theme-dark {
   background-color: #F4FDFF;
   border: 3.5px solid #03045E;
   color: #03045E;
-  cursor: url('/select3.png'), pointer; 
+  cursor: url('/select2.png'), pointer; 
 }
 
 .start-button:hover {
@@ -96,3 +96,37 @@ h1 {
   width: 35px;
   height: 35px;
 }
+
+.theme-button {
+  color: white;
+  padding: 8px 20px;
+  border-radius: 15px;
+  font-size: 18px;
+  font-weight: bold;
+  position: absolute;
+  bottom: 35px;
+  right: 35px;
+  background-repeat: repeat-x;
+  background-position: 0 -400%;
+  transition: background-position 1.5s, background-color 0.3s, border-color 0.3s;
+  cursor: pointer;
+}
+
+.theme-button:hover {
+  background-position: 1000% 100%;
+}
+
+.dark-theme {
+  background-color: #03045E;
+  border: 3px solid #03045E;
+  background-image: url('/wave2.png');
+  cursor: url('/select2.png'), pointer;
+}
+
+.light-theme {
+  background-color: #AA00FF;
+  border: 3px solid #AA00FF;
+  background-image: url('/wave1.png');
+  cursor: url('/select1.png'), pointer;
+}
+

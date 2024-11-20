@@ -55,7 +55,10 @@ const ProductCard = ({ selectedProduct, onDelete, onClose, isThemeChanged, day }
         <div className="product-view"
         style={{ backgroundColor: isThemeChanged ? '#00CEF7' : '#FFAADF'}}>
             <button onClick={onClose} className="close-button"
-            style={{ backgroundColor: isThemeChanged ?  '#03045E' : '#ff0090'}}>X</button>
+            style={{ backgroundColor: isThemeChanged ?  '#03045E' : '#ff0090',
+            cursor: isThemeChanged 
+            ? `url('/select2.png') 2 2, pointer` 
+            : `url('/select1.png') 2 2, pointer`,}}>X</button>
             <div className="product-card">
                 <h3 className="product-name"
                 style={{ color: isThemeChanged ? '#00028E' : '#9c0060'}}>{selectedProduct.name}</h3>
@@ -71,7 +74,10 @@ const ProductCard = ({ selectedProduct, onDelete, onClose, isThemeChanged, day }
                 <button 
                 onClick={handleDelete} 
                 className={`delete-button ${isThemeChanged ? 'theme-dark' : ''}`}
-                >
+                style={{                            
+                    cursor: isThemeChanged 
+                    ? `url('/select2.png') 2 2, pointer` 
+                    : `url('/select1.png') 2 2, pointer`,}}>
                 remove from my routine
                 </button>
 

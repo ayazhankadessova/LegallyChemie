@@ -142,7 +142,10 @@ const IssuesList = ({ issues, onClose, isThemeChanged }) => {
         style={{ backgroundColor: isThemeChanged ? '#03045E' : '#FF3EB5',
         border: `2px solid ${isThemeChanged ? '#D0F7FF' : '#FFDDFACC'}`,
         top: '38px',
-        right: '-1px' }}
+        right: '-1px',
+        cursor: isThemeChanged 
+        ? `url('/select2.png') 2 2, pointer` 
+        : `url('/select1.png') 2 2, pointer`, }}
         >X</button>
         <h3 className="issues-title" style={{ color: isThemeChanged ? '#00028E' : '#9c0060' }}>Issues Found</h3>
         <div className="issues-card">
