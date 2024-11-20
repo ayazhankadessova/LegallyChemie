@@ -79,11 +79,14 @@ export default function Homepage() {
     <div
       className="page"
       style={{
-        backgroundColor: isThemeChanged ? "#D0F7FF" : "#FDEFFB",
+        backgroundColor: isThemeChanged ? "#EBFCFF" : "#FDEFFB",
         color: isThemeChanged ? "#03045E" : "#000000",
         backgroundImage: isThemeChanged
-          ? "url(/landing2.png)"
-          : "url(/landing.png)",
+          ? "url(/loggedin2.png)"
+          : "url(/loggedin.png)",
+          cursor: isThemeChanged 
+          ? `url('/cursor2.png') 10 10, auto` 
+          : `url('/cursor.png') 10 10, auto`,
       }}
     >
       <Nav name={name} banner="HOMEPAGE" isThemeChanged={isThemeChanged} />
@@ -163,7 +166,10 @@ export default function Homepage() {
           position: "absolute",
           bottom: "50px",
           right: "50px",
-        }}
+          cursor: isThemeChanged 
+          ? `url('/select3.png') 10 10, pointer` 
+          : `url('/select2.png') 10 10, pointer`,
+      }}
       >
         change theme
       </button>

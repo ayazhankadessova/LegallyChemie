@@ -3,6 +3,9 @@
   height: 100vh; 
   display: flex;
   flex-direction: row;
+  background-size: cover;
+  background-position: center;
+  cursor: url('/cursor.png'), auto;
 }
 
 .chemie {
@@ -66,12 +69,14 @@ h1 {
   transition: background-color 0.3s ease-in-out, transform 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   box-shadow: 6px 6px 15px rgba(0, 0, 0, 0.2); 
   transform: translate(0, 0); 
+  cursor: url('/select2.png'), pointer; 
 }
 
 .start-button.theme-dark {
   background-color: #F4FDFF;
   border: 3.5px solid #03045E;
   color: #03045E;
+  cursor: url('/select3.png'), pointer; 
 }
 
 .start-button:hover {
