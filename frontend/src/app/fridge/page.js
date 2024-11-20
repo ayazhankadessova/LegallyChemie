@@ -242,6 +242,9 @@ export default function Fridge() {
         style={{
             backgroundColor: isThemeChanged ? '#D0F7FF' : '#FDEFFB',
             color: isThemeChanged ? '#03045E' : '#000000',  
+            cursor: isThemeChanged 
+            ? `url('/cursor2.png') 10 10, auto` 
+            : `url('/cursor.png') 10 10, auto`,
         }}>
             <Nav name={name} banner="SKINCARE FRIDGE" isThemeChanged={isThemeChanged} />
             <div className="left_column">  

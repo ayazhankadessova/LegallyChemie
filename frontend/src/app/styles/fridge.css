@@ -10,6 +10,7 @@ body {
     height: 100vh; 
     display: flex;
     flex-direction: row;
+    cursor: url('/cursor.png'), auto;
 }
 
 .switch {
@@ -18,6 +19,7 @@ body {
     width: 90px;
     height: 38px;
     margin-bottom: 27em;
+    cursor: url('/select2.png'), pointer;
   }
 
   .switch.theme-dark .slider {
@@ -41,6 +43,7 @@ body {
     transition: 0.4s;
     border-radius: 34px;
     font-family:  'Montserrat', sans-serif;
+    cursor: url('/select2.png'), pointer;
   }
 
 
