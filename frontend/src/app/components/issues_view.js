@@ -116,7 +116,8 @@ const IssuesList = ({ issues, onClose, isThemeChanged }) => {
 
     const usewithMessages = usewithIssues.map(item => {
         const source = <b>{item.source}</b>; 
-        const message = item.message; 
+        const message = item.rule.message; 
+        console.log("this is the 2: ",item);
 
         return (
             <span>
