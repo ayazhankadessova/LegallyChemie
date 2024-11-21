@@ -9,16 +9,76 @@ export default function Homepage() {
   const [loading, setLoading] = useState(true);
   const eyesRef = useRef([]);
   const anchorRef = useRef(null);
+  const [selectedSkinType, setSelectedSkinType] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
+  const [previousSkinType, setPreviousSkinType] = useState(selectedSkinType);
+
+  
+  const skinTypes = ["Dry", "Oily", "Normal" ,"Combination", "Sensitive"];
 
   useEffect(() => {
     const themeFromStorage = localStorage.getItem("theme");
+
     setTimeout(() => {
       setIsThemeChanged(themeFromStorage === "dark");
       setLoading(false); // setting loading to false after theme is loaded
     }, 100); // 0.1 second delay
+
     const params = new URLSearchParams(window.location.search);
     setName(params.get("name") || "there");
+
+    const fetchSkinType = async () => {
+      try {
+        const response = await fetch('http://localhost:8000/skintype', {
+          method: 'GET',
+          credentials: 'include', // Ensures cookies (like session) are sent with the request
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setSelectedSkinType(data.skin_type || "Not Specified"); // Correcting the field to 'skin_type'
+        } else {
+          console.error("Failed to fetch skin type");
+        }
+      } catch (error) {
+        console.error("Error fetching skin type:", error);
+      }
+    };
+    
+    fetchSkinType();
   }, []);
+
+  const handleEdit = () => {
+    setPreviousSkinType(selectedSkinType);
+    setIsEditing(true); 
+  };
+
+  const handleSave = async () => {
+    if (selectedSkinType === previousSkinType) {
+      setIsEditing(false); 
+      return; 
+    }
+  
+    try {
+      const response = await fetch(`http://localhost:8000/${selectedSkinType}/`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ skinType: selectedSkinType }),
+      });
+      if (response.ok) {
+        setIsEditing(false); 
+        setPreviousSkinType(selectedSkinType);
+        alert("Skin type updated successfully!");
+      } else {
+        console.error("Failed to update skin type");
+      }
+    } catch (error) {
+      console.error("Error updating skin type:", error);
+    }
+  };
+  
 
   const calculateAngle = (cx, cy, ex, ey) => {
     const dy = ey - cy;
@@ -145,6 +205,52 @@ export default function Homepage() {
         >
           Hey {name} :)
         </h1>
+
+        <div className="skintype-container">
+          {!isEditing ? (
+            <>
+              <span className="skintype">Your Skin Type: {selectedSkinType}</span>
+              <button onClick={handleEdit} className="edit-button">
+                <img
+                  src={isThemeChanged ? '/edit2.png' : '/edit.png'}
+                  alt="Edit Icon"
+                  className="edit-icon"
+                  style={{          
+                    cursor: isThemeChanged 
+                    ? `url('/cursor2.png'), auto` 
+                    : `url('/cursor1.png'), auto`,}}
+                />
+              </button>
+            </>
+          ) : (
+            <div className="dropdown-container">
+              <select
+                value={selectedSkinType}
+                onChange={(e) => setSelectedSkinType(e.target.value)}
+                className="skin-type-dropdown"
+              >
+                {skinTypes.map((skinType, index) => (
+                  <option key={index} value={skinType}>
+                    {skinType}
+                  </option>
+                ))}
+              </select>
+              <button onClick={handleSave} className="save-button">
+                <img
+                  src={isThemeChanged ? '/check2.png' : '/check.png'}
+                  alt="Check Icon"
+                  className="check-icon"
+                  style={{
+                    cursor: isThemeChanged 
+                    ? `url('/cursor2.png'), auto` 
+                    : `url('/cursor1.png'), auto`,
+                  }}
+                />
+              </button>
+            </div>
+          )}
+        </div>
+
         <button
           className={`start-button ${isThemeChanged ? "theme-dark" : ""}`}
           onClick={gotoFridge}

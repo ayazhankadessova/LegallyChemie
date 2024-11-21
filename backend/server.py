@@ -140,9 +140,11 @@ async def callback(request: Request):
                     "auth0_id": user_id,
                     "given_name": given_name,
                     "products": {"AM": [], "PM": []},
+                    "skin_type": "",
                 }
             )
             print("this is a new user")
+            return RedirectResponse(f"http://localhost:3000/newuser?name={given_name}")
         else:
             print("user already exists")
 
@@ -192,6 +194,49 @@ async def session(request: Request):
     else:
         return JSONResponse(content={"error": "Not authenticated"}, status_code=401)
 
+@app.get("/skintype")
+async def get_skintype(request: Request):
+    user = request.session.get("user")
+    user_info = user.get("userinfo", {})
+    user_id = user_info.get("sub")
+
+    if not user_id:
+        raise HTTPException(status_code=401, detail="User ID not found in session")
+
+    user_doc = users_collection.find_one({"auth0_id": user_id})
+
+    if not user_doc:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    user_skintype = user_doc.get("skin_type", "")
+    return {"skin_type": user_skintype}
+
+
+@app.post("/{skintype}")
+async def setting_skintype(skintype: str, request: Request):
+    print("inside skintype function")
+    print("this is the skin type: ", skintype)
+    user = request.session.get("user")
+    user_info = user.get("userinfo", {})
+    user_id = user_info.get("sub")
+
+    if not user_id:
+        raise HTTPException(status_code=401, detail="User ID not found in session")
+
+    user_doc = users_collection.find_one({"auth0_id": user_id})
+
+    if not user_doc:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    update_result = users_collection.update_one(
+        {"auth0_id": user_id}, 
+        {"$set": {"skin_type": skintype}} 
+    )
+
+    if update_result.modified_count == 0:
+        raise HTTPException(status_code=500, detail="Failed to update skin type")
+
+    return {"message": "Skin type updated successfully", "skin_type": skintype}
 
 """
 @fn product_serializer
