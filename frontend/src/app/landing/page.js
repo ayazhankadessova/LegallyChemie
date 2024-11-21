@@ -217,8 +217,8 @@ export default function Homepage() {
                   className="edit-icon"
                   style={{          
                     cursor: isThemeChanged 
-                    ? `url('/cursor2.png'), auto` 
-                    : `url('/cursor1.png'), auto`,}}
+                    ? `url('/select2.png'), pointer` 
+                    : `url('/select1.png'), pointer`,}}
                 />
               </button>
             </>
@@ -242,8 +242,8 @@ export default function Homepage() {
                   className="check-icon"
                   style={{
                     cursor: isThemeChanged 
-                    ? `url('/cursor2.png'), auto` 
-                    : `url('/cursor1.png'), auto`,
+                    ? `url('/select2.png'), pointer` 
+                    : `url('/select1.png'), pointer`,
                   }}
                 />
               </button>

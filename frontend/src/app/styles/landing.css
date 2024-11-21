@@ -119,14 +119,14 @@ h1 {
 }
 
 .dark-theme {
-  background-color: #03045E;
+  background-color: #00B4D8;
   border: 3px solid #03045E;
   background-image: url('/wave2.png');
   cursor: url('/select2.png'), pointer;
 }
 
 .light-theme {
-  background-color: #AA00FF;
+  background-color: #FFAADF;
   border: 3px solid #AA00FF;
   background-image: url('/wave1.png');
   cursor: url('/select1.png'), pointer;

@@ -194,6 +194,88 @@ async def session(request: Request):
     else:
         return JSONResponse(content={"error": "Not authenticated"}, status_code=401)
 
+# function to give product that rating from the user
+@app.patch("/{rating}/{product_id}")
+async def setting_rating(rating: str, product_id: str,request: Request):
+    print("inside rating function")
+    print("this is the rating: ", rating)
+    user = request.session.get("user")
+    user_info = user.get("userinfo", {})
+    user_id = user_info.get("sub")
+
+    if not user_id:
+        raise HTTPException(status_code=401, detail="User ID not found in session")
+
+    user_doc = users_collection.find_one({"auth0_id": user_id})
+
+    if not user_doc:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    update_result = users_collection.update_one(
+        {"auth0_id": user_id}, 
+        {"$set": {"rating": rating}} 
+    )
+
+    # update the rating for the product for that skin type
+
+    if update_result.modified_count == 0:
+        raise HTTPException(status_code=500, detail="Failed to update rating")
+
+    return {"message": "Rating updated successfully", "rating": rating}
+
+
+@app.get("/{day}/products/{product_id}/rating")
+async def get_product_rating(day: str, product_id: str, request: Request):
+    user = request.session.get("user")
+    user_info = user.get("userinfo", {})
+    user_id = user_info.get("sub")
+    print("getting the rating for this product from this user: ", user_id)
+
+    if not user_id:
+        raise HTTPException(status_code=401, detail="User ID not found in session")
+
+    user_doc = users_collection.find_one({"auth0_id": user_id})
+
+    if not user_doc:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    day_products = user_doc.get("products", {}).get(day, [])
+
+
+    for product in day_products:
+        if str(product["_id"]) == product_id:
+            product_rating = product.get("rating", 0)
+            print("this is the rating: ", product_rating)
+            return {"rating": product_rating}
+
+    raise HTTPException(status_code=404, detail="Product not found in user's routine")
+
+@app.patch("/{day}/products/{product_id}/{rating}")
+async def update_product_rating(day: str, product_id: str, rating: int, request: Request):
+    user = request.session.get("user")
+    user_info = user.get("userinfo", {})
+    user_id = user_info.get("sub")
+
+    print("my rating being updated to: ", rating)
+
+    if not user_id:
+        raise HTTPException(status_code=401, detail="User ID not found in session")
+
+
+    update_result = users_collection.update_one(
+        {
+            "auth0_id": user_id,
+            f"products.{day}._id": ObjectId(product_id)
+        },
+        {"$set": {f"products.{day}.$.rating": rating}}
+    )
+
+    if update_result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Product not found or rating unchanged")
+
+    return {"message": "Rating updated successfully"}
+
+
 @app.get("/skintype")
 async def get_skintype(request: Request):
     user = request.session.get("user")
@@ -421,9 +503,15 @@ async def get_user_products(day: str, request: Request):
     print("Product IDs:", product_ids)
 
     # fetching product details based on AM or PM
-    product_ids = user_doc["products"].get(day, [])
+    products = user_doc["products"].get(day, [])
+    product_ids = [entry["_id"] for entry in products]
+    product_ratings = {str(entry["_id"]): entry["rating"] for entry in products}
     user_products = list(products_collection.find({"_id": {"$in": product_ids}}))
+    
     print(f"User Products for {day}:", user_products)
+    for product in user_products:
+        product_id_str = str(product["_id"])
+        product["rating"] = product_ratings.get(product_id_str, 0)
 
     return [product_serializer(product) for product in user_products]
 
@@ -472,8 +560,8 @@ async def create_user_product(day: str, product_input: ProductInput, request: Re
                 update_result = users_collection.update_one(
                     {"auth0_id": user_id},
                     {
-                        "$addToSet": {f"products.{day}": product_id}
-                    },  # using addtoSet to avoid duplicates
+                        "$addToSet": {f"products.{day}": {"_id": product_id, "rating": 0}}
+                    },
                 )
                 print("Update result:", update_result.modified_count)
                 message = (
@@ -499,7 +587,8 @@ async def create_user_product(day: str, product_input: ProductInput, request: Re
             print("New product ID:", product_id)
 
             update_result = users_collection.update_one(
-                {"auth0_id": user_id}, {"$addToSet": {f"products.{day}": product_id}}
+                {"auth0_id": user_id}, 
+                {"$addToSet": {f"products.{day}": {"_id": product_id, "rating": 0}}}
             )
             print("Update result:", update_result.modified_count)
             message = (
