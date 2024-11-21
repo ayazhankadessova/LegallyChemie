@@ -110,7 +110,7 @@ h1 {
   right: 35px;
   background-repeat: repeat-x;
   background-position: 0 -400%;
-  transition: background-position 1.5s, background-color 0.3s, border-color 0.3s;
+  transition: background-position 1s, background-color 0.3s, border-color 0.3s;
   cursor: pointer;
 }
 
@@ -153,11 +153,13 @@ h1 {
 }
 
 .skintype-container {
+  width: 390px;
+  height: 60px;
   display: flex;
   flex-direction: row; 
   align-items: center;
   justify-content: flex-start;
-  margin-right: 300px;
+  margin-right: 180px;
   padding-left: 25px;
   background-color: rgba(255, 255, 255, 0.7);
   border-radius: 15px;

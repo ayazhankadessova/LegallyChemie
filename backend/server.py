@@ -619,10 +619,17 @@ async def delete_user_product(day: str, product_id: str, request: Request):
     user_id = user_info.get("sub")
     if not user_id:
         raise HTTPException(status_code=401, detail="User ID not found in session")
-    print("User ID:", user_id)
-    print("Product ID:", product_id)
+    
+    try:
+        product_id = ObjectId(product_id)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail="Invalid product ID format")
+
+    product_key = f"products.{day}"
+    print("this is the product key: ", product_key)
     result = users_collection.update_one(
-        {"auth0_id": user_id}, {"$pull": {f"products.{day}": ObjectId(product_id)}}
+        {"auth0_id": user_id},
+        {"$pull": {product_key: {"_id": product_id}}}
     )
 
     # checking if any documents were modified

@@ -77,7 +77,11 @@ const IssuesList = ({ issues, onClose, isThemeChanged }) => {
 
         return (
             <span>
-                {comp} contains <span onClick={() => handleTagClick(tag)} 
+                {comp} contains <span onClick={() => handleTagClick(tag)}
+                style={{
+                    cursor: isThemeChanged 
+                    ? `url('/select2.png') 2 2, pointer` 
+                    : `url('/select1.png') 2 2, pointer`,}} 
                 className={`highlighted-tag ${isThemeChanged ? 'dark-theme' : 'light-theme'}`}>
                 {tag}</span>, so please {messageWithoutLastWord} {'[ '}              
                 <span>
@@ -85,6 +89,10 @@ const IssuesList = ({ issues, onClose, isThemeChanged }) => {
                     <span key={index}>
                         <span 
                         onClick={() => handleTagClick(additionalTag)} 
+                        style={{
+                            cursor: isThemeChanged 
+                            ? `url('/select2.png') 2 2, pointer` 
+                            : `url('/select1.png') 2 2, pointer`,}}
                         className={`highlighted-tag ${isThemeChanged ? 'dark-theme' : 'light-theme'}`}>
                             {additionalTag}
                         </span>
@@ -139,8 +147,7 @@ const IssuesList = ({ issues, onClose, isThemeChanged }) => {
     return (
         <div className="issues-view" style={{ backgroundImage: isThemeChanged ? `url('/clipboard-blue.png')` : `url('/clipboard-pink.png')` }}>            
         <button onClick={onClose} className="close-button" 
-        style={{ backgroundColor: isThemeChanged ? '#03045E' : '#FF3EB5',
-        border: `2px solid ${isThemeChanged ? '#D0F7FF' : '#FFDDFACC'}`,
+        style={{ backgroundColor: isThemeChanged ? '#03045E' : '#ff0090',
         top: '38px',
         right: '-1px',
         cursor: isThemeChanged 
@@ -166,9 +173,12 @@ const IssuesList = ({ issues, onClose, isThemeChanged }) => {
                         <h4>Tag Description</h4>
                         <p>{popupContent}</p>
                         <button 
-                        className={`delete-button ${isThemeChanged ? 'theme-dark' : ''}`}
+                        className={`close-tag-button ${isThemeChanged ? 'theme-dark' : ''}`}
                         onClick={() => setPopupContent(null)}
-                        style={{ padding: '5px 10px'}}>Close</button>
+                        style={{         
+                            cursor: isThemeChanged 
+                            ? `url('/select2.png') 2 2, pointer` 
+                            : `url('/select1.png') 2 2, pointer`,}}><strong>Close</strong></button>
                     </div>
                 </div>
             )}

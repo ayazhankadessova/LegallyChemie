@@ -58,7 +58,7 @@ h1 {
   right: 35px;
   background-repeat: repeat-x;
   background-position: 0 -400%;
-  transition: background-position 1.5s, background-color 0.3s, border-color 0.3s;
+  transition: background-position 1s, background-color 0.3s, border-color 0.3s;
   cursor: pointer;
 }
 

@@ -411,7 +411,7 @@ body {
     margin-top: 3em;
     padding: 18px;
     padding-top: 115px;
-    width: 377px;
+    width: 383px;
     height: 480px;
     text-align: center;
     background-size: contain;
@@ -457,6 +457,7 @@ body {
 }
 
 .popup {
+    z-index: 10000;
     position: fixed;
     top: 0;
     left: 0;
@@ -498,5 +499,26 @@ body {
     text-decoration: underline;
     cursor: pointer;
     background-color:#00CEF7;
+}
+
+.close-tag-button {
+    background-color: #ff0090;  
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    padding: 5px 10px;
+    margin-top: 10px;
+}
+
+.close-tag-button.theme-dark {
+    background-color: #03045E;  
+    color: white;  
+}
+
+.close-tag-button:hover {
+    opacity: 0.8;
 }
 
