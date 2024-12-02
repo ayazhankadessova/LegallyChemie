@@ -28,3 +28,8 @@ class RatingsManager:
         )
         return update_result.modified_count > 0
     
+    def get_average_rating(self, product_id: ObjectId) -> float:
+        product = self.products_collection.find_one({"_id": product_id}, {"ratings": 1})
+        if product and "ratings" in product:
+            return product["ratings"].get("averageRating", 0.0)
+        return 0.0
