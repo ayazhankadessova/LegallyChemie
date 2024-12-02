@@ -12,6 +12,8 @@ from starlette.middleware.sessions import SessionMiddleware
 from pprint import pprint
 import uvicorn
 import os
+from ratings import CommunityRatingsManager 
+
 
 """
 @file server.py
@@ -640,6 +642,9 @@ async def delete_user_product(day: str, product_id: str, request: Request):
 
     return {"message": "Product deleted successfully"}
 
+
+#initialize RatingsManager with the products collection
+community_ratings_manager = CommunityRatingsManager(products_collection)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000, log_level="info")
