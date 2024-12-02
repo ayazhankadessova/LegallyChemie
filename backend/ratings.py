@@ -9,8 +9,8 @@ from bson import ObjectId
 """
 
 class CommunityRatingsManager:
-    def __init__(self, users_collection):
-        self.users_collection = users_collection
+    def __init__(self, products_collection):
+        self.products_collection = products_collection
 
     def add_community_rating(self, product_id: ObjectId, skin_type: str, rating: int) -> bool:
         update_result = self.products_collection.update_one(
@@ -34,4 +34,10 @@ class CommunityRatingsManager:
             }
         )
         return update_result.modified_count > 0
-
+    
+    def get_community_ratings(self, product_id: ObjectId) -> dict:
+        product = self.products_collection.find_one(
+            {"_id": product_id},
+            {"communityRatings": 1}
+        )
+        return product.get("communityRatings", {}) if product else {}
