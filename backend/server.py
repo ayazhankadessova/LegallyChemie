@@ -680,7 +680,7 @@ async def add_community_rating(day: str, product_id: str, rating: int, request: 
     if rating < 1 or rating > 5:
         raise HTTPException(status_code=400, detail="Rating must be between 1 and 5")
 
-    success = community_ratings_manager.add_community_rating(product_id, skin_type, rating)
+    success = community_ratings_manager.add_or_update_rating(product_id, user_id, skin_type, rating)
 
     if not success:
         raise HTTPException(
