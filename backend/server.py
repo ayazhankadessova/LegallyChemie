@@ -94,7 +94,9 @@ oauth.register(
 @param request the http request object.
 @return redirects to the Auth0 authorization url.
 """
-
+@app.get("/")
+async def read_root():
+    return {"message": "Hello, World!"}
 
 @app.get("/login")
 async def login(request: Request):
