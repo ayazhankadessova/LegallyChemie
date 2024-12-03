@@ -2,68 +2,69 @@ from bson import ObjectId
 
 """
 @file ratings.py
-@briefmodule providing the functionalities to rate products
+@brief Module providing functionalities to manage community ratings for products.
 
 @details
-
+methods to add or update user-specific ratings for products 
+and retrieve the aggregated community ratings, categorized by skin types.
 """
+
 
 class CommunityRatingsManager:
     def __init__(self, products_collection):
         self.products_collection = products_collection
 
-    def add_or_update_rating(self, product_id: ObjectId, user_id: str, skin_type: str, rating: int) -> bool:
-        #find the product
+    def add_or_update_rating(self, product_id: ObjectId, user_id: str, skin_type: str, rating: int) -> str:
+        #find product in database
         product = self.products_collection.find_one({"_id": product_id})
         if not product:
-            return False
+            return "product_not_found"
 
-        #initialize the communityRatings structure
+        #initialize communityRatings structure
         if "communityRatings" not in product:
             product["communityRatings"] = {}
 
         if skin_type not in product["communityRatings"]:
             product["communityRatings"][skin_type] = {
-                #track user-specific rating
-                "userRatings": {}, 
+                #track user-specific ratings
+                "userRatings": {},  
                 "totalRating": 0,
                 "ratingCount": 0,
             }
 
         skin_type_data = product["communityRatings"][skin_type]
-        
-        #action variable for return message in server.py
-        action = "added"
 
+        if 'userRatings' not in skin_type_data:
+            skin_type_data['userRatings'] = {}
 
-        #check if user previously rated product
+        #default action if new rating
+        action = "added"  
+
+        #check if user previously rated the product
         previous_rating = skin_type_data["userRatings"].get(user_id)
-
         if previous_rating is not None:
-            #user updating own rating--->adjust totalRating
+            #adjust totalRating
             skin_type_data["totalRating"] -= previous_rating
-            #action set to updated
             action = "updated"
-
         else:
-            # new rating--->increment ratingCount
+            #increment ratingCount
             skin_type_data["ratingCount"] += 1
 
-        #update with new rating
+        #update new rating
         skin_type_data["userRatings"][user_id] = rating
         skin_type_data["totalRating"] += rating
 
-        #update product in database
+        #updated product data in the database
         update_result = self.products_collection.update_one(
             {"_id": product_id},
             {"$set": {f"communityRatings.{skin_type}": skin_type_data}}
         )
 
         return action if update_result.modified_count > 0 else "update_failed"
-    
+
     def get_community_ratings(self, product_id: ObjectId) -> dict:
         product = self.products_collection.find_one(
             {"_id": product_id},
-            {"communityRatings": 1}
+            {"communityRatings": 1}  # Only retrieve the communityRatings field
         )
         return product.get("communityRatings", {}) if product else {}
