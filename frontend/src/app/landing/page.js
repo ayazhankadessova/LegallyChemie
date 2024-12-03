@@ -132,7 +132,8 @@ export default function Homepage() {
   }
 
   const gotoFridge = () => {
-    window.location.href = `http://localhost:3000/fridge?name=${name}`;
+    const frontend_url = process.env.Front_End_URL
+    window.location.href = `${frontend_url}/fridge?name=${name}`;
   };
 
   const handleChangeTheme = () => {

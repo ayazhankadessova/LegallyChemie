@@ -22,6 +22,7 @@ export default function NewUser() {
         alert("Please select your skin type!");
         return;
       }
+      frontend_url = process.env.Front_End_URL
 
       try {
         const response = await fetch(`${apiUrl}/${selectedSkinType}/`, {
@@ -34,7 +35,7 @@ export default function NewUser() {
         });
   
         if (response.ok) {
-          window.location.href = `http://localhost:3000/landing?name=${userName}`;
+          window.location.href = `${frontend_url}/landing?name=${userName}`;
         } else {
           console.error("Failed to submit skin type");
         }
