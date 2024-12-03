@@ -646,5 +646,41 @@ async def delete_user_product(day: str, product_id: str, request: Request):
 #initialize RatingsManager with the products collection
 community_ratings_manager = CommunityRatingsManager(products_collection)
 
+#endpoint for communuty rating 
+@app.patch("/{day}/products/{product_id}/community-rating/{rating}")
+async def add_community_rating(day: str, product_id: str, rating: int, request: Request):
+    user = request.session.get("user")
+    user_info = user.get("userinfo", {})
+    user_id = user_info.get("sub")
+
+    if not user_id:
+        raise HTTPException(status_code=401, detail="User ID not found in session")
+
+    # Fetch the user's skin type
+    user_doc = users_collection.find_one({"auth0_id": user_id})
+    if not user_doc:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    skin_type = user_doc.get("skin_type")
+    if not skin_type:
+        raise HTTPException(status_code=400, detail="User has not set a skin type")
+
+    try:
+        product_id = ObjectId(product_id)
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid product ID format")
+
+    if rating < 1 or rating > 5:
+        raise HTTPException(status_code=400, detail="Rating must be between 1 and 5")
+
+    success = community_ratings_manager.add_community_rating(product_id, skin_type, rating)
+
+    if not success:
+        raise HTTPException(
+            status_code=404, detail="Product not found or failed to update community rating"
+        )
+
+    return {"message": "Community rating added successfully", "rating": rating, "skin_type": skin_type, "day": day}
+
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000, log_level="info")
