@@ -30,6 +30,7 @@ function Nav({ name, banner, isThemeChanged }) {
    * @function handleBack
    * @brief Navigates the user back to the previous page.
    */
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
   const handleBack = () => {
     if (typeof window !== 'undefined') { // check if window is defined
@@ -70,7 +71,7 @@ function Nav({ name, banner, isThemeChanged }) {
         style={{
         }}>{name}'s <span className='lowercase'>{banner}</span></h4>
       <a
-        href="http://localhost:8000/logout"
+        href={`${apiUrl}/logout`}
         className="flex items-center space-x-1 p-3 py-4 transform transition duration-200"
         style={{
           cursor: isThemeChanged

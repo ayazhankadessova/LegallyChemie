@@ -12,6 +12,7 @@ export default function Homepage() {
   const [selectedSkinType, setSelectedSkinType] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [previousSkinType, setPreviousSkinType] = useState(selectedSkinType);
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
   
   const skinTypes = ["Dry", "Oily", "Normal" ,"Combination", "Sensitive"];
@@ -29,7 +30,7 @@ export default function Homepage() {
 
     const fetchSkinType = async () => {
       try {
-        const response = await fetch('http://localhost:8000/skintype', {
+        const response = await fetch(`${apiUrl}/skintype`, {
           method: 'GET',
           credentials: 'include', // Ensures cookies (like session) are sent with the request
         });
@@ -59,7 +60,7 @@ export default function Homepage() {
     }
   
     try {
-      const response = await fetch(`http://localhost:8000/${selectedSkinType}/`, {
+      const response = await fetch(`${apiUrl}/${selectedSkinType}/`, {
         method: 'POST',
         credentials: 'include',
         headers: {

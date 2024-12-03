@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import '../styles/newuser.css';
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
 
 export default function NewUser() {
     const [selectedSkinType, setSelectedSkinType] = useState("");
@@ -22,7 +24,7 @@ export default function NewUser() {
       }
 
       try {
-        const response = await fetch(`http://localhost:8000/${selectedSkinType}/`, {
+        const response = await fetch(`${apiUrl}/${selectedSkinType}/`, {
           method: "POST",
           credentials: 'include',
           headers: {

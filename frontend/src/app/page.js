@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import './styles/index.css';
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export default function Landing() {
   const [isThemeChanged, setIsThemeChanged] = useState(false);
@@ -25,7 +26,7 @@ export default function Landing() {
   }
 
   const handleLogin = () => {
-    window.location.href = "http://localhost:8000/login"; 
+    window.location.href = `${apiUrl}/login`; 
   };
 
   const handleChangeTheme = () => {

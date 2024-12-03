@@ -20,6 +20,8 @@ export default function Fridge() {
     const [showIssues, setShowIssues] = useState(false); 
     const [IssuesCount, setIssuesCount] = useState(0);
 
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
     const toggleDay = () => {
         const newDay = day === 'AM' ? 'PM' : 'AM';
         setDay(newDay);
@@ -41,7 +43,7 @@ export default function Fridge() {
 
     // function to fetch user's products
     function getuserProducts(day) {
-        return fetch(`http://localhost:8000/${day}/products/`, {
+        return fetch(`${apiUrl}/${day}/products/`, {
             method: 'GET',
             credentials: 'include' 
         })
@@ -61,7 +63,7 @@ export default function Fridge() {
     }
 
     function getUserRules(day) {
-        return fetch(`http://localhost:8000/${day}/rules/`, {
+        return fetch(`${apiUrl}/${day}/rules/`, {
           method: 'GET',
           credentials: 'include'
         })
@@ -207,7 +209,7 @@ export default function Fridge() {
   };
     
     const handleDeleteProduct = (productId, day) => {
-        fetch(`http://localhost:8000/${day}/products/${productId}/`, {
+        fetch(`${apiUrl}/${day}/products/${productId}/`, {
             method: 'DELETE',
             credentials: 'include'
         })

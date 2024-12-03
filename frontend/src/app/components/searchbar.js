@@ -37,12 +37,13 @@ const SearchBar = ({ onProductAdded, isThemeChanged, day }) => {
 
     const handleAddProduct = (e) => {
         e.preventDefault();
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         if (!inputValue) {
             setErrorMessage("Please enter a product name.");
             return;
         }
         
-        fetch(`http://localhost:8000/${day}/products/`, {
+        fetch(`${apiUrl}/${day}/products/`, {
             method: 'POST',
             credentials: 'include',
             headers: {

@@ -51,6 +51,7 @@ const ProductCard = ({ selectedProduct, onDelete, onClose, isThemeChanged, day }
     const [rating, setRating] = useState(0);
     const [hover, setHover] = useState(-1);
     const [error, setError] = useState(null);
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
     useEffect(() => {
         const fetchRating = async () => {
@@ -58,7 +59,7 @@ const ProductCard = ({ selectedProduct, onDelete, onClose, isThemeChanged, day }
                 console.log("This is the selected product id: ", selectedProduct.id);
                 console.log("fetching rating for the product");
                 const response = await fetch(
-                    `http://localhost:8000/${day}/products/${selectedProduct.id}/rating`,
+                    `${apiUrl}/${day}/products/${selectedProduct.id}/rating`,
                     {   method: "GET",
                         credentials: "include" } 
                 );
@@ -99,8 +100,10 @@ const ProductCard = ({ selectedProduct, onDelete, onClose, isThemeChanged, day }
         setRating(newValue);
         console.log('Updated rating:', newValue);
         console.log('type of the newValue', typeof newValue);
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
     
-        fetch(`http://localhost:8000/${day}/products/${selectedProduct.id}/${newValue}`, {
+        fetch(`${apiUrl}/${day}/products/${selectedProduct.id}/${newValue}`, {
           method: 'PATCH',
           credentials: 'include',
           headers: {
