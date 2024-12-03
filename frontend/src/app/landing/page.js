@@ -114,9 +114,14 @@ export default function Homepage() {
       }
     };
 
-    // initial anchor position setup + re-setup on resize
-    updateAnchorPosition();
+    
+    
     window.addEventListener("resize", updateAnchorPosition);
+
+    // initial anchor position setup + re-setup on resize (with delay)
+    setTimeout(() => {
+       updateAnchorPosition();
+    }, 300);
 
     return () => window.removeEventListener("resize", updateAnchorPosition);
   }, []);

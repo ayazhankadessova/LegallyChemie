@@ -47,6 +47,7 @@ export default function NewUser() {
       style={{
         backgroundImage:  'url(/newuser_bg.png)',
         backgroundColor:  '#FFE8F2',
+        color: '#574754',
         cursor: `url('/cursor1.png'), auto`,
       }}
     >

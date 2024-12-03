@@ -33,30 +33,34 @@ function Nav({ name, banner, isThemeChanged }) {
 
   const handleBack = () => {
     if (typeof window !== 'undefined') { // check if window is defined
-      window.history.back(); 
-      
+      window.history.back();
+
     }
   };
 
   return (
     <div
-      className={`fixed top-0 w-full h-13 flex justify-between p-6 px-9 font-roboto font-custom z-10 ${isThemeChanged ? 'bg-[#00CEF7] text-[#03045E]' : 'bg-[#ffbfe7] text-[#a63b7d]'}`}
+      className={`fixed top-0 w-full h-13 flex justify-between p-0 font-roboto font-custom z-10 ${isThemeChanged ? 'bg-[#00CEF7] text-[#03045E]' : 'bg-[#ffbfe7] text-[#a63b7d]'}`}
       style={{ boxShadow: isThemeChanged ? '0 4px 10px rgba(3, 4, 94, 0.5)' : '0 4px 10px rgba(167, 59, 125, 0.5)' }}
     >
-      <button onClick={handleBack} className="hover:underline"
-      style={{                            
-        cursor: isThemeChanged 
-        ? `url('/select2.png') 2 2, pointer` 
-        : `url('/select1.png') 2 2, pointer`,}}>
-        ← Back
+      <button onClick={handleBack} className={`p-3 ${isThemeChanged ? 'bg-teal-300 hover:bg-teal-600' : 'bg-pink-300 hover:bg-pink-600'}`}
+        style={{
+          cursor: isThemeChanged
+            ? `url('/select2.png') 2 2, pointer`
+            : `url('/select1.png') 2 2, pointer`,
+        }}>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="m4 10l-.707.707L2.586 10l.707-.707zm17 8a1 1 0 1 1-2 0zM8.293 15.707l-5-5l1.414-1.414l5 5zm-5-6.414l5-5l1.414 1.414l-5 5zM4 9h10v2H4zm17 7v2h-2v-2zm-7-7a7 7 0 0 1 7 7h-2a5 5 0 0 0-5-5z" /></svg>
       </button>
-      <h4 className="uppercase">{name}'S {banner}</h4>
+      <h4 className="h-full p-3 font-bold text-lg">{name}'s <span className='lowercase'>{banner}</span></h4>
       <a href="http://localhost:8000/logout"
-      style={{
-        cursor: isThemeChanged 
-        ? `url('/select2.png') 2 2, pointer` 
-        : `url('/select1.png') 2 2, pointer`,
-      }}>Logout →</a>
+        className='p-3 bg-red-300 hover:bg-red-600 hover:text-white'
+        style={{
+          cursor: isThemeChanged
+            ? `url('/select2.png') 2 2, pointer`
+            : `url('/select1.png') 2 2, pointer`,
+        }}>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="m17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4z"/></svg>
+        </a>
     </div>
   );
 }
