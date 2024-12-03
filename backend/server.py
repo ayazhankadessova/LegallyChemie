@@ -98,6 +98,11 @@ oauth.register(
 async def read_root():
     return {"message": "Hello, World!"}
 
+@app.get("/favicon.ico")
+async def favicon():
+    return {"message": "No favicon available"}
+
+
 @app.get("/login")
 async def login(request: Request):
     redirect_uri = request.url_for("callback")
