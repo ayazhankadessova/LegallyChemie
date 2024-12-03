@@ -130,6 +130,11 @@ async def callback(request: Request):
     request.session["user_id"] = user_id
     print("Session after saving token:", request.session)
 
+    #debugging
+    session_cookie = request.cookies.get("session")  
+    print("Session Cookie (use in curl):", session_cookie)
+
+
     # storing userID in MongoDB
     if user_id:
         # checking if user already exists
@@ -657,6 +662,7 @@ community_ratings_manager = CommunityRatingsManager(products_collection)
 """
 @app.patch("/{day}/products/{product_id}/community-rating/{rating}")
 async def add_community_rating(day: str, product_id: str, rating: int, request: Request):
+    print("Session Data:", request.session)  # Debugging
     user = request.session.get("user")
     user_info = user.get("userinfo", {})
     user_id = user_info.get("sub")
