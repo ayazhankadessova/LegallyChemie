@@ -44,7 +44,7 @@ function Nav({ name, banner, isThemeChanged }) {
     >
       <button
         onClick={handleBack}
-        className={`flex items-center space-x-2 p-3 py-4 transform transition duration-200`}
+        className={`flex items-center space-x-1 p-3 py-4 transform transition duration-200`}
         style={{
           cursor: isThemeChanged
             ? `url('/select2.png') 2 2, pointer`
@@ -71,7 +71,7 @@ function Nav({ name, banner, isThemeChanged }) {
         }}>{name}'s <span className='lowercase'>{banner}</span></h4>
       <a
         href="http://localhost:8000/logout"
-        className="flex items-center space-x-2 p-3 py-4 transform transition duration-200"
+        className="flex items-center space-x-1 p-3 py-4 transform transition duration-200"
         style={{
           cursor: isThemeChanged
             ? `url('/select2.png') 2 2, pointer`
