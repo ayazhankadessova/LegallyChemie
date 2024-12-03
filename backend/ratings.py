@@ -24,13 +24,17 @@ class CommunityRatingsManager:
 
         if skin_type not in product["communityRatings"]:
             product["communityRatings"][skin_type] = {
-                 #track user-specific rating
+                #track user-specific rating
                 "userRatings": {}, 
                 "totalRating": 0,
                 "ratingCount": 0,
             }
 
         skin_type_data = product["communityRatings"][skin_type]
+        
+        #action variable for return message in server.py
+        action = "added"
+
 
         #check if user previously rated product
         previous_rating = skin_type_data["userRatings"].get(user_id)
@@ -38,6 +42,9 @@ class CommunityRatingsManager:
         if previous_rating is not None:
             #user updating own rating--->adjust totalRating
             skin_type_data["totalRating"] -= previous_rating
+            #action set to updated
+            action = "updated"
+
         else:
             # new rating--->increment ratingCount
             skin_type_data["ratingCount"] += 1
@@ -52,7 +59,7 @@ class CommunityRatingsManager:
             {"$set": {f"communityRatings.{skin_type}": skin_type_data}}
         )
 
-        return update_result.modified_count > 0
+        return action if update_result.modified_count > 0 else "update_failed"
     
     def get_community_ratings(self, product_id: ObjectId) -> dict:
         product = self.products_collection.find_one(

@@ -680,14 +680,20 @@ async def add_community_rating(day: str, product_id: str, rating: int, request: 
     if rating < 1 or rating > 5:
         raise HTTPException(status_code=400, detail="Rating must be between 1 and 5")
 
-    success = community_ratings_manager.add_or_update_rating(product_id, user_id, skin_type, rating)
+    #get action 
+    action = community_ratings_manager.add_or_update_rating(product_id, user_id, skin_type, rating)
 
-    if not success:
-        raise HTTPException(
-            status_code=404, detail="Product not found or failed to update community rating"
-        )
+    if action == "product_not_found":
+        raise HTTPException(status_code=404, detail="Product not found")
+    elif action == "update_failed":
+        raise HTTPException(status_code=500, detail="Failed to update community rating")
 
-    return {"message": "Community rating added successfully", "rating": rating, "skin_type": skin_type, "day": day}
+    return {
+        "message": f"Community rating {action} successfully",
+        "rating": rating,
+        "skin_type": skin_type,
+        "day": day
+    }
 
 """
 @fn get_community_ratings
