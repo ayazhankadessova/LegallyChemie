@@ -35,6 +35,7 @@ key functionalities:
 
 # loading .env file & initializing the Flask app
 load_dotenv()
+FRONTEND_URL = os.getenv("Front_End_URL")
 # initialize FastAPI
 app = FastAPI()
 
@@ -65,7 +66,7 @@ ingredients_collection = db.get_collection("ingredients")
 """
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "https://legally-chemie.vercel.app/"],
+    allow_origins=["https://legally-chemie.vercel.app/"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -158,12 +159,12 @@ async def callback(request: Request):
                 }
             )
             print("this is a new user")
-            return RedirectResponse(f"http://localhost:3000/newuser?name={given_name}")
+            return RedirectResponse(f"{FRONTEND_URL}/newuser?name={given_name}")
         else:
             print("user already exists")
 
     # redirecting user back to React app with a success status
-    return RedirectResponse(f"http://localhost:3000/landing?name={given_name}")
+    return RedirectResponse(f"{FRONTEND_URL}/landing?name={given_name}")
 
 
 """
@@ -184,7 +185,7 @@ async def logout(request: Request):
         + "/v2/logout?"
         + urlencode(
             {
-                "returnTo": "http://localhost:3000",  # URL to redirect to after logout
+                "returnTo": {FRONTEND_URL},  # URL to redirect to after logout
                 "client_id": os.getenv("AUTH0_CLIENT_ID"),
             },
             quote_via=quote_plus,
