@@ -646,7 +646,15 @@ async def delete_user_product(day: str, product_id: str, request: Request):
 #initialize RatingsManager with the products collection
 community_ratings_manager = CommunityRatingsManager(products_collection)
 
-#endpoint for adding communuty rating 
+"""
+@fn add_community_rating
+@brief Adds a community rating for a product based on a user's skin type.
+@param day Time of day ("AM" or "PM").
+@param product_id The ID of the product to be rated.
+@param rating The rating to be given to the product (1-5).
+@param request The HTTP request object.
+@return A message indicating success or an error if the rating could not be added.
+"""
 @app.patch("/{day}/products/{product_id}/community-rating/{rating}")
 async def add_community_rating(day: str, product_id: str, rating: int, request: Request):
     user = request.session.get("user")
@@ -681,7 +689,13 @@ async def add_community_rating(day: str, product_id: str, rating: int, request: 
 
     return {"message": "Community rating added successfully", "rating": rating, "skin_type": skin_type, "day": day}
 
-#getting community rating endpoint
+"""
+@fn get_community_ratings
+@brief Retrieves the community ratings for a product by skin type.
+@param day Time of day ("AM" or "PM").
+@param product_id The ID of the product whose community ratings are being retrieved.
+@return A JSON object containing the community ratings by skin type or an error if no ratings exist.
+"""
 @app.get("/{day}/products/{product_id}/community-ratings")
 async def get_community_ratings(day: str, product_id: str):
     try:
