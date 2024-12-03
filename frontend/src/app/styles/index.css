@@ -6,6 +6,10 @@ h1 {
   font-weight: 800;
 }
 
+h4 {
+  font-family: 'Inter', sans-serif;
+}
+
 .start-button {
   margin: 0 3px 2em 0;
   font-weight: 600;
