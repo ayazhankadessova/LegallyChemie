@@ -132,7 +132,7 @@ export default function Homepage() {
   }
 
   const gotoFridge = () => {
-    window.location.href = `${apiUrl}/fridge?name=${name}`;
+    window.location.href = `${frontend_url}/fridge?name=${name}`;
   };
 
   const handleChangeTheme = () => {
