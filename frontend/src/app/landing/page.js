@@ -13,8 +13,8 @@ export default function Homepage() {
   const [isEditing, setIsEditing] = useState(false);
   const [previousSkinType, setPreviousSkinType] = useState(selectedSkinType);
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const frontend_url = process.env.Front_End_URL
 
-  
   const skinTypes = ["Dry", "Oily", "Normal" ,"Combination", "Sensitive"];
 
   useEffect(() => {
@@ -132,8 +132,7 @@ export default function Homepage() {
   }
 
   const gotoFridge = () => {
-    const frontend_url = process.env.Front_End_URL
-    window.location.href = `${frontend_url}/fridge?name=${name}`;
+    window.location.href = `${apiUrl}/fridge?name=${name}`;
   };
 
   const handleChangeTheme = () => {
