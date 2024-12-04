@@ -66,7 +66,7 @@ ingredients_collection = db.get_collection("ingredients")
 """
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://legally-chemie.vercel.app/"],
+    allow_origins=["https://legally-chemie.vercel.app"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -313,6 +313,10 @@ async def get_skintype(request: Request):
 async def setting_skintype(skintype: str, request: Request):
     print("inside skintype function")
     print("this is the skin type: ", skintype)
+    try: 
+        user = request.session.get("user")
+    except not user:
+        raise HTTPException(status_code=401, detail="User ID not found in session")
     user = request.session.get("user")
     user_info = user.get("userinfo", {})
     user_id = user_info.get("sub")
