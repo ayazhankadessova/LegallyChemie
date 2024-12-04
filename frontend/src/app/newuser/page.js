@@ -39,6 +39,7 @@ export default function NewUser() {
           console.log("Successfully submitted skintype to backend");
           window.location.href = `${frontend_url}/landing?name=${userName}`;
         } else {
+          console.log("Failed to submit skintype, status code:", response.status);
           console.error("Failed to submit skin type");
         }
       } catch (error) {
