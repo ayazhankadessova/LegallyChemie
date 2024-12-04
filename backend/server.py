@@ -66,11 +66,7 @@ ingredients_collection = db.get_collection("ingredients")
 """
 app.add_middleware(
     CORSMiddleware,
-<<<<<<< HEAD
     allow_origins=["https://legally-chemie.vercel.app"],
-=======
-    allow_origins=["https://legally-chemie.vercel.app", "https://legallychemie.onrender.com"],
->>>>>>> 04862b487244b7cebb196e83b2b9967900b54a47
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
