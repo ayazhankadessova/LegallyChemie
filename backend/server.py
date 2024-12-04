@@ -185,7 +185,7 @@ async def logout(request: Request):
         + "/v2/logout?"
         + urlencode(
             {
-                "returnTo": {FRONTEND_URL},  # URL to redirect to after logout
+                "returnTo":os.geteng("Front_End_URL"),  # URL to redirect to after logout
                 "client_id": os.getenv("AUTH0_CLIENT_ID"),
             },
             quote_via=quote_plus,
