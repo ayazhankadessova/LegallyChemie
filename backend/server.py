@@ -318,7 +318,7 @@ async def setting_skintype(skintype: str, request: Request):
         if user is None:
             raise KeyError("User ID not found in session")
     except KeyError:
-        raise HTTPException(status_code=401, detail="User ID not found in session")
+        raise HTTPException(status_code=122, detail="User ID not found in session")
     user = request.session.get("user")
     user_info = user.get("userinfo", {})
     user_id = user_info.get("sub")
