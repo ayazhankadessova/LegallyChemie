@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/newuser.css';
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+const frontend_url = process.env.Front_End_URL
 
 
 export default function NewUser() {
@@ -22,9 +23,9 @@ export default function NewUser() {
         alert("Please select your skin type!");
         return;
       }
-      frontend_url = process.env.Front_End_URL
 
       try {
+        console.log("this is the selected skintyoe", selectedSkinType)
         const response = await fetch(`${apiUrl}/${selectedSkinType}/`, {
           method: "POST",
           credentials: 'include',
@@ -35,6 +36,7 @@ export default function NewUser() {
         });
   
         if (response.ok) {
+          console.log("Successfully submitted skintype to backend");
           window.location.href = `${frontend_url}/landing?name=${userName}`;
         } else {
           console.error("Failed to submit skin type");
