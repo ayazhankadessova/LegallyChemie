@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import './styles/index.css';
 
-import config from "../config.js";
+import config from "./config.js";
 
 const apiUrl = config.apiUrl; 
 const frontendUrl = config.frontendUrl;
