@@ -12,8 +12,8 @@ export default function Homepage() {
   const [selectedSkinType, setSelectedSkinType] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [previousSkinType, setPreviousSkinType] = useState(selectedSkinType);
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-  const frontend_url = process.env.Front_End_URL;
+  const apiUrl = process.env.API_URL + ":" +  process.env.API_PORT;
+  const frontend_url = process.env.NEXT_URL + ":" + process.env.NEXT_PORT;
 
   const skinTypes = ["Dry", "Oily", "Normal" ,"Combination", "Sensitive"];
 
@@ -132,7 +132,6 @@ export default function Homepage() {
   }
 
   const gotoFridge = () => {
-    const frontend_url = process.env.Front_End_URL;
     window.location.href = `${frontend_url}/fridge?name=${name}`;
   };
 

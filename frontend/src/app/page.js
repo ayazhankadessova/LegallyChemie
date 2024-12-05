@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import './styles/index.css';
-const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+const apiUrl = "http://localhost:8000";
 
 export default function Landing() {
   const [isThemeChanged, setIsThemeChanged] = useState(false);

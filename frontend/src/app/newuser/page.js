@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import '../styles/newuser.css';
-const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-const frontend_url = process.env.Front_End_URL
+const apiUrl = process.env.API_URL + ":" +  process.env.API_PORT;
+const frontend_url = process.env.NEXT_URL + ":" + process.env.NEXT_PORT;
 
 
 export default function NewUser() {

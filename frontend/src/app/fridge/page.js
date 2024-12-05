@@ -20,7 +20,7 @@ export default function Fridge() {
     const [showIssues, setShowIssues] = useState(false); 
     const [IssuesCount, setIssuesCount] = useState(0);
 
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    const apiUrl = process.env.API_URL + process.env.API_PORT;
 
     const toggleDay = () => {
         const newDay = day === 'AM' ? 'PM' : 'AM';

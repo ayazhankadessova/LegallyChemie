@@ -37,7 +37,7 @@ const SearchBar = ({ onProductAdded, isThemeChanged, day }) => {
 
     const handleAddProduct = (e) => {
         e.preventDefault();
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        const apiUrl = process.env.API_URL + process.env.API_PORT;
         if (!inputValue) {
             setErrorMessage("Please enter a product name.");
             return;

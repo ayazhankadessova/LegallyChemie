@@ -35,7 +35,7 @@ key functionalities:
 
 # loading .env file & initializing the Flask app
 load_dotenv()
-FRONTEND_URL = os.getenv("Front_End_URL")
+
 # initialize FastAPI
 app = FastAPI()
 
@@ -53,6 +53,9 @@ app.add_middleware(SessionMiddleware, secret_key=secret_key)
 @details collections for 'products', 'users', 'rules', and 'ingredients' are initialized.
 """
 db_string = os.getenv("DB_STRING")
+server_port = int(os.getenv("API_PORT"))
+server_host = os.getenv("API_URL")
+FRONTEND_URL = os.getenv("NEXT_URL") + ":" + os.getenv("NEXT_PORT")
 client = MongoClient(db_string)
 db = client.LegallyChemie
 products_collection = db.get_collection("products")
@@ -185,7 +188,7 @@ async def logout(request: Request):
         + "/v2/logout?"
         + urlencode(
             {
-                "returnTo": os.getenv("Front_End_URL"),  # URL to redirect to after logout
+                "returnTo": os.getenv("NEXT_URL") + os.getenv("NEXT_PORT"),  # URL to redirect to after logout
                 "client_id": os.getenv("AUTH0_CLIENT_ID"),
             },
             quote_via=quote_plus,
@@ -741,4 +744,5 @@ async def get_community_ratings(day: str, product_id: str):
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=8000, log_level="info")
+
+    uvicorn.run(app, host=str(server_host), port=server_port, log_level="info")

@@ -51,7 +51,7 @@ const ProductCard = ({ selectedProduct, onDelete, onClose, isThemeChanged, day }
     const [rating, setRating] = useState(0);
     const [hover, setHover] = useState(-1);
     const [error, setError] = useState(null);
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    const apiUrl = process.env.API_URL + process.env.API_PORT;
 
     useEffect(() => {
         const fetchRating = async () => {
@@ -100,7 +100,7 @@ const ProductCard = ({ selectedProduct, onDelete, onClose, isThemeChanged, day }
         setRating(newValue);
         console.log('Updated rating:', newValue);
         console.log('type of the newValue', typeof newValue);
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        const apiUrl = process.env.API_URL + process.env.API_PORT;
 
     
         fetch(`${apiUrl}/${day}/products/${selectedProduct.id}/${newValue}`, {

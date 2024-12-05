@@ -30,7 +30,7 @@ function Nav({ name, banner, isThemeChanged }) {
    * @function handleBack
    * @brief Navigates the user back to the previous page.
    */
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const apiUrl = process.env.API_URL + process.env.API_PORT;
 
   const handleBack = () => {
     if (typeof window !== 'undefined') { // check if window is defined
