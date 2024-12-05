@@ -311,6 +311,9 @@ async def get_skintype(request: Request):
 async def setting_skintype(skintype: str, request: Request):
     print("inside skintype function")
     print("this is the skin type: ", skintype)
+    print("these are all the env variables: ")
+
+    print("this is the request: ", request)
     user = request.session.get("user")
     user_info = user.get("userinfo", {})
     user_id = user_info.get("sub")
