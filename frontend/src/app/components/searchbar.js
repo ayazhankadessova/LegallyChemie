@@ -24,6 +24,11 @@ import React, { useState } from 'react';
  * @returns {JSX.Element} the rendered search bar component.
  */
 
+import config from "../config.js";
+
+const apiUrl = config.apiUrl; 
+const frontendUrl = config.frontendUrl;
+
 const SearchBar = ({ onProductAdded, isThemeChanged, day }) => {
     const [inputValue, setInputValue] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
@@ -42,7 +47,7 @@ const SearchBar = ({ onProductAdded, isThemeChanged, day }) => {
             return;
         }
         
-        fetch(`http://localhost:8000/${day}/products/`, {
+        fetch(apiUrl + `/${day}/products/`, {
             method: 'POST',
             credentials: 'include',
             headers: {

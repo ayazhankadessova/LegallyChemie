@@ -3,6 +3,11 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/newuser.css';
 
+import config from "../config.js";
+
+const apiUrl = config.apiUrl; 
+const frontendUrl = config.frontendUrl;
+
 export default function NewUser() {
     const [selectedSkinType, setSelectedSkinType] = useState("");
     const [userName, setUserName] = useState("");
@@ -22,7 +27,7 @@ export default function NewUser() {
       }
 
       try {
-        const response = await fetch(`http://localhost:8000/${selectedSkinType}/`, {
+        const response = await fetch(apiUrl + `/${selectedSkinType}/`, {
           method: "POST",
           credentials: 'include',
           headers: {
@@ -32,7 +37,7 @@ export default function NewUser() {
         });
   
         if (response.ok) {
-          window.location.href = `http://localhost:3000/landing?name=${userName}`;
+          window.location.href = frontendUrl + `/landing?name=${userName}`;
         } else {
           console.error("Failed to submit skin type");
         }

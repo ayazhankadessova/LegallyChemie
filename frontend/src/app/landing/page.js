@@ -3,6 +3,11 @@ import React, { useEffect, useState, useRef } from "react";
 import "../styles/landing.css";
 import Nav from "../components/navbar.js";
 
+import config from "../config.js";
+
+const apiUrl = config.apiUrl; 
+const frontendUrl = config.frontendUrl;
+
 export default function Homepage() {
   const [name, setName] = useState("");
   const [isThemeChanged, setIsThemeChanged] = useState(false);
@@ -29,7 +34,7 @@ export default function Homepage() {
 
     const fetchSkinType = async () => {
       try {
-        const response = await fetch('http://localhost:8000/skintype', {
+        const response = await fetch(apiUrl + '/skintype', {
           method: 'GET',
           credentials: 'include', // Ensures cookies (like session) are sent with the request
         });
@@ -59,7 +64,7 @@ export default function Homepage() {
     }
   
     try {
-      const response = await fetch(`http://localhost:8000/${selectedSkinType}/`, {
+      const response = await fetch(apiUrl + `/${selectedSkinType}/`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -131,7 +136,7 @@ export default function Homepage() {
   }
 
   const gotoFridge = () => {
-    window.location.href = `http://localhost:3000/fridge?name=${name}`;
+    window.location.href = frontendUrl + `/fridge?name=${name}`;
   };
 
   const handleChangeTheme = () => {

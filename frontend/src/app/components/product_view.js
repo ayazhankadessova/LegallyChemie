@@ -19,6 +19,11 @@ import Rating from '@mui/material/Rating';
 import Typography from '@mui/material/Typography';
 import StarIcon from '@mui/icons-material/Star';
 
+import config from "../config.js";
+
+const apiUrl = config.apiUrl; 
+const frontendUrl = config.frontendUrl;
+
 const labels = {
     0: 'No Rating',
     1: 'Horrible',
@@ -58,7 +63,7 @@ const ProductCard = ({ selectedProduct, onDelete, onClose, isThemeChanged, day }
                 console.log("This is the selected product id: ", selectedProduct.id);
                 console.log("fetching rating for the product");
                 const response = await fetch(
-                    `http://localhost:8000/${day}/products/${selectedProduct.id}/rating`,
+                    apiUrl + `/${day}/products/${selectedProduct.id}/rating`,
                     {   method: "GET",
                         credentials: "include" } 
                 );
@@ -100,7 +105,7 @@ const ProductCard = ({ selectedProduct, onDelete, onClose, isThemeChanged, day }
         console.log('Updated rating:', newValue);
         console.log('type of the newValue', typeof newValue);
     
-        fetch(`http://localhost:8000/${day}/products/${selectedProduct.id}/${newValue}`, {
+        fetch(apiUrl + `/${day}/products/${selectedProduct.id}/${newValue}`, {
           method: 'PATCH',
           credentials: 'include',
           headers: {

@@ -1,3 +1,4 @@
+"use client";
 /**
  * @file navbar.js
  * @brief A navigation bar component with a back button, title, and logout link.
@@ -9,9 +10,12 @@
  * @returns {JSX.Element} The rendered navigation bar component.
  */
 
-"use client";
-
 import React, { useEffect, useState } from 'react';
+
+import config from "../config.js";
+
+const apiUrl = config.apiUrl; 
+const frontendUrl = config.frontendUrl;
 
 /**
  * @function Nav
@@ -70,7 +74,7 @@ function Nav({ name, banner, isThemeChanged }) {
         style={{
         }}>{name}'s <span className='lowercase'>{banner}</span></h4>
       <a
-        href="http://localhost:8000/logout"
+        href={`${apiUrl}/logout`}
         className="flex items-center space-x-1 p-3 py-4 transform transition duration-200"
         style={{
           cursor: isThemeChanged

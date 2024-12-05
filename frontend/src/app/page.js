@@ -3,6 +3,11 @@
 import React, { useState, useEffect } from 'react';
 import './styles/index.css';
 
+import config from "../config.js";
+
+const apiUrl = config.apiUrl; 
+const frontendUrl = config.frontendUrl;
+
 export default function Landing() {
   const [isThemeChanged, setIsThemeChanged] = useState(false);
   const [loading, setLoading] = useState(true); 
@@ -25,7 +30,7 @@ export default function Landing() {
   }
 
   const handleLogin = () => {
-    window.location.href = "http://localhost:8000/login"; 
+    window.location.href = apiUrl + "/login"; 
   };
 
   const handleChangeTheme = () => {

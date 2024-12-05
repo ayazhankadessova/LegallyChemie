@@ -7,6 +7,11 @@ import ProductCard from '../components/product_view.js';
 import SearchBar from '../components/searchbar.js';
 import IssuesList from '../components/issues_view';
 
+import config from "../config.js";
+
+const apiUrl = config.apiUrl; 
+const frontendUrl = config.frontendUrl;
+
 export default function Fridge() {
     //set usestates
     const [day, setDay] = useState('AM');
@@ -41,7 +46,7 @@ export default function Fridge() {
 
     // function to fetch user's products
     function getuserProducts(day) {
-        return fetch(`http://localhost:8000/${day}/products/`, {
+        return fetch(apiUrl + `/${day}/products/`, {
             method: 'GET',
             credentials: 'include' 
         })
@@ -61,7 +66,7 @@ export default function Fridge() {
     }
 
     function getUserRules(day) {
-        return fetch(`http://localhost:8000/${day}/rules/`, {
+        return fetch(apiUrl + `/${day}/rules/`, {
           method: 'GET',
           credentials: 'include'
         })
@@ -207,7 +212,7 @@ export default function Fridge() {
   };
     
     const handleDeleteProduct = (productId, day) => {
-        fetch(`http://localhost:8000/${day}/products/${productId}/`, {
+        fetch(apiUrl + `/${day}/products/${productId}/`, {
             method: 'DELETE',
             credentials: 'include'
         })
