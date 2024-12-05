@@ -62,7 +62,6 @@ ingredients_collection = db.get_collection("ingredients")
 """
 @brief hardcoded urls
 """
-api_url = "http://localhost:8000"
 frontend_url = "https://legally-chemie.vercel.app"
 api_port = 8000
 api_host = "legallychemie.onrender.com"
@@ -204,7 +203,7 @@ async def logout(request: Request):
 async def session(request: Request):
     user = request.session.get("user")
     if user:
-        return JSONResponse(content={"user": user})
+        return JSONResponse(content={"user": user}, headers={"Access-Control-Allow-Origin": frontend_url, "Access-Control-Expose-Headers": "Authorization"})
     else:
         return JSONResponse(content={"error": "Not authenticated"}, status_code=401)
 
