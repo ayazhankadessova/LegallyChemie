@@ -184,7 +184,7 @@ async def logout(request: Request):
         + "/v2/logout?"
         + urlencode(
             {
-                "returnTo": "http://localhost:3000",  # URL to redirect to after logout
+                "returnTo": f"{frontend_url}",  # URL to redirect to after logout
                 "client_id": os.getenv("AUTH0_CLIENT_ID"),
             },
             quote_via=quote_plus,
