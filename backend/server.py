@@ -63,9 +63,9 @@ ingredients_collection = db.get_collection("ingredients")
 @brief hardcoded urls
 """
 api_url = "http://localhost:8000"
-frontend_url = "http://localhost:3000"
+frontend_url = "https://legally-chemie.vercel.app"
 api_port = 8000
-api_host = "localhost"
+api_host = "legallychemie.onrender.com"
 
 """
 @brief configures CORS to allow requests from the React frontend.
@@ -744,4 +744,4 @@ async def get_community_ratings(day: str, product_id: str):
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host=api_host, port=api_port, log_level="info")
+    uvicorn.run(app, host=api_host, log_level="info")
