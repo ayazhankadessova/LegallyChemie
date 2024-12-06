@@ -62,7 +62,12 @@ ingredients_collection = db.get_collection("ingredients")
 """
 @brief hardcoded urls
 """
+origins = [
+    "http://localhost:3000", 
+    "https://legally-chemie.vercel.app",  
+]
 frontend_url = "https://legally-chemie.vercel.app"
+local_frontend_url = "http://localhost:3000"
 api_port = 8000
 api_host = "legallychemie.onrender.com"
 
@@ -72,7 +77,7 @@ api_host = "legallychemie.onrender.com"
 """
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[frontend_url],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
