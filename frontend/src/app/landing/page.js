@@ -36,6 +36,9 @@ export default function Homepage() {
       try {
         const response = await fetch(apiUrl + '/skintype', {
           method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
           credentials: 'include', // Ensures cookies (like session) are sent with the request
         });
         if (response.ok) {
