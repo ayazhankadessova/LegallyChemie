@@ -62,13 +62,8 @@ ingredients_collection = db.get_collection("ingredients")
 """
 @brief hardcoded urls
 """
-origins = [
-    "http://localhost:3000", 
-    "https://legally-chemie.vercel.app",  
-]
 frontend_url = "https://legally-chemie.vercel.app"
-local_frontend_url = "http://localhost:3000"
-api_port = 8000
+# api_port = 8000
 api_host = "legallychemie.onrender.com"
 
 """
@@ -77,7 +72,7 @@ api_host = "legallychemie.onrender.com"
 """
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=[frontend_url],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -208,7 +203,7 @@ async def logout(request: Request):
 async def session(request: Request):
     user = request.session.get("user")
     if user:
-        return JSONResponse(content={"user": user}, headers={"Access-Control-Allow-Origin": frontend_url, "Access-Control-Expose-Headers": "Authorization"})
+        return JSONResponse(content={"user": user})
     else:
         return JSONResponse(content={"error": "Not authenticated"}, status_code=401)
 
@@ -296,6 +291,8 @@ async def update_product_rating(
 
 @app.get("/skintype")
 async def get_skintype(request: Request):
+    print("inside get skintype function")
+    print("this is the session information: ", request.session)
     user = request.session.get("user")
     user_info = user.get("userinfo", {})
     user_id = user_info.get("sub")
