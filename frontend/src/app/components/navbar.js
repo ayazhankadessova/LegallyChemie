@@ -44,7 +44,7 @@ function Nav({ name, banner, isThemeChanged }) {
 
   return (
     <div
-      className={`fixed top-0 w-full h-13 flex justify-between p-0 font-roboto font-custom z-10 ${isThemeChanged ? 'bg-[#00CEF7] text-[#03045E]' : 'bg-[#ffbfe7] text-[#a63b7d]'}`}
+    className={`fixed top-0 w-full h-13 flex justify-between py-[2px] px-[15px] font-roboto font-custom z-10 ${isThemeChanged ? 'bg-[#00CEF7] text-[#03045E]' : 'bg-[#ffbfe7] text-[#a63b7d]'}`}
     >
       <button
         onClick={handleBack}
