@@ -242,101 +242,124 @@ export default function Fridge() {
     }
 
     return (
-        <div 
-        className="page" 
+      <div
+        className='page'
         style={{
-            backgroundColor: isThemeChanged ? '#D0F7FF' : '#FDEFFB',
-            color: isThemeChanged ? '#03045E' : '#000000',  
-            cursor: isThemeChanged 
-            ? `url('/cursor2.png'), auto` 
+          backgroundColor: isThemeChanged ? '#D0F7FF' : '#FDEFFB',
+          color: isThemeChanged ? '#03045E' : '#000000',
+          cursor: isThemeChanged
+            ? `url('/cursor2.png'), auto`
             : `url('/cursor1.png'), auto`,
-        }}>
-            <Nav name={name} banner="SKINCARE FRIDGE" isThemeChanged={isThemeChanged} />
-            <div className="left_column">  
-                <label className={`switch ${isThemeChanged ? 'theme-dark' : ''}`}>
-                    <input type="checkbox" checked={day === 'PM'} onChange={toggleDay} />
-                    <span 
-                        className="slider round"
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: day === 'AM' ? 'flex-end' : 'flex-start',
-                            padding: '0 12px',
-                            color: day === 'AM' ? 'white' : '#FFF',
-                            fontWeight: 'bold',
-                            transition: 'all 0.4s ease',
-                            cursor: isThemeChanged 
-                            ? `url('/select2.png'), pointer` 
-                            : `url('/select1.png'), pointer`,
-                        }}
-                    >
-                        {day}
-                    </span>
-                </label>
-                <img 
-                    src={isThemeChanged ? "/fridge2.png" : "/fridge.png"} 
-                    alt="Fridge" 
-                    className="fridge-image"
-                />
-                <div className="product-grid">
-                    <div className={`product-cell add-product-cell ${isThemeChanged ? 'theme-dark' : ''}`}>
-                        <button 
-                            onClick={onAddProduct} 
-                            className={`add-product-button ${showSearchBar ? 'close-add-button' : ''}`}
-                            style={{                            cursor: isThemeChanged 
-                                ? `url('/select2.png'), pointer` 
-                                : `url('/select1.png'), pointer`,}}
-                        >
-                            {showSearchBar ? 'close search bar' : 'add new product'}
-                        </button>
-                    </div>
-                    <ProductList 
-                        products={products} 
-                        onViewProduct={handleViewProduct} 
-                        isThemeChanged={isThemeChanged}
-                    />
-                </div>
-            </div>
-            <div 
-                style={{
-                    borderLeft: `10px double ${isThemeChanged ? '#00B4D8' : '#FFAADF'}`,
-                }}
+        }}
+      >
+        <Nav
+          name={name}
+          banner='SKINCARE FRIDGE'
+          isThemeChanged={isThemeChanged}
+        />
+        <div className='left_column'>
+          <label className={`switch ${isThemeChanged ? 'theme-dark' : ''}`}>
+            <input
+              type='checkbox'
+              checked={day === 'PM'}
+              onChange={toggleDay}
             />
-            <div className="right_column">
-                {showSearchBar && ( 
-                    <SearchBar 
-                        isThemeChanged={isThemeChanged}
-                        onProductAdded={(newProduct) => {
-                            // updating products list when a new product is added
-                            setProducts(prevProducts => [...prevProducts, { name: newProduct }]);
-                            setShowSearchBar(false); // hiding search bar after adding
-                        }} 
-                        day={day}
-                    />
-                )}
-                <ProductCard 
-                    selectedProduct={selectedProduct} 
-                    onDelete={handleDeleteProduct} 
-                    onClose={handleCloseProductCard}
-                    isThemeChanged={isThemeChanged} 
-                    day={day}
-                />
-                <button className={`button-issues ${isThemeChanged ? 'dark-theme' : 'light-theme'}`}
-                 onClick={openIssues} 
-                 >
-                    ⚠️  Issues
-                    {IssuesCount > 0 && (
-                        <span className="issue-count-badge">{IssuesCount}</span>
-                    )}
-                </button>
-                {showIssues && (
-                <IssuesList 
-                    issues={issues}
-                    onClose={handleCloseIssues} 
-                    isThemeChanged={isThemeChanged} 
-                />
-            )}
+            <span
+              className='slider round'
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: day === 'AM' ? 'flex-end' : 'flex-start',
+                padding: '0 12px',
+                color: day === 'AM' ? 'white' : '#FFF',
+                fontWeight: 'bold',
+                transition: 'all 0.4s ease',
+                cursor: isThemeChanged
+                  ? `url('/select2.png'), pointer`
+                  : `url('/select1.png'), pointer`,
+              }}
+            >
+              {day}
+            </span>
+          </label>
+          <img
+            src={isThemeChanged ? '/fridge2.png' : '/fridge.png'}
+            alt='Fridge'
+            className='fridge-image'
+          />
+          <div className='product-grid'>
+            <div
+              className={`product-cell add-product-cell ${
+                isThemeChanged ? 'theme-dark' : ''
+              }`}
+            >
+              <button
+                onClick={onAddProduct}
+                className={`add-product-button ${
+                  showSearchBar ? 'close-add-button' : ''
+                }`}
+                style={{
+                  cursor: isThemeChanged
+                    ? `url('/select2.png'), pointer`
+                    : `url('/select1.png'), pointer`,
+                }}
+              >
+                {showSearchBar ? 'close search bar' : 'add new product'}
+              </button>
             </div>
+            <ProductList
+              products={products}
+              onViewProduct={handleViewProduct}
+              isThemeChanged={isThemeChanged}
+            />
+          </div>
         </div>
-    );
+        <div
+          style={{
+            borderLeft: `10px double ${isThemeChanged ? '#00B4D8' : '#FFAADF'}`,
+          }}
+        />
+        <div className='right_column'>
+          <button
+            className={`button-issues ${
+              isThemeChanged ? 'dark-theme' : 'light-theme'
+            }`}
+            onClick={openIssues}
+          >
+            ⚠️ Issues
+            {IssuesCount > 0 && (
+              <span className='issue-count-badge'>{IssuesCount}</span>
+            )}
+          </button>
+          {showSearchBar && (
+            <SearchBar
+              isThemeChanged={isThemeChanged}
+              onProductAdded={(newProduct) => {
+                // updating products list when a new product is added
+                setProducts((prevProducts) => [
+                  ...prevProducts,
+                  { name: newProduct },
+                ])
+                setShowSearchBar(false) // hiding search bar after adding
+              }}
+              day={day}
+            />
+          )}
+          <ProductCard
+            selectedProduct={selectedProduct}
+            onDelete={handleDeleteProduct}
+            onClose={handleCloseProductCard}
+            isThemeChanged={isThemeChanged}
+            day={day}
+          />
+          {showIssues && (
+            <IssuesList
+              issues={issues}
+              onClose={handleCloseIssues}
+              isThemeChanged={isThemeChanged}
+            />
+          )}
+        </div>
+      </div>
+    )
 }

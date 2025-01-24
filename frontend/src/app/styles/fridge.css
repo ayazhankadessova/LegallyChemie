@@ -190,10 +190,11 @@ body {
     width: 50%;
     height: 100%;
     padding: 10px;
+    padding-top: 45px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    /* justify-content: center; */
 }
   
 
@@ -267,39 +268,97 @@ body {
 }
 
 .search-bar {
-    background-color: #ffffff; 
-    padding: 15px;
-    border-radius: 8px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     width: 450px;
+    position: relative;
+    margin-top: 10rem; 
 }
 
 .search-bar form {
     display: flex;
-    flex-direction: row;
-    align-items: center;
+    gap: 10px;
     width: 100%;
+
 }
 
-.search-bar input {
+.search-input-container {
+    position: relative;
     flex: 1;
-    padding: 10px;
-    border-radius: 6px;
-    outline: none;
-    font-size: 14px;
 }
 
-.search-bar input.light-theme::placeholder {
+.search-input {
+    width: 100%;
+    padding: 12px 35px 12px 15px;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.search-input.light-theme {
+    border: 2px solid #fd76c9;
+    color: #FF5EC1;
+}
+
+.search-input.dark-theme {
+    border: 2px solid #00B4D8;
+    color: #0077B6;
+}
+
+.search-input.light-theme::placeholder {
     color: #FFAADF;
 }
 
-.search-bar input.dark-theme::placeholder {
+.search-input.dark-theme::placeholder {
     color: #00B4D8;
 }
 
+.clear-button {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #666;
+}
+
+.search-button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Montserrat', sans-serif;
+    transition: all 0.2s ease;
+}
+
+.search-button.light-theme {
+    background-color: #ff0090;
+    color: white;
+}
+
+.search-button.light-theme:hover {
+    background-color: #FFAADF;
+    color: #ff0090;
+}
+
+.search-button.dark-theme {
+    background-color: #03045E;
+    color: white;
+}
+
+.search-button.dark-theme:hover {
+    background-color: #00B4D8;
+    color: #03045E;
+}
+/* 
 .search-bar button {
     border: none;
     border-radius: 6px;
@@ -329,12 +388,131 @@ body {
 .search-bar button.light-theme:hover {
     background-color: #FFAADF;
     color: #ff0090;
-}
+} */
 
 .error-message {
-    font-size: 12px;
-    margin-top: 8px;
+    margin-top: 10px;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.error-message.light-theme {
+    background-color: #FFE5F4;
+    color: #ff0090;
+    border: 1px solid #FFB6E1;
+}
+
+.error-message.dark-theme {
+    background-color: #E5F9FF;
+    color: #03045E;
+    border: 1px solid #B6E7FF;
+}
+
+.loading-message {
     text-align: center;
+    padding: 15px;
+    color: #666;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.search-results {
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 0;
+    right: 0;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-height: 280px;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.search-result-item {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.2s ease;
+}
+
+.search-result-item:last-child {
+    border-bottom: none;
+}
+
+.search-result-item:hover {
+    background-color: #f8f8f8;
+}
+
+.product-info {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.product-image {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.product-details {
+    font-family: 'Montserrat', sans-serif;
+}
+
+.product-brand {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.product-name {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.product-description {
+    font-size: 12px;
+    color: #888;
+}
+
+.add-button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Montserrat', sans-serif;
+    transition: all 0.2s ease;
+}
+
+.add-button.light-theme {
+    background-color: #ff0090;
+    color: white;
+}
+
+.add-button.light-theme:hover {
+    background-color: #FFAADF;
+    color: #ff0090;
+    transform: scale(1.05);
+}
+
+.add-button.dark-theme {
+    background-color: #03045E;
+    color: white;
+}
+
+.add-button.dark-theme:hover {
+    background-color: #00B4D8;
+    color: #03045E;
+    transform: scale(1.05);
 }
 
 .issue-count-badge {
@@ -354,48 +532,46 @@ body {
 }
 
 .button-issues.light-theme{
+    position: absolute;
+    display: inline-block;
+    width: 100px;
+    height: 38px;
+    margin-top: 5em;
     font-weight: 600;
-    display: flex;
     align-items: center;
     color: #FEF5FF; 
-    background-color: #FF77CB;
+    background-color: #ff0090; 
     border: none;
-    padding: 10px 20px;
-    padding-right: 22px;
     cursor: pointer;
-    position: absolute;
     border-radius: 15px;
-    left: 89%;
-    top: 90%;
     transition: ease-in-out 0.2s;
     cursor: url('/select1.png'), pointer;
 }
 
 .button-issues.light-theme:hover{
-    background-color: #ff0090;
+    background-color: #FF77CB;
     transform: scale(1.05);
 }
 
 .button-issues.dark-theme{
-    display: flex;
+    position: absolute;
+    display: inline-block;
+    width: 100px;
+    height: 38px;
+    margin-top: 5em;
     font-weight: 600;
     align-items: center;
     color: #FEF5FF; 
-    background-color: #00bce1;
+    background-color: #03045E;
     border: none;
-    padding: 10px 20px;
-    padding-right: 22px;
     cursor: pointer;
-    position: absolute;
     border-radius: 15px;
-    left: 89%;
-    top: 90%;
     transition: ease-in-out 0.2s;
     cursor: url('/select2.png'), pointer;
 }
 
 .button-issues.dark-theme:hover{
-    background-color: #03045E;
+    background-color: #00bce1;
     transform: scale(1.05);
 }
 
@@ -408,11 +584,11 @@ body {
 .issues-view {
     position: relative;
     border-radius: 20px;
-    margin-top: 3em;
+    margin-top: 8em;
     padding: 18px;
     padding-top: 115px;
-    width: 383px;
-    height: 480px;
+    width: 365px;
+    height: 440px;
     text-align: center;
     background-size: contain;
     background-position: center;

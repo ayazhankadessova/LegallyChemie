@@ -4,7 +4,6 @@ import config from '../config.js'
 import PropTypes from 'prop-types'
 
 const apiUrl = config.apiUrl
-const frontendUrl = config.frontendUrl
 
 const SearchBar = ({ onProductAdded, isThemeChanged, day }) => {
   const [inputValue, setInputValue] = useState('')
@@ -14,7 +13,6 @@ const SearchBar = ({ onProductAdded, isThemeChanged, day }) => {
   const [showResults, setShowResults] = useState(false)
   const searchRef = useRef(null)
 
-  // Close search results when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
@@ -33,7 +31,7 @@ const SearchBar = ({ onProductAdded, isThemeChanged, day }) => {
     }
 
     setIsLoading(true)
-    setErrorMessage('') // Clear any previous errors
+    setErrorMessage('')
 
     try {
       const response = await fetch(`${apiUrl}/search/`, {
@@ -73,7 +71,7 @@ const SearchBar = ({ onProductAdded, isThemeChanged, day }) => {
   const handleInputChange = (e) => {
     const value = e.target.value
     setInputValue(value)
-    setErrorMessage('') // Clear error when user types
+    setErrorMessage('')
   }
 
   const handleSearch = (e) => {
@@ -89,12 +87,15 @@ const SearchBar = ({ onProductAdded, isThemeChanged, day }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ product_url: productUrl }),
+        body: JSON.stringify({
+          product_url: productUrl,
+        }),
       })
 
       const data = await response.json()
 
       if (!response.ok) {
+        console.error('Server response:', data)
         throw new Error(data.detail || 'Failed to add product')
       }
 
@@ -119,20 +120,16 @@ const SearchBar = ({ onProductAdded, isThemeChanged, day }) => {
 
   return (
     <div className='search-bar' ref={searchRef}>
-      <form onSubmit={handleSearch} className='flex gap-2'>
-        <div className='relative flex-1'>
+      <form onSubmit={handleSearch} className='search-form'>
+        <div className='search-input-container'>
           <input
             type='text'
             value={inputValue}
             onChange={handleInputChange}
             placeholder='Search for a product...'
-            className={isThemeChanged ? 'dark-theme' : 'light-theme'}
-            style={{
-              border: isThemeChanged
-                ? 'solid 2px #00B4D8'
-                : 'solid 2px #fd76c9',
-              color: isThemeChanged ? '#0077B6' : '#FF5EC1',
-            }}
+            className={`search-input ${
+              isThemeChanged ? 'dark-theme' : 'light-theme'
+            }`}
           />
           {inputValue && (
             <button
@@ -143,81 +140,62 @@ const SearchBar = ({ onProductAdded, isThemeChanged, day }) => {
                 setShowResults(false)
                 setErrorMessage('')
               }}
-              className='absolute right-3 top-1/2 transform -translate-y-1/2'
+              className='clear-button'
             >
               <X size={18} />
             </button>
           )}
         </div>
         <button
-          className={isThemeChanged ? 'dark-theme' : 'light-theme'}
-          style={{
-            cursor: isThemeChanged
-              ? `url('/select2.png') 2 2, pointer`
-              : `url('/select1.png') 2 2, pointer`,
-          }}
           type='submit'
+          className={`search-button ${
+            isThemeChanged ? 'dark-theme' : 'light-theme'
+          }`}
         >
+          <Search size={18} />
           Search
         </button>
       </form>
 
-      {/* Error Message Display */}
       {errorMessage && (
         <div
-          className={`mt-2 p-3 rounded-lg ${
-            isThemeChanged
-              ? 'bg-blue-50 text-blue-600'
-              : 'bg-pink-50 text-pink-600'
-          } border ${isThemeChanged ? 'border-blue-200' : 'border-pink-200'}`}
+          className={`error-message ${
+            isThemeChanged ? 'dark-theme' : 'light-theme'
+          }`}
         >
           {errorMessage}
         </div>
       )}
 
-      {/* Loading State */}
-      {isLoading && (
-        <div className='mt-2 text-center py-4 text-gray-500'>Searching...</div>
-      )}
+      {isLoading && <div className='loading-message'>Searching...</div>}
 
-      {/* Search Results */}
       {showResults && searchResults.length > 0 && (
-        <div className='absolute z-10 w-full mt-1 bg-white rounded-lg shadow-lg border border-gray-200 max-h-96 overflow-y-auto'>
+        <div className='search-results'>
           {searchResults.map((product, index) => (
-            <div
-              key={index}
-              className='p-4 hover:bg-gray-50 border-b last:border-b-0'
-            >
-              <div className='flex items-center justify-between'>
-                <div className='flex items-center space-x-4'>
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className='w-16 h-16 object-cover rounded'
-                  />
-                  <div>
-                    <div className='font-medium text-gray-900'>
-                      {product.brand}
-                    </div>
-                    <div className='text-sm text-gray-600'>{product.name}</div>
-                    <div className='text-xs text-gray-500 mt-1'>
-                      {product.description}
-                    </div>
+            <div key={index} className='search-result-item'>
+              <div className='product-info'>
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className='product-image'
+                />
+                <div className='product-details'>
+                  <div className='product-brand'>{product.brand}</div>
+                  <div className='product-name'>{product.name}</div>
+                  <div className='product-description'>
+                    {product.description}
                   </div>
                 </div>
-                <button
-                  onClick={() => handleAddProduct(product.url)}
-                  className={isThemeChanged ? 'dark-theme' : 'light-theme'}
-                  style={{
-                    cursor: isThemeChanged
-                      ? `url('/select2.png') 2 2, pointer`
-                      : `url('/select1.png') 2 2, pointer`,
-                  }}
-                >
-                  <Plus size={16} />
-                  Add
-                </button>
               </div>
+              <button
+                onClick={() => handleAddProduct(product.url)}
+                className={`add-button ${
+                  isThemeChanged ? 'dark-theme' : 'light-theme'
+                }`}
+              >
+                <Plus size={16} />
+                Add
+              </button>
             </div>
           ))}
         </div>
