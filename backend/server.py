@@ -3,7 +3,7 @@ from pymongo import MongoClient
 from fastapi import FastAPI, Request, HTTPException
 from pydantic import BaseModel
 from bson import ObjectId
-from search import final
+from search import search_products, get_product_data_by_url
 from urllib.parse import quote_plus, urlencode
 from authlib.integrations.starlette_client import OAuth
 from fastapi.responses import RedirectResponse, JSONResponse
@@ -240,6 +240,18 @@ async def session(request: Request):
 
 #     return {"message": "Rating updated successfully", "rating": rating}
 
+@app.post("/search/")
+async def search_product_endpoint(search_input: dict):
+    """
+    New endpoint that returns search results without adding to routine
+    """
+    print("inside search")
+    user_input = search_input.get("query")
+    if not user_input:
+        raise HTTPException(status_code=400, detail="Search query is required")
+        
+    search_results = search_products(user_input)
+    return {"results": search_results}
 
 @app.get("/{day}/products/{product_id}/rating")
 async def get_product_rating(day: str, product_id: str, request: Request):
@@ -416,9 +428,8 @@ def product_serializer(product) -> dict:
 
 
 # pydantic model for request & response bodies
-class ProductInput(BaseModel):
-    user_input: str
-
+class ProductUrlInput(BaseModel):
+    product_url: str
 
 """
 @fn get_user_rules
@@ -600,94 +611,98 @@ async def get_user_products(day: str, request: Request):
 @return a message indicating whether a new or existing product was added.
 """
 
-
-@app.post("/{day}/products/")
-async def create_user_product(day: str, product_input: ProductInput, request: Request):
-    user_input = product_input.user_input
-    product_data = final(user_input)
+@app.post("/{day}/products")
+async def add_selected_product(day: str, product_input: ProductUrlInput, request: Request):
+    """
+    Endpoint to add a specific product by its URL
+    """
+    if day not in ["AM", "PM"]:
+        raise HTTPException(status_code=400, detail="Day must be either AM or PM")
+        
     user = request.session.get("user")
     user_info = user.get("userinfo", {})
     user_id = user_info.get("sub")
-
+    
     if not user_id:
         raise HTTPException(status_code=401, detail="User ID not found in session")
-
-    if product_data:
-        product_name = product_data.get("name")
-        product_brand = product_data.get("brand")
-        existing_product = products_collection.find_one(
-            {"name": product_name, "brand": product_brand}
-        )
-
-        if existing_product:
-            print("this product already exists")
-            product_id = existing_product["_id"]
-
-            # checking if the product is already in the user's AM/PM routine
-            user = users_collection.find_one(
-                {"auth0_id": user_id, f"products.{day}": product_id}
-            )
-
-            if user:
-                return {"message": "Product already in user's products list"}
-            else:
-                # updating user's document to include this product in their products list
-                update_result = users_collection.update_one(
-                    {"auth0_id": user_id},
-                    {
-                        "$addToSet": {
-                            f"products.{day}": {"_id": product_id, "rating": 0}
-                        }
-                    },
-                )
-                print("Update result:", update_result.modified_count)
-                message = (
-                    "Existing product added to user's products"
-                    if update_result.modified_count > 0
-                    else "Product already in user's products list"
-                )
-        else:
-            # add tags for products collections according to ingredients collection
-            ingredients = product_data.get("ingredients", [])
-            community_rating = {
-                "oily": [0, 0],         # [rating_sum, rating_count]
-                "dry": [0, 0],
-                "normal": [0, 0],
-                "combination": [0, 0],
-                "sensitive": [0, 0],
-            } # default values
-            tags = []
-            for i in ingredients:
-                ingredient = i.lower().replace(" ", "")
-                ingredient_id = ingredients_collection.find_one({"_id": ingredient})
-                if ingredient_id and "categories" in ingredient_id:
-                    tags.extend(ingredient_id["categories"])
-            tags = list(set(tags))
-            product_data["tags"] = tags
-            product_data["community_rating"] = community_rating # adding community rating to the product data
-            print("Product Data:", product_data)
-
-
-            # insert products
-            inserted_product = products_collection.insert_one(product_data)
-            product_id = inserted_product.inserted_id
-            print("New product ID:", product_id)
-
-            update_result = users_collection.update_one(
-                {"auth0_id": user_id},
-                {"$addToSet": {f"products.{day}": {"_id": product_id, "rating": 0}}},
-            )
-            print("Update result:", update_result.modified_count)
-            message = (
-                "New product created and added to user's products"
-                if update_result.modified_count > 0
-                else "Failed to add product to user's products list"
-            )
-
-        return {"message": message}
-    else:
+    
+    # Get full product details using the stored URL
+    product_data = get_product_data_by_url(product_input.product_url)
+    
+    if not product_data:
         raise HTTPException(status_code=404, detail="Product not found")
-
+        
+    product_name = product_data.get("name")
+    product_brand = product_data.get("brand")
+    
+    # Check if product already exists in database
+    existing_product = products_collection.find_one(
+        {"name": product_name, "brand": product_brand}
+    )
+    
+    if existing_product:
+        product_id = existing_product["_id"]
+        # Check if product is already in user's routine
+        user = users_collection.find_one(
+            {"auth0_id": user_id, f"products.{day}": product_id}
+        )
+        if user:
+            return {"message": "Product already in user's products list"}
+            
+        # Update user's products list with existing product
+        update_result = users_collection.update_one(
+            {"auth0_id": user_id},
+            {
+                "$addToSet": {
+                    f"products.{day}": {"_id": product_id, "rating": 0}
+                }
+            }
+        )
+        message = (
+            "Existing product added to user's products"
+            if update_result.modified_count > 0
+            else "Product already in user's products list"
+        )
+    else:
+        # Add new product to database
+        ingredients = product_data.get("ingredients", [])
+        community_rating = {
+            "oily": [0, 0],
+            "dry": [0, 0],
+            "normal": [0, 0],
+            "combination": [0, 0],
+            "sensitive": [0, 0],
+        }
+        
+        # Process tags
+        tags = []
+        for i in ingredients:
+            ingredient = i.lower().replace(" ", "")
+            ingredient_id = ingredients_collection.find_one({"_id": ingredient})
+            if ingredient_id and "categories" in ingredient_id:
+                tags.extend(ingredient_id["categories"])
+                
+        tags = list(set(tags))
+        product_data["tags"] = tags
+        product_data["community_rating"] = community_rating
+        
+        # Insert new product
+        inserted_product = products_collection.insert_one(product_data)
+        product_id = inserted_product.inserted_id
+        
+        # Add to user's routine
+        update_result = users_collection.update_one(
+            {"auth0_id": user_id},
+            {"$addToSet": {f"products.{day}": {"_id": product_id, "rating": 0}}}
+        )
+        
+        message = (
+            "New product created and added to user's products"
+            if update_result.modified_count > 0
+            else "Failed to add product to user's products list"
+        )
+    
+    return {"message": message}
 
 """
 @fn delete_user_product

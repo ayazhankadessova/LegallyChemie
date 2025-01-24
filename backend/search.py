@@ -19,25 +19,25 @@ primary purpose is to support product data retrieval for applications requiring 
 @param user_input name of the product to search for.
 @return URL of the first product result on Incidecoder, or None if no results are found.
 """
-def search_product(user_input):
-    search_url = f"https://incidecoder.com/search?query={user_input}"
-    # print("search url", search_url)
+# def search_product(user_input):
+#     search_url = f"https://incidecoder.com/search?query={user_input}"
+#     # print("search url", search_url)
     
-    # Product search URL
-    response = requests.get(search_url)
-    if response.status_code == 200: 
-        html_product = BeautifulSoup(response.text, 'html.parser')
-        first_result = html_product.find('a', class_='klavika simpletextlistitem')  
-        # print("first result", first_result)
+#     # Product search URL
+#     response = requests.get(search_url)
+#     if response.status_code == 200: 
+#         html_product = BeautifulSoup(response.text, 'html.parser')
+#         first_result = html_product.find('a', class_='klavika simpletextlistitem')  
+#         # print("first result", first_result)
 
-        if first_result:
-            product_link = first_result['href']
-            # print("product link", product_link)
-            product_url = f"https://incidecoder.com{product_link}" 
-            # print("product url", product_url)
-            return product_url
-    print("No results found.")
-    return None
+#         if first_result:
+#             product_link = first_result['href']
+#             # print("product link", product_link)
+#             product_url = f"https://incidecoder.com{product_link}" 
+#             # print("product url", product_url)
+#             return product_url
+#     print("No results found.")
+#     return None
 
 """
 @fn extract_name_brand_description(product_url)
@@ -96,18 +96,38 @@ def extract_image(product_url):
 @param user_input name of the product to search for.
 @return dictionary containing the product's brand, name, description, ingredients, and image URL, or None if no product is found.
 """
-def get_product_data(user_input):
-    product_url = search_product(user_input)
+# def get_product_data(user_input):
+#     product_url = search_product(user_input)
     
-    if product_url:
+#     if product_url:
+#         brand, name, description = extract_name_brand_description(product_url)
+#         ingredients = extract_ingredients(product_url)
+#         image_url = extract_image(product_url)
+#         # print("Ingredients:")
+#         # for ingredient in ingredients:
+#         #     print(ingredient)
+#         # print("Image URL:", image_url)
+#         # Creating a dictionary to store product name and ingredients
+#         product_data = {
+#             "brand": brand,
+#             "name": name,
+#             "description": description,
+#             "ingredients": ingredients,
+#             "image": image_url
+#         }
+#         return product_data  
+#     else:
+#         print("No product found.")
+#         return None
+    
+def get_product_data_by_url(product_url):
+    try:
+        # Extract all product information using existing functions
         brand, name, description = extract_name_brand_description(product_url)
         ingredients = extract_ingredients(product_url)
         image_url = extract_image(product_url)
-        # print("Ingredients:")
-        # for ingredient in ingredients:
-        #     print(ingredient)
-        # print("Image URL:", image_url)
-        # Creating a dictionary to store product name and ingredients
+        
+        # Create product data dictionary
         product_data = {
             "brand": brand,
             "name": name,
@@ -115,19 +135,49 @@ def get_product_data(user_input):
             "ingredients": ingredients,
             "image": image_url
         }
-        return product_data  
-    else:
-        print("No product found.")
+        return product_data
+    except Exception as e:
+        print(f"Error getting product data from URL: {e}")
         return None
 
-"""
-@fn final(user_input)
-@brief retrieves and prints complete product data for the specified user input.
+def search_products(user_input):
+    """
+    Searches for products and returns multiple results instead of just the first one
+    """
+    search_url = f"https://incidecoder.com/search?query={user_input}"
+    response = requests.get(search_url)
+    products = []
+    
+    if response.status_code == 200:
+        html_product = BeautifulSoup(response.text, 'html.parser')
+        # Get all search results instead of just the first one
+        results = html_product.find_all('a', class_='klavika simpletextlistitem')
+        
+        for result in results[:5]:  # Limit to first 5 results
+            product_link = result['href']
+            product_url = f"https://incidecoder.com{product_link}"
+            
+            # Get basic info for search results
+            brand, name, description = extract_name_brand_description(product_url)
+            image_url = extract_image(product_url)
+            
+            products.append({
+                "brand": brand,
+                "name": name,
+                "description": description[:100] + "..." if description else "",  # Truncate description
+                "image": image_url,
+                "url": product_url  # Store URL for fetching full details later
+            })
+    
+    return products
+# """
+# @fn final(user_input)
+# @brief retrieves and prints complete product data for the specified user input.
 
-@param user_input name or keywords of the product to search for.
-@return dictionary containing product data, or None if no product is found.
-"""
-def final(user_input):
-    product_data = get_product_data(user_input)  
-    print("Product Data:", product_data) 
-    return product_data
+# @param user_input name or keywords of the product to search for.
+# @return dictionary containing product data, or None if no product is found.
+# """
+# def final(user_input):
+#     product_data = get_product_data(user_input)  
+#     print("Product Data:", product_data) 
+#     return product_data
