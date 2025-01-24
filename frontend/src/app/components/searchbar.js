@@ -28,11 +28,13 @@ const SearchBar = ({ onProductAdded, isThemeChanged, day }) => {
 
   const performSearch = async () => {
     if (!inputValue.trim()) {
-      setSearchResults([])
+      setErrorMessage('Please enter a product name')
       return
     }
 
     setIsLoading(true)
+    setErrorMessage('') // Clear any previous errors
+
     try {
       const response = await fetch(`${apiUrl}/search/`, {
         method: 'POST',
@@ -43,14 +45,26 @@ const SearchBar = ({ onProductAdded, isThemeChanged, day }) => {
         body: JSON.stringify({ query: inputValue }),
       })
 
-      if (!response.ok) throw new Error('Search failed')
-
       const data = await response.json()
-      setSearchResults(data.results)
-      setShowResults(true)
+
+      if (!response.ok) {
+        throw new Error(data.detail || 'Failed to search products')
+      }
+
+      if (data.results && data.results.length === 0) {
+        setErrorMessage(
+          'No products found. Please try a different search term.'
+        )
+        setShowResults(false)
+      } else {
+        setSearchResults(data.results)
+        setShowResults(true)
+        setErrorMessage('')
+      }
     } catch (error) {
       console.error('Search error:', error)
-      setErrorMessage('Failed to search products')
+      setErrorMessage(error.message || 'Failed to search products')
+      setShowResults(false)
     } finally {
       setIsLoading(false)
     }
@@ -59,11 +73,11 @@ const SearchBar = ({ onProductAdded, isThemeChanged, day }) => {
   const handleInputChange = (e) => {
     const value = e.target.value
     setInputValue(value)
-    setErrorMessage('')
+    setErrorMessage('') // Clear error when user types
   }
 
   const handleSearch = (e) => {
-    e.preventDefault() // Prevent form submission
+    e.preventDefault()
     performSearch()
   }
 
@@ -78,12 +92,12 @@ const SearchBar = ({ onProductAdded, isThemeChanged, day }) => {
         body: JSON.stringify({ product_url: productUrl }),
       })
 
+      const data = await response.json()
+
       if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.detail || 'Failed to add product')
+        throw new Error(data.detail || 'Failed to add product')
       }
 
-      const data = await response.json()
       if (data.message === "Product already in user's products list") {
         setErrorMessage('You already have this product in your routine 😭')
       } else {
@@ -91,6 +105,7 @@ const SearchBar = ({ onProductAdded, isThemeChanged, day }) => {
         setInputValue('')
         setSearchResults([])
         setShowResults(false)
+        setErrorMessage('')
         alert('Product added successfully!')
         window.location.reload()
       }
@@ -103,7 +118,7 @@ const SearchBar = ({ onProductAdded, isThemeChanged, day }) => {
   }
 
   return (
-    <div className='relative w-full max-w-xl' ref={searchRef}>
+    <div className='search-bar' ref={searchRef}>
       <form onSubmit={handleSearch} className='flex gap-2'>
         <div className='relative flex-1'>
           <input
@@ -111,13 +126,13 @@ const SearchBar = ({ onProductAdded, isThemeChanged, day }) => {
             value={inputValue}
             onChange={handleInputChange}
             placeholder='Search for a product...'
-            className={`w-full px-4 py-2 rounded-lg ${
-              isThemeChanged
-                ? 'bg-blue-50 border-blue-400'
-                : 'bg-pink-50 border-pink-400'
-            } border-2 focus:outline-none focus:ring-2 ${
-              isThemeChanged ? 'focus:ring-blue-300' : 'focus:ring-pink-300'
-            }`}
+            className={isThemeChanged ? 'dark-theme' : 'light-theme'}
+            style={{
+              border: isThemeChanged
+                ? 'solid 2px #00B4D8'
+                : 'solid 2px #fd76c9',
+              color: isThemeChanged ? '#0077B6' : '#FF5EC1',
+            }}
           />
           {inputValue && (
             <button
@@ -126,6 +141,7 @@ const SearchBar = ({ onProductAdded, isThemeChanged, day }) => {
                 setInputValue('')
                 setSearchResults([])
                 setShowResults(false)
+                setErrorMessage('')
               }}
               className='absolute right-3 top-1/2 transform -translate-y-1/2'
             >
@@ -134,18 +150,37 @@ const SearchBar = ({ onProductAdded, isThemeChanged, day }) => {
           )}
         </div>
         <button
+          className={isThemeChanged ? 'dark-theme' : 'light-theme'}
+          style={{
+            cursor: isThemeChanged
+              ? `url('/select2.png') 2 2, pointer`
+              : `url('/select1.png') 2 2, pointer`,
+          }}
           type='submit'
-          className={`px-4 py-2 rounded-lg flex items-center gap-2 ${
-            isThemeChanged
-              ? 'bg-blue-500 hover:bg-blue-600'
-              : 'bg-pink-500 hover:bg-pink-600'
-          } text-white transition-colors`}
         >
-          <Search size={18} />
           Search
         </button>
       </form>
 
+      {/* Error Message Display */}
+      {errorMessage && (
+        <div
+          className={`mt-2 p-3 rounded-lg ${
+            isThemeChanged
+              ? 'bg-blue-50 text-blue-600'
+              : 'bg-pink-50 text-pink-600'
+          } border ${isThemeChanged ? 'border-blue-200' : 'border-pink-200'}`}
+        >
+          {errorMessage}
+        </div>
+      )}
+
+      {/* Loading State */}
+      {isLoading && (
+        <div className='mt-2 text-center py-4 text-gray-500'>Searching...</div>
+      )}
+
+      {/* Search Results */}
       {showResults && searchResults.length > 0 && (
         <div className='absolute z-10 w-full mt-1 bg-white rounded-lg shadow-lg border border-gray-200 max-h-96 overflow-y-auto'>
           {searchResults.map((product, index) => (
@@ -172,11 +207,12 @@ const SearchBar = ({ onProductAdded, isThemeChanged, day }) => {
                 </div>
                 <button
                   onClick={() => handleAddProduct(product.url)}
-                  className={`ml-4 px-3 py-2 rounded-lg flex items-center gap-1 ${
-                    isThemeChanged
-                      ? 'bg-blue-500 hover:bg-blue-600'
-                      : 'bg-pink-500 hover:bg-pink-600'
-                  } text-white transition-colors`}
+                  className={isThemeChanged ? 'dark-theme' : 'light-theme'}
+                  style={{
+                    cursor: isThemeChanged
+                      ? `url('/select2.png') 2 2, pointer`
+                      : `url('/select1.png') 2 2, pointer`,
+                  }}
                 >
                   <Plus size={16} />
                   Add
@@ -186,23 +222,10 @@ const SearchBar = ({ onProductAdded, isThemeChanged, day }) => {
           ))}
         </div>
       )}
-
-      {isLoading && (
-        <div className='text-center py-4 text-gray-500'>Searching...</div>
-      )}
-
-      {errorMessage && (
-        <div
-          className={`mt-2 text-sm ${
-            isThemeChanged ? 'text-blue-600' : 'text-pink-600'
-          }`}
-        >
-          {errorMessage}
-        </div>
-      )}
     </div>
   )
 }
+
 SearchBar.propTypes = {
   onProductAdded: PropTypes.func.isRequired,
   isThemeChanged: PropTypes.bool.isRequired,
