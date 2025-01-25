@@ -11,33 +11,7 @@ uses BeautifulSoup and requests to scrape data from the  Incidecoder website bas
 primary purpose is to support product data retrieval for applications requiring skincare product information.
 """
 
-
-"""
-@fn search_product(user_input)
-@brief searches for a product on Incidecoder based on user input and retrieves the first result's URL.
-
-@param user_input name of the product to search for.
-@return URL of the first product result on Incidecoder, or None if no results are found.
-"""
-# def search_product(user_input):
-#     search_url = f"https://incidecoder.com/search?query={user_input}"
-#     # print("search url", search_url)
-    
-#     # Product search URL
-#     response = requests.get(search_url)
-#     if response.status_code == 200: 
-#         html_product = BeautifulSoup(response.text, 'html.parser')
-#         first_result = html_product.find('a', class_='klavika simpletextlistitem')  
-#         # print("first result", first_result)
-
-#         if first_result:
-#             product_link = first_result['href']
-#             # print("product link", product_link)
-#             product_url = f"https://incidecoder.com{product_link}" 
-#             # print("product url", product_url)
-#             return product_url
-#     print("No results found.")
-#     return None
+BASE_URL = "https://incidecoder.com"
 
 """
 @fn extract_name_brand_description(product_url)
@@ -90,35 +64,12 @@ def extract_image(product_url):
     return image_url
 
 """
-@fn get_product_data(user_input)
+@fn get_product_data_by_url(product_url)
 @brief combines product details including brand, name, description, ingredients, and image into a dictionary.
 
 @param user_input name of the product to search for.
 @return dictionary containing the product's brand, name, description, ingredients, and image URL, or None if no product is found.
 """
-# def get_product_data(user_input):
-#     product_url = search_product(user_input)
-    
-#     if product_url:
-#         brand, name, description = extract_name_brand_description(product_url)
-#         ingredients = extract_ingredients(product_url)
-#         image_url = extract_image(product_url)
-#         # print("Ingredients:")
-#         # for ingredient in ingredients:
-#         #     print(ingredient)
-#         # print("Image URL:", image_url)
-#         # Creating a dictionary to store product name and ingredients
-#         product_data = {
-#             "brand": brand,
-#             "name": name,
-#             "description": description,
-#             "ingredients": ingredients,
-#             "image": image_url
-#         }
-#         return product_data  
-#     else:
-#         print("No product found.")
-#         return None
     
 def get_product_data_by_url(product_url):
     try:
@@ -140,22 +91,36 @@ def get_product_data_by_url(product_url):
         print(f"Error getting product data from URL: {e}")
         return None
 
-def search_products(user_input):
+"""
+@fn search_products(user_input, limit=5)
+@brief searches for cosmetic products on IncideCoder and returns details for multiple matches.
+
+@param user_input string containing product name/keywords to search for.
+@param limit maximum number of search results to return (default 5).
+
+@return list of dictionaries, each containing basic product details:
+       - brand: product brand name 
+       - name: product name
+       - description: truncated product description
+       - image: URL of product image
+       - url: product page URL
+       Returns empty list if no products found or search fails.
+"""
+def search_products(user_input, limit=5):
     """
     Searches for products and returns multiple results instead of just the first one
     """
-    search_url = f"https://incidecoder.com/search?query={user_input}"
+    search_url = f"{BASE_URL}/search?query={user_input}"
     response = requests.get(search_url)
     products = []
     
     if response.status_code == 200:
         html_product = BeautifulSoup(response.text, 'html.parser')
-        # Get all search results instead of just the first one
         results = html_product.find_all('a', class_='klavika simpletextlistitem')
         
-        for result in results[:5]:  # Limit to first 5 results
+        for result in results[:limit]:  # Limit to first 5 results
             product_link = result['href']
-            product_url = f"https://incidecoder.com{product_link}"
+            product_url = f"{BASE_URL}{product_link}"
             
             # Get basic info for search results
             brand, name, description = extract_name_brand_description(product_url)
@@ -164,20 +129,9 @@ def search_products(user_input):
             products.append({
                 "brand": brand,
                 "name": name,
-                "description": description[:100] + "..." if description else "",  # Truncate description
+                "description": description, 
                 "image": image_url,
                 "url": product_url  # Store URL for fetching full details later
             })
     
     return products
-# """
-# @fn final(user_input)
-# @brief retrieves and prints complete product data for the specified user input.
-
-# @param user_input name or keywords of the product to search for.
-# @return dictionary containing product data, or None if no product is found.
-# """
-# def final(user_input):
-#     product_data = get_product_data(user_input)  
-#     print("Product Data:", product_data) 
-#     return product_data
