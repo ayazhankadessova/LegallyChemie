@@ -3,7 +3,7 @@ from pymongo import MongoClient
 from fastapi import FastAPI, Request, HTTPException
 from pydantic import BaseModel
 from bson import ObjectId
-from search import search_products, get_product_data_by_url
+from search import get_search_results, get_product_data_by_url
 from urllib.parse import quote_plus, urlencode
 from authlib.integrations.starlette_client import OAuth
 from fastapi.responses import RedirectResponse, JSONResponse
@@ -250,7 +250,7 @@ async def search_product_endpoint(search_input: dict):
     if not user_input:
         raise HTTPException(status_code=400, detail="Search query is required")
         
-    search_results = search_products(user_input)
+    search_results = get_search_results(user_input)
     return {"results": search_results}
 
 @app.get("/{day}/products/{product_id}/rating")

@@ -1,5 +1,30 @@
 from bs4 import BeautifulSoup
 import requests
+import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
+from concurrent.futures import ThreadPoolExecutor
+from functools import lru_cache
+
+# Create session with retry strategy
+session = requests.Session()
+retry_strategy = Retry(
+    total=3,
+    backoff_factor=1,
+    status_forcelist=[500, 502, 503, 504]
+)
+adapter = HTTPAdapter(max_retries=retry_strategy, pool_maxsize=10)
+session.mount("http://", adapter)
+session.mount("https://", adapter)
+
+@lru_cache(maxsize=500)
+def get_cached_response(url):
+    return session.get(url, timeout=5)
+
+@lru_cache(maxsize=500)
+def search_products_cached(user_input, limit=5):
+    """Cached version of search function"""
+    return search_products(user_input, limit)
 
 """
 @file search.py
@@ -21,7 +46,8 @@ BASE_URL = "https://incidecoder.com"
 @return tuple containing the brand name, product name, and description.
 """
 def extract_name_brand_description(product_url):
-    response = requests.get(product_url)
+    response = get_cached_response(product_url)
+    # response = requests.get(product_url)
     soup = BeautifulSoup(response.text, 'html.parser')
     brand_name_section = soup.find('a', class_='underline')
     brand_name = brand_name_section.text.strip() if brand_name_section else "Brand not found"
@@ -39,7 +65,7 @@ def extract_name_brand_description(product_url):
 @return list of ingredients for the product.
 """
 def extract_ingredients(product_url):
-    response = requests.get(product_url)
+    response = session.get(product_url, timeout=5)
     soup = BeautifulSoup(response.text, 'html.parser')
     
     ingredients_section = soup.find('div', class_='showmore-section ingredlist-short-like-section')
@@ -56,7 +82,7 @@ def extract_ingredients(product_url):
 @return URL of the product image.
 """
 def extract_image(product_url):
-    response = requests.get(product_url)
+    response = session.get(product_url, timeout=5)
     soup = BeautifulSoup(response.text, 'html.parser')
     picture_tag = soup.find('picture')
     image_tag = picture_tag.find('img')
@@ -106,32 +132,34 @@ def get_product_data_by_url(product_url):
        - url: product page URL
        Returns empty list if no products found or search fails.
 """
+
 def search_products(user_input, limit=5):
-    """
-    Searches for products and returns multiple results instead of just the first one
-    """
     search_url = f"{BASE_URL}/search?query={user_input}"
-    response = requests.get(search_url)
+    response = session.get(search_url, timeout=5)
     products = []
     
     if response.status_code == 200:
         html_product = BeautifulSoup(response.text, 'html.parser')
-        results = html_product.find_all('a', class_='klavika simpletextlistitem')
+        results = html_product.select('a.klavika.simpletextlistitem')[:limit]
         
-        for result in results[:limit]:  # Limit to first 5 results
+        def fetch_product_data(result):
             product_link = result['href']
             product_url = f"{BASE_URL}{product_link}"
-            
-            # Get basic info for search results
             brand, name, description = extract_name_brand_description(product_url)
             image_url = extract_image(product_url)
-            
-            products.append({
+            return {
                 "brand": brand,
                 "name": name,
-                "description": description, 
+                "description": description,
                 "image": image_url,
-                "url": product_url  # Store URL for fetching full details later
-            })
+                "url": product_url
+            }
+            
+        with ThreadPoolExecutor(max_workers=limit) as executor:
+            products = list(executor.map(fetch_product_data, results))
     
     return products
+
+def get_search_results(query, n_results=5):
+    results = search_products_cached(query, n_results)
+    return results
