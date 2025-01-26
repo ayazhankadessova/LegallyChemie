@@ -11,3 +11,11 @@ class SearchInput(BaseModel):
 class TimeOfDay(str, Enum):
     AM = "AM"
     PM = "PM"
+
+class SkinType(str, Enum):
+    oily = "oily"
+    dry = "dry"
+    normal = "normal"
+    combination = "combination" 
+    sensitive = "sensitive"
+    

@@ -1,7 +1,6 @@
 from dotenv import load_dotenv
 from pymongo import MongoClient
 from fastapi import FastAPI, Request, HTTPException
-from pydantic import BaseModel
 from bson import ObjectId
 from search import get_search_results, get_product_data_by_url
 from urllib.parse import quote_plus, urlencode
@@ -9,11 +8,11 @@ from authlib.integrations.starlette_client import OAuth
 from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
-# from pprint import pprint
 import uvicorn
 import os
 from ratings import CommunityRatingsManager
-from models.schemas import ProductUrlInput, SearchInput, TimeOfDay
+from typing import Dict
+from models.schemas import ProductUrlInput, SearchInput, TimeOfDay, SkinType
 
 """
 @file server.py
@@ -328,54 +327,44 @@ async def update_product_rating(
     return {"message": "Rating updated successfully"}
 
 
-@app.get("/skintype")
+@app.get("/skintype", response_model=Dict[str, SkinType])
 async def get_skintype(request: Request):
-    print("inside get skintype function")
-    print("this is the session information: ", request.session)
-    user = request.session.get("user")
-    user_info = user.get("userinfo", {})
-    user_id = user_info.get("sub")
+   user = request.session.get("user")
+   user_info = user.get("userinfo", {})
+   user_id = user_info.get("sub")
 
-    if not user_id:
-        raise HTTPException(status_code=401, detail="User ID not found in session")
+   if not user_id:
+       raise HTTPException(status_code=401, detail="User ID not found in session")
 
-    user_doc = users_collection.find_one({"auth0_id": user_id})
+   user_doc = users_collection.find_one({"auth0_id": user_id})
+   if not user_doc:
+       raise HTTPException(status_code=404, detail="User not found")
 
-    if not user_doc:
-        raise HTTPException(status_code=404, detail="User not found")
-
-    user_skintype = user_doc.get("skin_type", "")
-    return {"skin_type": user_skintype}
+   skin_type = user_doc.get("skin_type", SkinType.normal.value)
+   return {"skin_type": SkinType(skin_type)}
 
 
 @app.post("/{skintype}")
-async def setting_skintype(skintype: str, request: Request):
-    print("inside skintype function")
-    print("this is the skin type: ", skintype)
-    print("these are all the env variables: ")
-
-    print("this is the request: ", request)
+async def setting_skintype(skintype: SkinType, request: Request):
     user = request.session.get("user")
     user_info = user.get("userinfo", {})
     user_id = user_info.get("sub")
-
+    
     if not user_id:
         raise HTTPException(status_code=401, detail="User ID not found in session")
 
     user_doc = users_collection.find_one({"auth0_id": user_id})
-
     if not user_doc:
         raise HTTPException(status_code=404, detail="User not found")
 
     update_result = users_collection.update_one(
-        {"auth0_id": user_id}, {"$set": {"skin_type": skintype}}
+        {"auth0_id": user_id}, {"$set": {"skin_type": skintype.value}}
     )
-
+    
     if update_result.modified_count == 0:
         raise HTTPException(status_code=500, detail="Failed to update skin type")
 
-    return {"message": "Skin type updated successfully", "skin_type": skintype}
-
+    return {"message": "Skin type updated successfully", "skin_type": skintype.value}
 
 """
 @fn product_serializer
@@ -414,7 +403,7 @@ async def get_user_rules(day: TimeOfDay, request: Request):
         raise HTTPException(status_code=401, detail="User ID not found in session")
 
     # fetching products for the user and day using session-based user_id
-    products = await get_user_products(day.value, request)
+    products = await get_user_products(day, request)
 
     product_rules = {"avoid": [], "usewith": [], "usewhen": []}
     product_count = 0
@@ -627,11 +616,11 @@ async def add_selected_product(day: TimeOfDay, product_input: ProductUrlInput, r
         # Add new product to database
         ingredients = product_data.get("ingredients", [])
         community_rating = {
-            "oily": [0, 0],
-            "dry": [0, 0],
-            "normal": [0, 0],
-            "combination": [0, 0],
-            "sensitive": [0, 0],
+            SkinType.oily.value: [0, 0],
+            SkinType.dry.value: [0, 0], 
+            SkinType.normal.value: [0, 0],
+            SkinType.combination.value: [0, 0],
+            SkinType.sensitive.value: [0, 0],
         }
         
         # Process tags

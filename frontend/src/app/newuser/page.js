@@ -33,7 +33,7 @@ export default function NewUser() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ skinType: selectedSkinType }),
+          body: JSON.stringify({ skinType: selectedSkinType.lower() }),
         });
   
         if (response.ok) {
