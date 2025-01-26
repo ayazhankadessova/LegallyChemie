@@ -62,10 +62,10 @@ body {
     transform: translateX(42px);
   }  
 
-.fridge-image{
+.fridge-image {
     margin-top: 5em;
     width: 65%;
-    height: 100%;
+    height: 480px;
     object-fit: contain;
 }
 
@@ -139,8 +139,8 @@ body {
     font-family: 'Montserrat', sans-serif;
     font-size: 16px;
     font-weight: bold;
-    margin-bottom: 1em;
-    padding: 0 1em;
+    margin: 0 .5em;
+    text-align: left;
 }
 
 .product-brand, .product-description, .product-ingredients {
@@ -279,9 +279,8 @@ body {
 
 .search-bar form {
     display: flex;
-    gap: 10px;
+    gap: 5px;
     width: 100%;
-
 }
 
 .search-input-container {
@@ -289,7 +288,7 @@ body {
     flex: 1;
 }
 
-.search-input {
+.search-bar input {
     width: 100%;
     padding: 12px 35px 12px 15px;
     border-radius: 8px;
@@ -298,21 +297,21 @@ body {
     font-family: 'Montserrat', sans-serif;
 }
 
-.search-input.light-theme {
+.search-bar input.light-theme {
     border: 2px solid #fd76c9;
     color: #FF5EC1;
 }
 
-.search-input.dark-theme {
+.search-bar input.dark-theme {
     border: 2px solid #00B4D8;
     color: #0077B6;
 }
 
-.search-input.light-theme::placeholder {
+.search-bar input.light-theme::placeholder {
     color: #FFAADF;
 }
 
-.search-input.dark-theme::placeholder {
+.search-bar input.dark-theme::placeholder {
     color: #00B4D8;
 }
 
@@ -328,7 +327,7 @@ body {
 }
 
 .search-button {
-    padding: 12px 20px;
+    padding: 8px;
     border: none;
     border-radius: 8px;
     font-weight: bold;
@@ -358,37 +357,6 @@ body {
     background-color: #00B4D8;
     color: #03045E;
 }
-/* 
-.search-bar button {
-    border: none;
-    border-radius: 6px;
-    padding: 10px 15px;
-    font-size: 14px;
-    font-weight: bold;
-    margin-left: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.search-bar button.dark-theme {
-    background-color: #03045E;
-    color: #F4FDFF;
-}
-
-.search-bar button.dark-theme:hover {
-    background-color: #00bce1;
-    color: #000142;
-}
-
-.search-bar button.light-theme {
-    background-color: #ff0090;
-    color: #FEF5FF;
-}
-
-.search-bar button.light-theme:hover {
-    background-color: #FFAADF;
-    color: #ff0090;
-} */
 
 .error-message {
     margin-top: 10px;
@@ -425,7 +393,7 @@ body {
     background: white;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    max-height: 280px;
+    max-height: calc(370px - 100%);
     overflow-y: auto;
     z-index: 1000;
 }
@@ -482,7 +450,7 @@ body {
 }
 
 .add-button {
-    padding: 8px 16px;
+    padding: 3px 6px;
     border: none;
     border-radius: 6px;
     font-weight: 600;
@@ -532,46 +500,48 @@ body {
 }
 
 .button-issues.light-theme{
-    position: absolute;
-    display: inline-block;
-    width: 100px;
-    height: 38px;
-    margin-top: 5em;
     font-weight: 600;
+    display: flex;
     align-items: center;
     color: #FEF5FF; 
-    background-color: #ff0090; 
+    background-color: #FF77CB;
     border: none;
+    padding: 10px 20px;
+    padding-right: 22px;
     cursor: pointer;
+    position: absolute;
     border-radius: 15px;
+    left: 89%;
+    top: 90%;
     transition: ease-in-out 0.2s;
     cursor: url('/select1.png'), pointer;
 }
 
 .button-issues.light-theme:hover{
-    background-color: #FF77CB;
+    background-color: #ff0090;
     transform: scale(1.05);
 }
 
 .button-issues.dark-theme{
-    position: absolute;
-    display: inline-block;
-    width: 100px;
-    height: 38px;
-    margin-top: 5em;
+    display: flex;
     font-weight: 600;
     align-items: center;
     color: #FEF5FF; 
-    background-color: #03045E;
+    background-color: #00bce1;
     border: none;
+    padding: 10px 20px;
+    padding-right: 22px;
     cursor: pointer;
+    position: absolute;
     border-radius: 15px;
+    left: 89%;
+    top: 90%;
     transition: ease-in-out 0.2s;
     cursor: url('/select2.png'), pointer;
 }
 
 .button-issues.dark-theme:hover{
-    background-color: #00bce1;
+    background-color: #03045E;
     transform: scale(1.05);
 }
 
@@ -582,16 +552,16 @@ body {
 }
 
 .issues-view {
-    position: relative;
-    border-radius: 20px;
-    margin-top: 8em;
-    padding: 18px;
-    padding-top: 115px;
-    width: 365px;
-    height: 440px;
-    text-align: center;
-    background-size: contain;
-    background-position: center;
+  position: relative;
+  border-radius: 17.5px;
+  margin-top: 7.8em;
+  padding: 16px;
+  padding-top: 101px;
+  width: 335px;
+  height: 420px;
+  text-align: center;
+  background-size: contain;
+  background-position: center;
 }
 
 .issues-card {

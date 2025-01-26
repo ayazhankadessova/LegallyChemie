@@ -1,3 +1,14 @@
+/**
+ * @file searchbar.js
+ * @brief search bar component that allows users to input a product name and add it to their routine.
+ *
+ * @param {Function} onProductAdded - callback function to notify the parent component when a product is added.
+ * @param {boolean} isThemeChanged - boolean indicating if the theme is changed.
+ * @param {string} day - the day (AM/PM) associated with the product.
+ *
+ * @returns {JSX.Element} the rendered search bar component.
+ */
+
 import React, { useState, useRef, useEffect } from 'react'
 import { X, Search, Plus } from 'lucide-react'
 import config from '../config.js'
@@ -79,6 +90,12 @@ const SearchBar = ({ onProductAdded, isThemeChanged, day }) => {
     performSearch()
   }
 
+  /**
+   * @function handleAddProduct
+   * @brief handles the addition of a product to the user's routine by sending a POST request.
+   *
+   * @param {Object} e - the event object from the form submission.
+   */
   const handleAddProduct = async (productUrl) => {
     try {
       const response = await fetch(`${apiUrl}/${day}/products`, {
@@ -108,7 +125,7 @@ const SearchBar = ({ onProductAdded, isThemeChanged, day }) => {
         setShowResults(false)
         setErrorMessage('')
         alert('Product added successfully!')
-        window.location.reload()
+        // window.location.reload()
       }
     } catch (error) {
       console.error('Error adding product:', error)
@@ -120,7 +137,7 @@ const SearchBar = ({ onProductAdded, isThemeChanged, day }) => {
 
   return (
     <div className='search-bar' ref={searchRef}>
-      <form onSubmit={handleSearch} className='search-form'>
+      <form onSubmit={handleSearch}>
         <div className='search-input-container'>
           <input
             type='text'
@@ -151,6 +168,11 @@ const SearchBar = ({ onProductAdded, isThemeChanged, day }) => {
           className={`search-button ${
             isThemeChanged ? 'dark-theme' : 'light-theme'
           }`}
+          style={{
+            cursor: isThemeChanged
+              ? `url('/select2.png') 2 2, pointer`
+              : `url('/select1.png') 2 2, pointer`,
+          }}
         >
           <Search size={18} />
           Search
@@ -172,7 +194,7 @@ const SearchBar = ({ onProductAdded, isThemeChanged, day }) => {
       {showResults && searchResults.length > 0 && (
         <div className='search-results'>
           {searchResults.map((product, index) => (
-            <div key={index} className='search-result-item'>
+            <div key={product.name} className='search-result-item'>
               <div className='product-info'>
                 <img
                   src={product.image}
@@ -183,7 +205,9 @@ const SearchBar = ({ onProductAdded, isThemeChanged, day }) => {
                   <div className='product-brand'>{product.brand}</div>
                   <div className='product-name'>{product.name}</div>
                   <div className='product-description'>
-                    {product.description}
+                    {product.description.length > 100
+                      ? `${product.description.substring(0, 100)}...`
+                      : product.description}
                   </div>
                 </div>
               </div>
@@ -192,8 +216,13 @@ const SearchBar = ({ onProductAdded, isThemeChanged, day }) => {
                 className={`add-button ${
                   isThemeChanged ? 'dark-theme' : 'light-theme'
                 }`}
+                style={{
+                  cursor: isThemeChanged
+                    ? `url('/select2.png') 2 2, pointer`
+                    : `url('/select1.png') 2 2, pointer`,
+                }}
               >
-                <Plus size={16} />
+                <Plus size={12} />
                 Add
               </button>
             </div>
