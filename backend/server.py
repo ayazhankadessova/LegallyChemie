@@ -166,7 +166,6 @@ async def callback(request: Request):
     # redirecting user back to React app with a success status
     return RedirectResponse(f"{frontend_url}/landing?name={given_name}")
 
-
 """
 @fn logout
 @brief logout route
@@ -174,8 +173,6 @@ async def callback(request: Request):
 @param request the http request object.
 @return redirects to the logout url with a return path to the react app.
 """
-
-
 @app.get("/logout")
 async def logout(request: Request):
     request.session.clear()
@@ -192,15 +189,12 @@ async def logout(request: Request):
         )
     )
 
-
 """
 @fn session
 @brief retrieves the current user session information.
 @param request the http request object.
 @return JSONResponse with user data or an error if the user is not authenticated.
 """
-
-
 @app.get("/session")
 async def session(request: Request):
     user = request.session.get("user")
@@ -209,7 +203,12 @@ async def session(request: Request):
     else:
         return JSONResponse(content={"error": "Not authenticated"}, status_code=401)
 
-
+"""
+@fn search_product_endpoint
+@brief searches for products based on user input query.
+@param search_input SearchInput object containing the search query.
+@return dictionary containing search results or HTTPException if query is empty.
+"""
 @app.post("/search/")
 async def search_product_endpoint(search_input: SearchInput):
     """
@@ -526,9 +525,6 @@ async def get_user_products(day: TimeOfDay, request: Request):
     user = request.session.get("user")
     user_info = user.get("userinfo", {})
     user_id = user_info.get("sub")
-    # print("298this is the user: ")
-    # pprint(user)
-    # print("302this is the user's id: ", user_id)
 
     if not user_id:
         raise HTTPException(status_code=401, detail="User ID not found in session")
@@ -693,90 +689,6 @@ async def delete_user_product(day: TimeOfDay, product_id: str, request: Request)
 
 # initialize RatingsManager with the products collection
 community_ratings_manager = CommunityRatingsManager(products_collection)
-
-"""
-@fn add_community_rating
-@brief Adds a community rating for a product based on a user's skin type.
-@param day Time of day ("AM" or "PM").
-@param product_id The ID of the product to be rated.
-@param rating The rating to be given to the product (1-5).
-@param request The HTTP request object.
-@return A message indicating success or an error if the rating could not be added.
-"""
-
-
-# @app.patch("/{day}/products/{product_id}/community-rating/{rating}")
-# async def add_community_rating(
-#     day: str, product_id: str, rating: int, request: Request
-# ):
-#     print("Session Data:", request.session)  # Debugging
-#     user = request.session.get("user")
-#     user_info = user.get("userinfo", {})
-#     user_id = user_info.get("sub")
-
-#     if not user_id:
-#         raise HTTPException(status_code=401, detail="User ID not found in session")
-
-#     user_doc = users_collection.find_one({"auth0_id": user_id})
-#     if not user_doc:
-#         raise HTTPException(status_code=404, detail="User not found")
-
-#     skin_type = user_doc.get("skin_type")
-#     if not skin_type:
-#         raise HTTPException(status_code=400, detail="User has not set a skin type")
-
-#     try:
-#         product_id = ObjectId(product_id)
-#     except Exception:
-#         raise HTTPException(status_code=400, detail="Invalid product ID format")
-
-#     if rating < 1 or rating > 5:
-#         raise HTTPException(status_code=400, detail="Rating must be between 1 and 5")
-
-#     # get action
-#     action = community_ratings_manager.add_or_update_rating(
-#         product_id, user_id, skin_type, rating
-#     )
-
-#     if action == "product_not_found":
-#         raise HTTPException(status_code=404, detail="Product not found")
-#     elif action == "update_failed":
-#         raise HTTPException(status_code=500, detail="Failed to update community rating")
-
-#     return {
-#         "message": f"Community rating {action} successfully",
-#         "rating": rating,
-#         "skin_type": skin_type,
-#         "day": day,
-#     }
-
-
-"""
-@fn get_community_ratings
-@brief Retrieves the community ratings for a product by skin type.
-@param day Time of day ("AM" or "PM").
-@param product_id The ID of the product whose community ratings are being retrieved.
-@return A JSON object containing the community ratings by skin type or an error if no ratings exist.
-"""
-
-
-# @app.get("/{day}/products/{product_id}/community-ratings")
-# async def get_community_ratings(day: str, product_id: str):
-#     try:
-#         product_id = ObjectId(product_id)
-#     except Exception:
-#         raise HTTPException(status_code=400, detail="Invalid product ID format")
-
-#     community_ratings = community_ratings_manager.get_community_ratings(product_id)
-
-#     if not community_ratings:
-#         raise HTTPException(
-#             status_code=404,
-#             detail="Product not found or no community ratings available",
-#         )
-
-#     return {"communityRatings": community_ratings}
-
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", log_level="info")
